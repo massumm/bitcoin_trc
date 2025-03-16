@@ -12,9 +12,13 @@ class MenuController extends Controller
 
          return view('client.screens.menu');
     }
-    public function menudetails(){
-        //return 'This is Dashboard';
-
-         return view('client.screens.menu_details');
+    public function menudetails(Request $request)
+    {
+        // Retrieve 'id' and 'name' from the request
+        $id = $request->query('id');
+        $name = $request->query('name');
+    
+        return view('client.screens.menu_details', compact('id', 'name'));
     }
+    
 }

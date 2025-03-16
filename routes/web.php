@@ -31,6 +31,7 @@ Route::get('/admin-login', [App\Http\Controllers\Admin\LogController::class, 'in
 Route::prefix('client')->middleware(['auth'])->group(function () {
   Route::get('/dashboard', [App\Http\Controllers\Client\DashboardController::class, 'index']);
   Route::get('/projectspage', [App\Http\Controllers\Client\MenuController::class, 'index']);
+  Route::get('/projectdetails', [App\Http\Controllers\Client\MenuController::class, 'menudetails']);
   Route::get('/recordlist', [App\Http\Controllers\Client\RecordlistControllert::class, 'index']);
   Route::get('/mine', [App\Http\Controllers\Client\MineController::class, 'index']);
     Route::get('/platform-rules', function () {

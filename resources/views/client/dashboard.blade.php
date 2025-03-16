@@ -51,7 +51,7 @@
     <div class="card">
         <img src="{{ asset('assets/img/platform_rules.jpg') }}" class="card-img-top" alt="Rules">
         <div class="card-body">
-            <p class="card-text">Platform Rules</p>
+            <p class="card-text">Platfm Rules</p>
         </div>
     </div>
 </a>

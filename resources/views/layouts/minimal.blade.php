@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
     <style>
+        body {
+            background-color: #F8F8F8;
+        }
         .container {
             max-width: 600px;
             margin: 50px auto;
@@ -16,33 +19,46 @@
             border-radius: 10px;
             box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
         }
+        .header-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 50px;
+        }
         .back-btn {
+            position: absolute;
+            left: 0;
             font-size: 18px;
             text-decoration: none;
+            color: black;
+            padding-left: 10px;
+        }
+        .back-btn i {
+            font-size: 20px;
         }
         h4 {
-            text-align: center;
+            margin: 0;
+            font-weight: 600;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <!-- Back Button -->
-        <div class="d-flex align-items-center mb-3">
-        <a href="javascript:void(0);" class="back-btn me-3" id="backButton">
-                <i class="fas fa-arrow-left"></i>
-            </a>
-            <h4 class="mx-auto mb-0">@yield('title')</h4>
-        </div>
-
-        @yield('content')
+<div class="container">
+    <!-- Back Button & Title in Same Row -->
+    <div class="header-container">
+        <a href="javascript:void(0);" class="back-btn" id="backButton">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <h4>@yield('title')</h4>
     </div>
 
-</body>
+    @yield('content')
+</div>
+
 <script>
 document.getElementById("backButton").addEventListener("click", function() {
-    console.log("asdfjjkashdfj")
     if (window.history.length > 1) {
         window.history.back(); // Navigate back
     } else {
@@ -50,4 +66,6 @@ document.getElementById("backButton").addEventListener("click", function() {
     }
 });
 </script>
+
+</body>
 </html>
