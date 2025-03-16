@@ -4,6 +4,30 @@
 
 @section('content')
 <style>
+ 
+    /* Common Popup Styling */
+
+    /* Centered Popup */
+    .common-popup {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.2); /* Black with 20% opacity */
+        color: white;
+        padding: 15px 25px;
+        border-radius: 10px;
+        font-size: 18px;
+        text-align: center;
+        display: none;
+        z-index: 9999;
+        width: auto;
+        max-width: 400px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+
+
     /* Full page background */
     body {
         background-color: #F8F8F8;
@@ -139,7 +163,9 @@
 
 <!-- Blue background -->
 <div class="top-section"></div>
-
+<div id="commonPopup" class="common-popup">
+    <p id="popupMessage"></p>
+</div>
 <!-- Page Content -->
 <div class="container">
     <!-- Page Title -->
@@ -186,7 +212,7 @@
     </div>
 
     <!-- Grab Order Button -->
-    <button class="btn btn-primary" onclick="openPopup()">Grab the order immediately</button>
+    <button class="btn btn-primary" onclick="showPopup('Order submitted successfully!')">Grab the order immediately</button>
 
     <!-- Hint Section -->
     <div class="hint-box">
@@ -210,7 +236,7 @@
             </div>
         </div>
 
-        <button class="btn-submit">Submit Order</button>
+        <button  class="btn-submit"  onclick="submit()">Submit Order</button>
     </div>
 </div>
 
@@ -218,10 +244,25 @@
     function openPopup() {
         document.getElementById("orderPopup").style.display = "flex";
     }
+    function submit() {
+      
+    }
 
     function closePopup() {
-        toastr.success('Grab button clicked!', 'Success');C
+
         document.getElementById("orderPopup").style.display = "none";
+    }
+    function showPopup(message) {
+        let popup = document.getElementById("commonPopup");
+        let popupText = document.getElementById("popupMessage");
+
+        popupText.textContent = message;
+        popup.style.display = "block";
+
+        // Hide after 2 seconds
+        setTimeout(() => {
+            popup.style.display = "none";
+        }, 2000);
     }
 </script>
 
