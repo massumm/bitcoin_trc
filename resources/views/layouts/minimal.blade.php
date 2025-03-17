@@ -13,11 +13,8 @@
         }
         .container {
             max-width: 600px;
-            margin: 50px auto;
-            padding: 20px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+            margin: 0 auto;
+            padding: 0 15px;
         }
         .header-container {
             position: relative;
@@ -25,14 +22,18 @@
             align-items: center;
             justify-content: center;
             height: 50px;
+            margin-bottom: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
+            padding: 0 15px;
         }
         .back-btn {
             position: absolute;
-            left: 0;
+            left: 15px;
             font-size: 18px;
             text-decoration: none;
             color: black;
-            padding-left: 10px;
         }
         .back-btn i {
             font-size: 20px;
@@ -41,12 +42,14 @@
             margin: 0;
             font-weight: 600;
         }
+        .content-wrapper {
+            padding: 0 5px;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <!-- Back Button & Title in Same Row -->
     <div class="header-container">
         <a href="javascript:void(0);" class="back-btn" id="backButton">
             <i class="fas fa-arrow-left"></i>
@@ -54,15 +57,17 @@
         <h4>@yield('title')</h4>
     </div>
 
-    @yield('content')
+    <div class="content-wrapper">
+        @yield('content')
+    </div>
 </div>
 
 <script>
 document.getElementById("backButton").addEventListener("click", function() {
     if (window.history.length > 1) {
-        window.history.back(); // Navigate back
+        window.history.back();
     } else {
-        window.location.href = "/"; // Redirect to home if no history
+        window.location.href = "/";
     }
 });
 </script>

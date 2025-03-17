@@ -6,7 +6,7 @@
     <!-- Top Section: User Info -->
     <div class="bg-primary text-white p-3 rounded d-flex align-items-center justify-content-between">
         <div class="d-flex align-items-center">
-            <img src="{{ asset('assets/img/user_profile.jpg') }}" class="rounded-circle me-2" width="50" height="50" alt="User Image">
+            <img src="{{ asset('assets/img/profile.jpg') }}" class="rounded-circle me-2" width="50" height="50" alt="User Image">
             <div>
                 <h5 class="mb-1">John Doe</h5>
                 <p class="mb-0">Invitation Code: <strong>101021</strong></p>
@@ -24,11 +24,11 @@
             <h4 class="mb-0">USDT 10,231</h4>
         </div>
         <div class="d-flex">
-            <a class="btn btn-outline-primary me-2">
-                <img src="{{ asset('assets/img/deposit_icon.png') }}" width="24" height="24" class="me-1"> Deposit
+            <a href="/client/mine/deposit" class="btn btn-outline-primary me-2">
+                <img src="{{ asset('assets/img/wallet.png') }}" width="24" height="24" class="me-1"> Deposit
             </a>
             <a class="btn btn-outline-danger">
-                <img src="{{ asset('assets/img/withdraw_icon.png') }}" width="24" height="24" class="me-1"> Withdrawal
+                <img src="{{ asset('assets/img/wallet.png') }}" width="24" height="24" class="me-1"> Withdrawal
             </a>
         </div>
     </div>

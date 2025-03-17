@@ -2,7 +2,7 @@
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
     <!-- Menu Title -->
-    <h3 class="text-center my-3">Menu</h3>
+    <h3 class="text-center my-3">RecordList</h3>
     
     <!-- Tabs for filtering -->
     <ul class="nav nav-tabs border-bottom-0 d-flex justify-content-center" id="menuTabs">

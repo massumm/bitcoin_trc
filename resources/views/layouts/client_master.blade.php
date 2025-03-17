@@ -34,6 +34,7 @@
             background: #fff;
             border-top: 1px solid #ddd;
             box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
         }
 
         .bottom-nav ul {
@@ -52,19 +53,25 @@
 
         .bottom-nav a {
             text-decoration: none;
-            color: #333;
+            color: #888; /* Default gray color */
             font-size: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: color 0.3s ease;
         }
 
         .bottom-nav a.active {
-            color: #007bff;
-            font-weight: bold;
+            color: #4169E1; /* Active blue color */
         }
 
         .bottom-nav i {
-            display: block;
             font-size: 20px;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
+        }
+
+        .bottom-nav span {
+            font-size: 12px;
         }
     </style>
 </head>
@@ -79,28 +86,33 @@
     <nav class="bottom-nav">
         <ul>
             <li>
-                <a href="/client/dashboard" class="{{ request()->is('dashboard') ? 'active' : '' }}">
-                    <i class="fas fa-home"></i> Home
+                <a href="/client/dashboard" class="{{ request()->is('client/dashboard') ? 'active' : '' }}">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
                 </a>
             </li>
             <li>
-                <a  href="{{ route('service') }}" class="{{ request()->is('wallet') ? 'active' : '' }}">
-                    <i class="fas fa-wallet"></i> Service
+                <a href="/client/service" class="{{ request()->is('client/service') ? 'active' : '' }}">
+                    <i class="fas fa-wallet"></i>
+                    <span>Service</span>
                 </a>
             </li>
             <li>
-                <a href="/client/projectspage" class="{{ request()->is('recharge') ? 'active' : '' }}">
-                    <i class="fas fa-credit-card"></i> Menu
+                <a href="/client/projectspage" class="{{ request()->is('client/projectspage') ? 'active' : '' }}">
+                    <i class="fas fa-credit-card"></i>
+                    <span>Menu</span>
                 </a>
             </li>
             <li>
-                <a href="/client/recordlist" class="{{ request()->is('recharge') ? 'active' : '' }}">
-                    <i class="fas fa-credit-card"></i> Record
+                <a href="/client/recordlist" class="{{ request()->is('client/recordlist') ? 'active' : '' }}">
+                    <i class="fas fa-credit-card"></i>
+                    <span>Record</span>
                 </a>
             </li>
             <li>
-                <a href="/client/mine"  class="{{ request()->is('profile') ? 'active' : '' }}">
-                    <i class="fas fa-user"></i> Mine
+                <a href="/client/mine" class="{{ request()->is('client/mine') ? 'active' : '' }}">
+                    <i class="fas fa-user"></i>
+                    <span>Mine</span>
                 </a>
             </li>
         </ul>

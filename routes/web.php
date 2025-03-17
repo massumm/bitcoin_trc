@@ -33,6 +33,8 @@ Route::prefix('client')->middleware(['auth'])->group(function () {
   Route::get('/projectspage', [App\Http\Controllers\Client\MenuController::class, 'index']);
   Route::get('/projectdetails', [App\Http\Controllers\Client\MenuController::class, 'menudetails']);
   Route::get('/recordlist', [App\Http\Controllers\Client\RecordlistControllert::class, 'index']);
+  Route::get('mine/deposit', [App\Http\Controllers\Client\PaymentController::class, 'deposit']);
+  Route::get('mine/virtualdetail', [App\Http\Controllers\Client\PaymentController::class, 'virtualdetail']);
   Route::get('/mine', [App\Http\Controllers\Client\MineController::class, 'index']);
     Route::get('/platform-rules', function () {
       return view('client.screens.platform_rules');
@@ -42,7 +44,12 @@ Route::prefix('client')->middleware(['auth'])->group(function () {
     return view('client.screens.services');
     })->name('service'); 
 
+  Route::get('/help', function () {
+    return view('client.screens.help');
+  })->name('help');
+
 });
+
 
 
 Route::prefix('admin')->middleware(['auth'])->group(function () {

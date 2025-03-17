@@ -14,15 +14,47 @@
     <!-- Second Section: Clickable Cards -->
     <div class="mt-4">
         <div class="list-group">
-            <a class="list-group-item list-group-item-action d-flex align-items-center">
-                <i class="fas fa-headset me-2"></i> Online Customer Service
+            <a href="https://t.me/maasuumm" target="_blank" class="list-group-item list-group-item-action d-flex align-items-center justify-content-between">
+                <div>
+                    <i class="fas fa-headset me-2"></i> Online Customer Service
+                </div>
+                <i class="fas fa-chevron-right text-muted"></i>
             </a>
-            <a  class="list-group-item list-group-item-action d-flex align-items-center">
-                <i class="fas fa-question-circle me-2"></i> Help
+            <a href="/client/help" class="list-group-item list-group-item-action d-flex align-items-center justify-content-between">
+                <div>
+                    <i class="fas fa-question-circle me-2"></i> Help
+                </div>
+                <i class="fas fa-chevron-right text-muted"></i>
             </a>
         </div>
     </div>
 
 </div>
+
+<style>
+.bg-rose {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.list-group-item {
+    padding: 15px;
+    border: 1px solid #ddd;
+    margin-bottom: 8px;
+    border-radius: 8px !important;
+    transition: all 0.3s ease;
+}
+
+.list-group-item:hover {
+    background-color: #f8f9fa;
+    transform: translateX(5px);
+}
+
+.fas {
+    color: #4169E1;
+}
+</style>
 
 @endsection
