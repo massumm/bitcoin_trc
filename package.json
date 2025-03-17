@@ -16,6 +16,7 @@
         "postcss": "^8.1.14"
     },
     "dependencies": {
+        "ngrok": "^5.0.0-beta.2",
         "toastr": "^2.1.4"
     }
 }

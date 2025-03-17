@@ -14,7 +14,7 @@ class LogController extends Controller
             return redirect('/admin/dashboard');
         
         }else{
-           return view('client.auth.login');
+           return view('auth.login');
         }
 
 

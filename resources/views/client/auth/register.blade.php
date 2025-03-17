@@ -74,52 +74,59 @@
                     <span class=" demo text-body fw-bolder">Coin Bit</span> 
                   </a>
                 </div>
-                <form method="POST" action="{{ route('register') }}">
+                <form method="POST" action="/register">
                         @csrf
              
                   <div class="mb-3">
-                    <label for="usernamefg" class="form-label">Enter UserName</label>
- 
-                    <input
-                    id="email"
-                    type="text"
-                    class="form-control
-                    @error('email') is-invalid
-                    @enderror" name="email"
-                    value="{{ old('email') }}"
-                    required autocomplete="email"
-                    autofocus
-                    >
+                    <label for="username" class="form-label">Enter UserName</label>
+                    <input id="email" type="text" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
                     @error('email')
-                    <span class="invalid-feedback" role="alert">
+                      <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
-                    </span>
-
-                    
-                @enderror
+                      </span>
+                    @enderror
                   </div>
 
                   <div class="mb-3">
-                    <label for="usernamefg" class="form-label">Enter Code</label>
- 
-                    <input
-                    id="email"
-                    type="text"
-                    class="form-control
-                    @error('email') is-invalid
-                    @enderror" name="email"
-                    value="{{ old('email') }}"
-                    required autocomplete="email"
-                    autofocus
-                    >
-                    @error('email')
-                    <span class="invalid-feedback" role="alert">
+                    <label for="phone_number" class="form-label">Phone Number</label>
+                    <input id="phone_number" type="text" class="form-control @error('phone_number') is-invalid @enderror" name="phone_number" value="{{ old('phone_number') }}">
+                    @error('phone_number')
+                      <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
-                    </span>
-
-                    
-                @enderror
+                      </span>
+                    @enderror
                   </div>
+
+                  <div class="mb-3">
+                    <label for="address" class="form-label">Address</label>
+                    <input id="address" type="text" class="form-control @error('address') is-invalid @enderror" name="address" value="{{ old('address') }}">
+                    @error('address')
+                      <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                      </span>
+                    @enderror
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="date_of_birth" class="form-label">Date of Birth</label>
+                    <input id="date_of_birth" type="date" class="form-control @error('date_of_birth') is-invalid @enderror" name="date_of_birth" value="{{ old('date_of_birth') }}">
+                    @error('date_of_birth')
+                      <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                      </span>
+                    @enderror
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="referral_code" class="form-label">Enter Code</label>
+                    <input id="referral_code" type="text" class="form-control @error('referral_code') is-invalid @enderror" name="referral_code" value="{{ old('referral_code') }}">
+                    @error('referral_code')
+                      <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                      </span>
+                    @enderror
+                  </div>
+
                   <div class="mb-3 form-password-toggle">
                     <div class="d-flex justify-content-between">
                       <label class="form-label" for="password">{{__('password')}}</label>
@@ -137,12 +144,6 @@
                           </span>
                       @enderror
                       <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
-                    </div>
-                  </div>
-                  <div class="mb-3">
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="remember-me" />
-                      <label class="form-check-label" for="remember-me">{{__('rememberMe')}}</label>
                     </div>
                   </div>
                   <div class="mb-3">

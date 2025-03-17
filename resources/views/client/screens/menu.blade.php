@@ -1,6 +1,60 @@
 @extends('layouts.client_master')
 @section('content')
 
+<style>
+    .menu-image-container {
+        width: 80px;
+        height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        overflow: hidden;
+        border-radius: 8px;
+    }
+    
+    .menu-image {
+        max-width: 100%;
+        max-height: 100%;
+        width: 70px;
+        height: 70px;
+        object-fit: contain;
+    }
+    
+    .menu-content {
+        flex: 1;
+        padding-left: 10px;
+    }
+    
+    .card {
+        transition: transform 0.3s ease;
+    }
+    
+    .card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    /* Tab styling */
+    .nav-tabs .nav-link {
+        color: #495057;
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        margin-right: 5px;
+        transition: all 0.3s ease;
+    }
+    
+    .nav-tabs .nav-link.active {
+        color: white;
+        background-color: #3B82F6;
+        border-color: #3B82F6;
+    }
+    
+    .nav-tabs .nav-link:hover:not(.active) {
+        background-color: #e9ecef;
+    }
+</style>
+
 <div class="container-xxl flex-grow-1 container-p-y">
     <!-- Menu Title -->
     <h3 class="text-center my-3">Menu</h3>
@@ -25,28 +79,43 @@
     <div id="menuList">
         <a href="{{ url('/client/projectdetails?id=1&name=Amazon') }}" class="menu-item" data-category="vip1">
             <div class="card mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">Amazon</h5>
-                    <p class="card-text">Available balance: 20USDT-499USDT</p>
-                    <p class="card-text text-danger">Commissions: 4%</p>
+                <div class="card-body d-flex align-items-center">
+                    <div class="menu-image-container me-3">
+                        <img src="{{ asset('assets/img/amazon.jpg') }}" alt="Amazon" class="menu-image">
+                    </div>
+                    <div class="menu-content">
+                        <h5 class="card-title">Amazon</h5>
+                        <p class="card-text">Available balance: 20USDT-499USDT</p>
+                        <p class="card-text text-danger">Commissions: 4%</p>
+                    </div>
                 </div>
             </div>
         </a>
         <a href="{{ url('/client/projectdetails?id=2&name=Alibaba') }}" class="menu-item" data-category="vip2">
             <div class="card mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">Alibaba</h5>
-                    <p class="card-text">Available balance: 499USDT-899USDT</p>
-                    <p class="card-text text-danger">Commissions: 8%</p>
+                <div class="card-body d-flex align-items-center">
+                    <div class="menu-image-container me-3">
+                        <img src="{{ asset('assets/img/alibaba.png') }}" alt="Alibaba" class="menu-image">
+                    </div>
+                    <div class="menu-content">
+                        <h5 class="card-title">Alibaba</h5>
+                        <p class="card-text">Available balance: 499USDT-899USDT</p>
+                        <p class="card-text text-danger">Commissions: 8%</p>
+                    </div>
                 </div>
             </div>
         </a>
         <a href="{{ url('/client/projectdetails?id=3&name=Aliexpress') }}" class="menu-item" data-category="vip3">
             <div class="card mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">Aliexpress</h5>
-                    <p class="card-text">Available balance: ≥899USDT</p>
-                    <p class="card-text text-danger">Commissions: 12%</p>
+                <div class="card-body d-flex align-items-center">
+                    <div class="menu-image-container me-3">
+                        <img src="{{ asset('assets/img/aliexpress.jpeg') }}" alt="Aliexpress" class="menu-image">
+                    </div>
+                    <div class="menu-content">
+                        <h5 class="card-title">Aliexpress</h5>
+                        <p class="card-text">Available balance: ≥899USDT</p>
+                        <p class="card-text text-danger">Commissions: 12%</p>
+                    </div>
                 </div>
             </div>
         </a>
