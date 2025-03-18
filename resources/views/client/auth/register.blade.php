@@ -74,13 +74,25 @@
                     <span class=" demo text-body fw-bolder">Coin Bit</span> 
                   </a>
                 </div>
-                <form method="POST" action="/register">
-                        @csrf
+                @if(session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
+                @if(session('error'))
+                    <div class="alert alert-danger">
+                        {{ session('error') }}
+                    </div>
+                    
+                @endif
+                <form action="{{ url('register_client') }}" method="POST">
+                    @csrf
              
                   <div class="mb-3">
-                    <label for="username" class="form-label">Enter UserName</label>
-                    <input id="email" type="text" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
-                    @error('email')
+                    <label for="name" class="form-label">Enter Your Name</label>
+                    <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
+                    @error('name')
                       <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
                       </span>
@@ -88,39 +100,9 @@
                   </div>
 
                   <div class="mb-3">
-                    <label for="phone_number" class="form-label">Phone Number</label>
-                    <input id="phone_number" type="text" class="form-control @error('phone_number') is-invalid @enderror" name="phone_number" value="{{ old('phone_number') }}">
-                    @error('phone_number')
-                      <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                      </span>
-                    @enderror
-                  </div>
-
-                  <div class="mb-3">
-                    <label for="address" class="form-label">Address</label>
-                    <input id="address" type="text" class="form-control @error('address') is-invalid @enderror" name="address" value="{{ old('address') }}">
-                    @error('address')
-                      <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                      </span>
-                    @enderror
-                  </div>
-
-                  <div class="mb-3">
-                    <label for="date_of_birth" class="form-label">Date of Birth</label>
-                    <input id="date_of_birth" type="date" class="form-control @error('date_of_birth') is-invalid @enderror" name="date_of_birth" value="{{ old('date_of_birth') }}">
-                    @error('date_of_birth')
-                      <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                      </span>
-                    @enderror
-                  </div>
-
-                  <div class="mb-3">
-                    <label for="referral_code" class="form-label">Enter Code</label>
-                    <input id="referral_code" type="text" class="form-control @error('referral_code') is-invalid @enderror" name="referral_code" value="{{ old('referral_code') }}">
-                    @error('referral_code')
+                    <label for="refer_code" class="form-label">Referral Code (Optional)</label>
+                    <input id="refer_by" type="text" class="form-control @error('refer_by') is-invalid @enderror" name="refer_by" value="{{ old('refer_by') }}">
+                    @error('refer_by')
                       <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
                       </span>
@@ -129,15 +111,10 @@
 
                   <div class="mb-3 form-password-toggle">
                     <div class="d-flex justify-content-between">
-                      <label class="form-label" for="password">{{__('password')}}</label>
-                      <a href="auth-forgot-password-basic.html">
-                        <!-- <small>Forgot Password?</small> -->
-                      </a>
+                      <label class="form-label" for="password">Password</label>
                     </div>
                     <div class="input-group input-group-merge">
-
-                      <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
-
+                      <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required>
                       @error('password')
                           <span class="invalid-feedback" role="alert">
                               <strong>{{ $message }}</strong>
@@ -146,6 +123,32 @@
                       <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
                     </div>
                   </div>
+
+                  <div class="mb-3 form-password-toggle">
+                    <div class="d-flex justify-content-between">
+                      <label class="form-label" for="password_confirmation">Confirm Password</label>
+                    </div>
+                    <div class="input-group input-group-merge">
+                      <input id="password_confirmation" type="password" class="form-control" name="password_confirmation" required>
+                      <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                    </div>
+                  </div>
+
+                  <div class="mb-3 form-password-toggle">
+                    <div class="d-flex justify-content-between">
+                      <label class="form-label" for="withdraw_pass">Withdrawal Password</label>
+                    </div>
+                    <div class="input-group input-group-merge">
+                      <input id="withdraw_pass" type="password" class="form-control @error('withdraw_pass') is-invalid @enderror" name="withdraw_pass" required>
+                      @error('withdraw_pass')
+                          <span class="invalid-feedback" role="alert">
+                              <strong>{{ $message }}</strong>
+                          </span>
+                      @enderror
+                      <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                    </div>
+                  </div>
+
                   <div class="mb-3">
                     <button type="submit" class="btn btn-primary">
                         Sign Up
@@ -193,6 +196,18 @@
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
 
+    <script>
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('password_confirmation').value;
+        
+        if (password !== confirmPassword) {
+            e.preventDefault();
+            alert('Password and confirmation password do not match');
+            return false;
+        }
+    });
+    </script>
 
   </body>
 </html>

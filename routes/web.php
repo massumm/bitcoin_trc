@@ -22,7 +22,7 @@ Auth::routes();
 Route::get('/', [App\Http\Controllers\Client\Client_LogController::class, 'index']);
 Route::get('/register', [App\Http\Controllers\Client\Client_RegisterController::class, 'index']);
 
-
+Route::post('/register_client', [App\Http\Controllers\Client\Client_RegisterController::class, 'create_client']);
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::get('/admin-login', [App\Http\Controllers\Admin\LogController::class, 'index'])->name('admin-login');
