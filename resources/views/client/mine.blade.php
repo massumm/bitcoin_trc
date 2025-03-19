@@ -8,8 +8,8 @@
         <div class="d-flex align-items-center">
             <img src="{{ asset('assets/img/profile.jpg') }}" class="rounded-circle me-2" width="50" height="50" alt="User Image">
             <div>
-                <h5 class="mb-1">John Doe</h5>
-                <p class="mb-0">Invitation Code: <strong>101021</strong></p>
+                <h5 class="mb-1">{{ Auth::user()->name }}</h5>
+                <p class="mb-0">Invitation Code: <strong>{{ Auth::user()->refer_code }}</strong></p>
             </div>
         </div>
         <a  class="text-white">
@@ -21,7 +21,7 @@
     <div class="d-flex justify-content-between align-items-center mt-3">
         <div>
             <p class="mb-1 text-muted">My Account</p>
-            <h4 class="mb-0">USDT 10,231</h4>
+            <h4 class="mb-0">Balance: <span class="text-success">{{ Auth::user()->balance }}</span></h4>
         </div>
         <div class="d-flex">
             <a href="/client/mine/deposit" class="btn btn-outline-primary me-2">

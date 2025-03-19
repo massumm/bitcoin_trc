@@ -82,30 +82,22 @@
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
                   <div class="mb-3">
-                    <label for="email" class="form-label">{{__('emailUsernamoe')}}</label>
-                    {{-- <input
-                      type="text"
-                      class="form-control"
-                      id="email"
-                      name="email-username"
-                      placeholder="Enter your  username"
-                      autofocus
-                    /> --}}
+                    <label for="name" class="form-label">{{__('Name')}}</label>
                     <input
-                    id="email"
-                    type="email"
+                    id="name"
+                    type="text"
                     class="form-control
-                    @error('email') is-invalid
-                    @enderror" name="email"
-                    value="{{ old('email') }}"
-                    required autocomplete="email"
+                    @error('name') is-invalid
+                    @enderror" name="name"
+                    value="{{ old('name') }}"
+                    required
                     autofocus
                     >
-                    @error('email')
+                    @error('name')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
                     </span>
-                @enderror
+                    @enderror
                   </div>
                   <div class="mb-3 form-password-toggle">
                     <div class="d-flex justify-content-between">

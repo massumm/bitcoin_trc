@@ -108,7 +108,7 @@
 
     <!-- Wallet Balance -->
     <div class="text-center">
-        <h3>Balance: <span class="text-success">125.74 USDT</span></h3>
+        <h3>Balance: <span class="text-success">{{ Auth::user()->balance }}</span></h3>
     </div>
 
     <!-- Platform Introduction -->

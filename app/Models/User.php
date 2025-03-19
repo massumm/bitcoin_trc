@@ -12,7 +12,7 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    protected $table = 'tbl_admins';
+    protected $table = 'users';
     /**
      * The attributes that are mass assignable.
      *
@@ -22,6 +22,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'phone',
+        'role',
+        'is_active',
     ];
 
     /**
@@ -40,6 +43,14 @@ class User extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
+        'is_active' => 'boolean'
     ];
+
+    protected function password(): Attribute
+{
+    return Attribute::make(
+        set: fn ($value) => Hash::make($value),
+    );
 }
+}
+    

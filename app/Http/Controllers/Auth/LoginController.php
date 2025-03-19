@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
@@ -28,13 +29,23 @@ class LoginController extends Controller
      * @var string
      */
     public function authenticated(){
-        if(Auth ::user()){
-          return   redirect('/client/dashboard')->with('status','welcome dashboards');
+        if(Auth::user()){
+            return redirect('/client/dashboard')->with('status','welcome dashboards');
         }else{
-            return   redirect('/admin/login')->with('status','welcome logins');
+            return redirect('/admin/login')->with('status','welcome logins');
         }
-
     }
+
+    /**
+     * Get the login username to be used by the controller.
+     *
+     * @return string
+     */
+    public function username()
+    {
+        return 'name';
+    }
+
     protected $redirectTo = RouteServiceProvider::HOME;
 
     /**
@@ -46,4 +57,14 @@ class LoginController extends Controller
     {
         $this->middleware('guest')->except('logout');
     }
+
+    // protected function authenticated(Request $request, $user)
+    // {
+    //     if ($user->is_active) {
+    //         return redirect('/client/dashboard');
+    //     }
+        
+    //     Auth::logout();
+    //     return redirect('/admin/login')->with('error', 'Your account is inactive.');
+    // }
 }

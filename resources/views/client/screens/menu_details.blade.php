@@ -148,7 +148,7 @@
     <!-- Account Balance -->
     <div class="balance">
         <p>Account Balance:</p>
-        <h2>620.81 USDT</h2>
+        <h2><span class="text-success">{{ Auth::user()->balance }}</span> USDT</h2>
     </div>
 
     <!-- Centered Card -->
@@ -156,11 +156,11 @@
         <div class="row">
             <div class="col-6">
                 <p>Today's Times</p>
-                <h5>1</h5>
+                <h5>{{ Auth::user()->today_task }}</h5>
             </div>
             <div class="col-6">
                 <p>Today's Commission</p>
-                <h5>20.81 USDT</h5>
+                <h5><span class="text-success">{{ Auth::user()->min_earn }}</span> USDT</h5>
             </div>
         </div>
         <div class="row">
