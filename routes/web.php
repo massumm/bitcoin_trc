@@ -36,6 +36,7 @@ Route::prefix('client')->middleware(['auth'])->group(function () {
   Route::get('mine/deposit', [App\Http\Controllers\Client\PaymentController::class, 'deposit']);
   Route::get('mine/virtualdetail', [App\Http\Controllers\Client\PaymentController::class, 'virtualdetail']);
   Route::get('/mine', [App\Http\Controllers\Client\MineController::class, 'index']);
+  Route::get('/random-products', [App\Http\Controllers\Client\OrderlistController::class, 'getRandomProducts']);
     Route::get('/platform-rules', function () {
       return view('client.screens.platform_rules');
   })->name('platform.rules');

@@ -134,27 +134,13 @@
                     </div>
                   </div>
 
-                  <div class="mb-3 form-password-toggle">
-                    <div class="d-flex justify-content-between">
-                      <label class="form-label" for="withdraw_pass">Withdrawal Password</label>
-                    </div>
-                    <div class="input-group input-group-merge">
-                      <input id="withdraw_pass" type="password" class="form-control @error('withdraw_pass') is-invalid @enderror" name="withdraw_pass" required>
-                      @error('withdraw_pass')
-                          <span class="invalid-feedback" role="alert">
-                              <strong>{{ $message }}</strong>
-                          </span>
-                      @enderror
-                      <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
-                    </div>
-                  </div>
-
                   <div class="mb-3">
                     <button type="submit" class="btn btn-primary">
                         Sign Up
                     </button>
                   </div>
                 </form>
+    
               </div>
             </div>
             <!-- /Register -->

@@ -21,18 +21,18 @@
     }
 
     /* Page container */
-    .container {
+    /* .container {
         position: relative;
         top: 60px;
         text-align: center;
-    }
+    } */
 
     /* Account balance text */
     .balance {
         color: white;
-        font-size: 18px;
+        font-size: 15px;
         font-weight: 500;
-        margin-top: 20px;
+        margin-top: 15px;
     }
 
     .balance h2 {
@@ -135,17 +135,48 @@
         margin-top: 20px;
     }
 
+    /* Error Overlay Styling */
+    .error-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.2);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+    }
+    
+    .error-message {
+        background: rgba(220, 53, 69, 0.9);
+        color: white;
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+        max-width: 80%;
+    }
+    
+    .close-error {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        color: white;
+        font-size: 24px;
+        cursor: pointer;
+        background: none;
+        border: none;
+    }
+
 </style>
 
 <!-- Blue background -->
 <div class="top-section"></div>
-
+<div id="productContainer"></div>
 <!-- Page Content -->
 <div class="container">
-    <!-- Page Title -->
-    <h2 class="text-white">{{ $name }}</h2>
-
-    <!-- Account Balance -->
+    <!-- Page Title --> <!-- Account Balance -->
     <div class="balance">
         <p>Account Balance:</p>
         <h2><span class="text-success">{{ Auth::user()->balance }}</span> USDT</h2>
@@ -215,13 +246,129 @@
 </div>
 
 <script>
-    function openPopup() {
-        document.getElementById("orderPopup").style.display = "flex";
-    }
+    function fetchRandomProducts() {
+        fetch('/client/random-products')
+            .then(response => response.json())
+            .then(data => {
+                let container = document.getElementById("productContainer");
+                container.innerHTML = ""; // Clear previous products
 
-    function closePopup() {
+                console.log(data);
+                if (data.message) {
+                    container.innerHTML = `<p>${data.message}</p>`;
+                    return;
+                }
+
+                data.forEach(product => {
+                    container.innerHTML += `
+                        <div class="product-item">
+                            <h3>${product.title}</h3>
+
+                            <img src="{{ asset('${product.image}') }}" width="100">
+                            <p>Price: ${product.price} USD</p>
+                            <p>Stock: ${product.stock_status}</p>
+                        </div>
+                    `;
+                });
+            })
+            .catch(error => console.error("Error fetching products:", error));
+    }
+    function openPopup() {
+        // Get current project ID and user balance
+        const projectId = {{ request()->get('id') }}; // Get the ID from the URL
+        const userBalance = {{ Auth::user()->balance }}; // Get user balance
+        const projectName = "{{ $name }}"; // Get project name
         
+        // Define balance ranges for each project
+        let allowedToOrder = false;
+        let errorMessage = "";
+        
+        if (projectId == 1 && userBalance >= 0 && userBalance <= 200) {
+            allowedToOrder = true;
+        } else if (projectId == 2 && userBalance > 200 && userBalance <= 300) {
+            allowedToOrder = true;
+        } else if (projectId == 3 && userBalance > 300 && userBalance <= 400) {
+            allowedToOrder = true;
+        }
+        
+        // Show popup or error based on balance check
+        if (allowedToOrder) {
+           // document.getElementById("orderPopup").style.display = "flex";
+           fetchRandomProducts();
+        } else {
+            // Determine error message based on project ID
+            if (projectId == 1) {
+                errorMessage = projectName + " only allows users with balances 0 to 200 USDT";
+            } else if (projectId == 2) {
+                errorMessage = projectName + " only allows users with balances 201 to 300 USDT";
+            } else if (projectId == 3) {
+                errorMessage = projectName + " only allows users with balances 301 to 400 USDT";
+            }
+            
+            // Show error message with overlay
+            showErrorMessage(errorMessage);
+        }
+    }
+    
+    function closePopup() {
         document.getElementById("orderPopup").style.display = "none";
+    }
+    
+    function showErrorMessage(message) {
+        // Create error overlay if it doesn't exist
+        let errorOverlay = document.getElementById("errorOverlay");
+        if (!errorOverlay) {
+            errorOverlay = document.createElement("div");
+            errorOverlay.id = "errorOverlay";
+            errorOverlay.className = "error-overlay";
+            document.body.appendChild(errorOverlay);
+            
+            // Add styles for the overlay
+            const style = document.createElement("style");
+            style.innerHTML = `
+                .error-overlay {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.2);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    z-index: 9999;
+                    transition: opacity 0.3s ease;
+                }
+                .error-message {
+                    background: rgba(220, 53, 69, 0.9);
+                    color: white;
+                    padding: 20px;
+                    border-radius: 8px;
+                    text-align: center;
+                    max-width: 80%;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        // Add error message (without close button)
+        errorOverlay.innerHTML = `
+            <div class="error-message">
+                <p>${message}</p>
+            </div>
+        `;
+        
+        // Display the overlay
+        errorOverlay.style.display = "flex";
+        errorOverlay.style.opacity = "1";
+        
+        // Automatically hide after 2 seconds
+        setTimeout(function() {
+            errorOverlay.style.opacity = "0";
+            setTimeout(function() {
+                errorOverlay.style.display = "none";
+            }, 300); // Wait for fade-out transition
+        }, 2000);
     }
 </script>
 

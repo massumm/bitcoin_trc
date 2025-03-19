@@ -11,11 +11,7 @@
         body {
             background-color: #F8F8F8;
         }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 0 15px;
-        }
+
         .header-container {
             position: relative;
             display: flex;

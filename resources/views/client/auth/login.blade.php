@@ -139,12 +139,12 @@
                   </div>
                 </form>
 
-                {{-- <p class="text-center">
-                  <span>New on our platform?</span>
-                  <a href="auth-register-basic.html">
-                    <span>Create an account</span>
-                  </a>
-                </p> --}}
+                <p class="text-center mt-3">
+                    <span>Don't have an account?</span>
+                    <a href="{{ url('/register') }}">
+                        <span>Sign up</span>
+                    </a>
+                </p>
               </div>
             </div>
             <!-- /Register -->
