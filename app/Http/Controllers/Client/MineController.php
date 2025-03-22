@@ -12,4 +12,7 @@ class MineController extends Controller
 
          return view('client.mine');
     }
+    public function setting(){
+        return view('client.screens.setting');
+    }
 }

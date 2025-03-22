@@ -25,7 +25,7 @@ Route::get('/register', [App\Http\Controllers\Client\Client_RegisterController::
 Route::post('/register_client', [App\Http\Controllers\Client\Client_RegisterController::class, 'create_client']);
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::get('/admin-login', [App\Http\Controllers\Admin\LogController::class, 'index'])->name('admin-login');
+//ute::get('/admin-login', [App\Http\Controllers\Admin\LogController::class, 'index'])->name('admin-login');
  //line view    view
  Route::get('/liff', [App\Http\Controllers\API\C_Code_Controller::class, 'liff_view'])->name(('liff'));
 Route::prefix('client')->middleware(['auth'])->group(function () {
@@ -36,6 +36,9 @@ Route::prefix('client')->middleware(['auth'])->group(function () {
   Route::get('mine/deposit', [App\Http\Controllers\Client\PaymentController::class, 'deposit']);
   Route::get('mine/virtualdetail', [App\Http\Controllers\Client\PaymentController::class, 'virtualdetail']);
   Route::get('/mine', [App\Http\Controllers\Client\MineController::class, 'index']);
+  Route::get('/setting', [App\Http\Controllers\Client\MineController::class, 'setting']);
+  Route::get('/orders', [App\Http\Controllers\Client\OrderlistController::class, 'getOrders']);
+  Route::post('/submit-order', [App\Http\Controllers\Client\OrderlistController::class, 'submitOrder']);
   Route::get('/random-products', [App\Http\Controllers\Client\OrderlistController::class, 'getRandomProducts']);
     Route::get('/platform-rules', function () {
       return view('client.screens.platform_rules');
@@ -51,7 +54,7 @@ Route::prefix('client')->middleware(['auth'])->group(function () {
 
 });
 
-
+Route::post('/client/update-user-status', [App\Http\Controllers\Client\OrderlistController::class, 'updateUserStatus'])->name('client.updateUserStatus');
 
 Route::prefix('admin')->middleware(['auth'])->group(function () {
 

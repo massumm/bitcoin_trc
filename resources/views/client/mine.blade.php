@@ -73,7 +73,7 @@
             <a class="list-group-item list-group-item-action d-flex align-items-center">
                 <i class="fas fa-money-bill-wave me-2"></i> Withdrawal Records
             </a>
-            <a  class="list-group-item list-group-item-action d-flex align-items-center">
+            <a  href="/client/setting"  class="list-group-item list-group-item-action d-flex align-items-center">
                 <i class="fas fa-cog me-2"></i> Settings
             </a>
         </div>

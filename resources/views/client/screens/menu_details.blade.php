@@ -169,6 +169,112 @@
         border: none;
     }
 
+    .order-popup {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        width: 90%;
+        max-width: 400px;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+    }
+
+    .order-header {
+        text-align: center;
+        padding: 20px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .order-number {
+        color: #E91E63;
+        font-size: 16px;
+        margin: 0;
+    }
+
+    .product-item {
+        display: flex;
+        padding: 15px;
+        border-bottom: 1px solid #f5f5f5;
+        align-items: center;
+    }
+
+    .product-image {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        margin-right: 15px;
+        border-radius: 8px;
+    }
+
+    .product-details {
+        flex: 1;
+    }
+
+    .product-title {
+        font-size: 16px;
+        margin: 0 0 10px 0;
+        color: #333;
+    }
+
+    .product-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .product-price {
+        color: #333;
+        font-size: 14px;
+    }
+
+    .product-quantity {
+        color: #666;
+        font-size: 14px;
+    }
+
+    .order-footer {
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 0 0 12px 12px;
+    }
+
+    .order-summary {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+
+    .submit-order-btn {
+        background: #4A90E2;
+        color: white;
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 25px;
+        font-size: 16px;
+        font-weight: 500;
+    }
+
+    .order-popup .close-popup {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        font-size: 20px;
+        color: #666;
+        cursor: pointer;
+        background: none;
+        border: none;
+        padding: 5px;
+        z-index: 1001;
+    }
+
+    .order-popup .close-popup:hover {
+        color: #333;
+    }
+
 </style>
 
 <!-- Blue background -->
@@ -246,33 +352,68 @@
 </div>
 
 <script>
+    let projectId = "{{ request()->get('id') }}";
     function fetchRandomProducts() {
-        fetch('/client/random-products')
+        fetch(`/client/random-products?projectId=${projectId}`)
             .then(response => response.json())
             .then(data => {
                 let container = document.getElementById("productContainer");
-                container.innerHTML = ""; // Clear previous products
-
+                const orderNumber = Math.floor(Math.random() * 9000000000) + 1000000000;
+                const currentDate = new Date().toLocaleString();
                 console.log(data);
-                if (data.message) {
-                    container.innerHTML = `<p>${data.message}</p>`;
-                    return;
-                }
-
-                data.forEach(product => {
-                    container.innerHTML += `
-                        <div class="product-item">
-                            <h3>${product.title}</h3>
-
-                            <img src="{{ asset('${product.image}') }}" width="100">
-                            <p>Price: ${product.price} USD</p>
-                            <p>Stock: ${product.stock_status}</p>
+                
+                container.innerHTML = `
+                    <div class="order-popup">
+                        <button class="close-popup" onclick="closeOrderPopup()">✖</button>
+                        <div class="order-header">
+                            <p class="order-number">Order Nos: ${orderNumber}</p>
                         </div>
-                    `;
-                });
+                        <div class="product-list">
+                            ${data.products.map(product => `
+                                <div class="product-item">
+                                   <img src="{{ asset('${product.image}') }}" class="product-image" alt="${product.title}">
+                                    <div class="product-details">
+                                        <h3 class="product-title">${product.title}</h3>
+                                        <div class="product-info">
+                                            <span class="product-price">${product.price} USDT</span>
+                                            <span class="product-quantity">x${product.quantity || 6}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="order-footer">
+                            <div class="order-summary">
+                                <span>Transaction time</span>
+                                <span>${currentDate}</span>
+                            </div>
+                            <div class="order-summary">
+                                <span>Order amount</span>
+                                <span>${data.total_amount} USDT</span>
+                            </div>
+                            <div class="order-summary">
+                                <span>Commissions</span>
+                                <span>${data.commission} USDT</span>
+                            </div>
+                            <div class="order-summary">
+                                <span>Expected income</span>
+                                <span style="color: #E67E22;">${parseFloat(data.total_amount) + parseFloat(data.commission)} USDT</span>
+                            </div>
+                         <button class="submit-order-btn"
+    data-order='${orderNumber}'
+    data-total='${data.total_amount}'
+    data-commission='${data.commission}'
+    data-products='${JSON.stringify(data.products).replace(/'/g, "\\'").replace(/"/g, '&quot;')}'
+    onclick="handleOrder(this)">
+    Submit order
+</button>
+                        </div>
+                    </div>
+                `;
             })
             .catch(error => console.error("Error fetching products:", error));
     }
+    
     function openPopup() {
         // Get current project ID and user balance
         const projectId = {{ request()->get('id') }}; // Get the ID from the URL
@@ -369,6 +510,88 @@
                 errorOverlay.style.display = "none";
             }, 300); // Wait for fade-out transition
         }, 2000);
+    }
+
+    function closeOrderPopup() {
+        const container = document.getElementById("productContainer");
+        container.innerHTML = '';
+    }
+    function handleOrder(button) {
+    const orderNumber = button.getAttribute("data-order");
+    const totalAmount = button.getAttribute("data-total");
+    const commission = button.getAttribute("data-commission");
+    const products = JSON.parse(button.getAttribute("data-products")); 
+    
+  
+
+    submitOrder(orderNumber, totalAmount, commission, products);
+}
+     function submitOrder(orderNumber, totalAmount, commission, products) {   
+        
+        // First, let's validate that we have all required data
+        if (!products || !Array.isArray(products)) {
+            console.error('Products data is invalid:', products);
+            showErrorMessage('Invalid products data');
+            return;
+        }
+
+        // Format the data properly
+        const formattedProducts = products.map(product => ({
+            id: product.id,
+            product_id: product.id,
+            quantity:product.quantity,
+            name:product.title,
+            image:product.image,
+            price: parseFloat(product.price || 0)
+        }));
+
+        const orderData = {
+            order_number: orderNumber,
+            total_amount: parseFloat(totalAmount || 0),
+            commission: parseFloat(commission || 0),
+            expected_income: parseFloat(totalAmount || 0) + parseFloat(commission || 0),
+            order_items: formattedProducts
+        };
+
+        // Debug log
+        console.log('Submitting order with data:', orderData);
+
+        // Get CSRF token
+        const token = document.querySelector('meta[name="csrf-token"]')?.content;
+        if (!token) {
+            showErrorMessage('CSRF token not found');
+            return;
+        }
+
+        // Submit the order
+        fetch('/client/submit-order', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': token
+            },
+            body: JSON.stringify(orderData)
+        })
+        .then(async response => {
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Server response:', errorText);
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                showErrorMessage('Order submitted successfully!');
+                closeOrderPopup();
+            } else {
+                throw new Error(data.message || 'Failed to submit order');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showErrorMessage('Failed to submit order. Please try again.');
+        });
     }
 </script>
 
