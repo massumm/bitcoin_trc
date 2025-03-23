@@ -54,7 +54,7 @@ Route::prefix('client')->middleware(['auth'])->group(function () {
 
 });
 
-Route::post('/client/update-user-status', [App\Http\Controllers\Client\OrderlistController::class, 'updateUserStatus'])->name('client.updateUserStatus');
+
 
 Route::prefix('admin')->middleware(['auth'])->group(function () {
 

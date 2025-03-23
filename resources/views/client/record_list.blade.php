@@ -1,4 +1,5 @@
-@extends('layouts.client_master')
+@extends('layouts.client_master') 
+
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
     <!-- Menu Title -->
@@ -20,13 +21,46 @@
     </div>
 </div>
 
-<!-- Pass user balance to JavaScript -->
+<!-- JavaScript Code -->
 <script>
-    const userBalance = {{ Auth::user()->balance }};
-</script>
+    function handleOrder(button) {
+        const orderData = {
+            order_number: button.getAttribute('data-order'),
+            total_amount: parseFloat(button.getAttribute('data-total')),
+            commission: parseFloat(button.getAttribute('data-commission')),
+            expected_income: parseFloat(button.getAttribute('data-expected_income')),
+            order_items: JSON.parse(button.getAttribute('data-products')).map(product => ({
+                product_id: product.id,
+                quantity: product.quantity,
+                image: product.image,
+                price: product.price,
+                name: product.name
+            }))
+        };
 
-<!-- Script to filter tabs dynamically -->
-<script>
+        fetch('/client/submit-order', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify(orderData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Order submitted successfully!');
+                //loadOrders('incomplete');  // Reload orders after submission
+            } else {
+                alert('Failed to submit order: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error submitting order:', error);
+            alert('Failed to submit order. Please try again.');
+        });
+    }
+
     document.addEventListener("DOMContentLoaded", function() {
         const tabs = document.querySelectorAll(".nav-link");
 
@@ -90,6 +124,7 @@
                                                 data-order="${order.order_number}"
                                                 data-total="${order.total_amount}"
                                                 data-commission="${order.commission}"
+                                                data-expected_income="${order.expected_income}"
                                                 data-products='${JSON.stringify(order.products).replace(/'/g, "\\'")}'
                                                 onclick="handleOrder(this)">
                                                 Submit order
@@ -107,52 +142,6 @@
             .catch(error => {
                 console.error('Error fetching orders:', error);
                 menuList.innerHTML = '<p class="text-center text-danger">Failed to load orders</p>';
-            });
-        }
-
-        function handleOrder(button) {
-            const totalAmount = parseFloat(button.getAttribute('data-total'));
-            
-            // Check user balance
-            if (userBalance < totalAmount) {
-                const needBalance = totalAmount - userBalance;
-                alert(`Insufficient balance, you need to top up ${needBalance} USDT`);
-                return;
-            }
-
-            const orderData = {
-                order_number: button.getAttribute('data-order'),
-                total_amount: totalAmount,
-                commission: parseFloat(button.getAttribute('data-commission')),
-                order_items: JSON.parse(button.getAttribute('data-products')).map(product => ({
-                    product_id: product.id,
-                    quantity: product.quantity,
-                    image: product.image,
-                    price: product.price,
-                    name: product.name
-                }))
-            };
-
-            fetch('/client/submit-order', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                },
-                body: JSON.stringify(orderData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Order submitted successfully!');
-                    loadOrders('incomplete');
-                } else {
-                    alert('Failed to submit order: ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error submitting order:', error);
-                alert('Failed to submit order. Please try again.');
             });
         }
 

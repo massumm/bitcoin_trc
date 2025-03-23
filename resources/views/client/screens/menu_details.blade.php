@@ -419,7 +419,15 @@
         const projectId = {{ request()->get('id') }}; // Get the ID from the URL
         const userBalance = {{ Auth::user()->balance }}; // Get user balance
         const projectName = "{{ $name }}"; // Get project name
-        
+        const status =  {{ Auth::user()->status }};  // Get project name
+        if (status === 0) {
+        showErrorMessage("Your account is not active. Please contact support.");
+        return;
+    }
+    if (status === 2) {
+        showErrorMessage("Please complete the order before grabbing another one");
+        return;
+    }
         // Define balance ranges for each project
         let allowedToOrder = false;
         let errorMessage = "";
@@ -539,9 +547,9 @@
         const formattedProducts = products.map(product => ({
             id: product.id,
             product_id: product.id,
-            quantity:product.quantity,
-            name:product.title,
-            image:product.image,
+            quantity: product.quantity,
+            name: product.title,
+            image: product.image,
             price: parseFloat(product.price || 0)
         }));
 
@@ -573,25 +581,49 @@
             body: JSON.stringify(orderData)
         })
         .then(async response => {
+            const data = await response.json();
             if (!response.ok) {
-                const errorText = await response.text();
-                console.error('Server response:', errorText);
-                throw new Error(`HTTP error! status: ${response.status}`);
+                if(response.status === 403 && data.need_balance)
+                {
+                    showErrorMessage(data.message);
+                    return Promise.reject(new Error('insufficient_balance'));
+                }
+                if (response.status === 403 && data.need_balance) {
+                    // Handle insufficient balance case
+                    showErrorMessage(data.message);
+                    // Optionally redirect to top-up page or show top-up modal
+                    return Promise.reject(new Error('insufficient_balance'));
+                }
+                throw new Error(data.message || `HTTP error! status: ${response.status}`);
             }
-            return response.json();
+            return data;
         })
         .then(data => {
             if (data.success) {
-                showErrorMessage('Order submitted successfully!');
+                showSuccessMessage('Order submitted successfully!');
                 closeOrderPopup();
+                // Optionally refresh the page or update UI
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
             } else {
                 throw new Error(data.message || 'Failed to submit order');
             }
         })
         .catch(error => {
             console.error('Error:', error);
+            if (error.message === 'insufficient_balance') {
+                // Already handled by the 403 case
+                return;
+            }
             showErrorMessage('Failed to submit order. Please try again.');
         });
+    }
+
+    // Add this function if you don't have it already
+    function showSuccessMessage(message) {
+        // You can implement this based on your UI needs
+        alert(message); // Or use a better UI notification system
     }
 </script>
 

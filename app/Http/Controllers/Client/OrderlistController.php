@@ -46,56 +46,130 @@ if($projectId == 1){
         return response()->json(['message' => 'Ordering is not allowed'], 403);
     }
     
-    public function submitOrder(Request $request)
+     function submitOrder(Request $request)
     {
         try {
-            DB::beginTransaction();
-
-            // Create main order
-            $orderId = DB::table('orders')->insertGetId([
-                'order_number' => $request->order_number,
-                'user_id' => Auth::id(),
-                'total_amount' => $request->total_amount,
-                'commission' => $request->commission,
-                'expected_income' => $request->expected_income,
-                'status' => 'pending',
-                'created_at' => now()
+            // Validate required fields
+            $validator = \Validator::make($request->all(), [
+                'order_number' => 'required|string',
+                'total_amount' => 'required|numeric|min:0',
+                'commission' => 'required|numeric|min:0',
+                'order_items' => 'required|array|min:1',
+                'order_items.*.product_id' => 'required|exists:products,id',
+                'order_items.*.quantity' => 'required|integer|min:1',
+                'order_items.*.price' => 'required|numeric|min:0',
+                'order_items.*.name' => 'required|string',
+                'order_items.*.image' => 'required|string'
             ]);
-
-            // Insert order items
-            foreach ($request->order_items as $item) {
-                DB::table('order_items')->insert([
-                    'order_id' => $orderId,
-                    'product_id' => $item['product_id'],
-                    'quantity' => $item['quantity'],
-                    'image' => $item['image'],
-                    'price' => $item['price'],
-                    'name' => $item['name']
-                ]);
+        
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors()
+                ], 422);
             }
+        
+            $user = Auth::user();
+            $isInsufficientBalance = $user->balance < $request->total_amount;
+        
+            DB::beginTransaction();
+        
+            // Check if the order number already exists in the orders table
+            $existingOrder = DB::table('orders')->where('order_number', $request->order_number)->first();
+        
+            if ($existingOrder) {
+                // If the order exists, update it
+                DB::table('orders')->where('order_number', $request->order_number)->update([
+                    'total_amount' => $request->total_amount,
+                    'commission' => $request->commission,
+                    'expected_income' => $request->expected_income,
+                    'status' => $isInsufficientBalance ? 'pending' : 'completed',
+                    'updated_at' => now(),
+                ]);
+        
+                // Delete the existing order items before inserting new ones
+                DB::table('order_items')->where('order_id', $existingOrder->id)->delete();
+        
+                // Insert new order items
+                foreach ($request->order_items as $item) {
+                    DB::table('order_items')->insert([
+                        'order_id' => $existingOrder->id,
+                        'product_id' => $item['product_id'],
+                        'quantity' => $item['quantity'],
+                        'image' => $item['image'],
+                        'price' => $item['price'],
+                        'name' => $item['name']
+                    ]);
+                }
+            } else {
+                // If the order does not exist, create a new order
+                $orderId = DB::table('orders')->insertGetId([
+                    'order_number' => $request->order_number,
+                    'user_id' => $user->id,
+                    'total_amount' => $request->total_amount,
+                    'commission' => $request->commission,
+                    'expected_income' => $request->expected_income,
+                    'status' => $isInsufficientBalance ? 'pending' : 'completed',
+                    'created_at' => now()
+                ]);
+        
+                // Insert order items
+                foreach ($request->order_items as $item) {
+                    DB::table('order_items')->insert([
+                        'order_id' => $orderId,
+                        'product_id' => $item['product_id'],
+                        'quantity' => $item['quantity'],
+                        'image' => $item['image'],
+                        'price' => $item['price'],
+                        'name' => $item['name']
+                    ]);
+                }
+            }
+        
+            if ($isInsufficientBalance) {
+                // Update user status to 2 (Restricted)
+                DB::table('users')
+                    ->where('id', $user->id)
+                    ->update(['status' => "2"]);
+        
+                DB::commit();
+        
+                $needBalance = number_format($request->total_amount - $user->balance, 2);
+                return response()->json([
+                    'success' => false,
+                    'message' => "Insufficient balance, you need to top up $needBalance USDT",
+                    'need_balance' => $needBalance
+                ], 403);
+            }
+        
+            // If balance is sufficient, update user stats
             DB::table('users')
-            ->where('id', auth()->id())
-            ->update([
-                'today_task' => DB::raw('today_task + 1'),
-                'min_earn' => DB::raw('min_earn + ' . $request->commission),
-                'balance' => DB::raw('balance + ' . $request->commission)
-            ]);
-
+                ->where('id', $user->id)
+                ->update([
+                    'status' => "1", // Set status to active
+                    'today_task' => DB::raw('today_task + 1'),
+                    'min_earn' => DB::raw('min_earn + ' . $request->commission),
+                    'balance' => DB::raw('balance + ' . $request->commission)
+                ]);
+        
             DB::commit();
-
+        
             return response()->json([
                 'success' => true,
                 'message' => 'Order submitted successfully'
             ]);
-
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to submit aasdf'
+                'message' => 'Failed to submit order. Please try again.',
+                'error' => $e->getMessage()
             ], 500);
         }
+        
     }
+    
 
     public function getOrders(Request $request)
     {
@@ -138,25 +212,6 @@ if($projectId == 1){
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to fetch orders'
-            ], 500);
-        }
-    }
-
-    public function updateUserStatus(Request $request)
-    {
-        try {
-            $user = Auth::user();
-            $user->status = 2;
-            $user->save();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'User status updated successfully'
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to update user status'
             ], 500);
         }
     }
