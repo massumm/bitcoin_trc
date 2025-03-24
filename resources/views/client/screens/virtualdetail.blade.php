@@ -77,47 +77,66 @@
 </style>
 
 <script>
-// Initialize with URL parameters
-document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
     const amount = urlParams.get('amount') || '100.00';
-    
+
     document.getElementById('displayAmount').innerHTML = `${amount}<span class="fs-5">USDT</span>`;
-    document.getElementById('displayAmountCopy').innerHTML = `${amount}<span class="fs-5">USDT</span>`;
-    
+
+    // Check if an order number already exists in local storage
+    let orderNumber = localStorage.getItem('orderNumber');
+
+    if (!orderNumber) {
+        orderNumber = generateOrderNumber();
+        localStorage.setItem('orderNumber', orderNumber); // Store it so it persists after reload
+    }
+
+    document.getElementById('orderNumber').textContent = orderNumber;
+
+    // Send the order data to the backend
+    fetch('/client/mine/depositpost', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({ amount: amount, orderNumber: orderNumber })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            console.log(data);
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again.');
+    });
+
     startTimer();
 });
 
-function startTimer() {
-    let minutes = 4319;
-    let seconds = 57;
-    
-    setInterval(() => {
-        if (seconds === 0) {
-            minutes--;
-            seconds = 59;
-        } else {
-            seconds--;
-        }
-        document.getElementById('timer').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-    }, 1000);
+function generateOrderNumber() {
+    const timestamp = Date.now().toString().slice(-10); // Last 10 digits of timestamp
+    const randomPart = Math.floor(100000 + Math.random() * 900000); // 6-digit random number
+    return timestamp + randomPart;
 }
 
-function copyAddress() {
-    const address = document.getElementById('walletAddress').textContent;
-    navigator.clipboard.writeText(address).then(() => {
-        alert('Address copied to clipboard!');
-    });
-}
-
+// Clear order number only when deposit is canceled
 function cancelDeposit() {
     if (confirm('Are you sure you want to cancel this deposit?')) {
+        localStorage.removeItem('orderNumber'); // Remove stored order number
         history.back();
     }
 }
 
+// Clear order number when user marks payment as transferred
 function markTransferred() {
     alert('Please wait for confirmation from customer service.');
+    localStorage.removeItem('orderNumber'); // Clear order number
 }
+
 </script>
 @endsection

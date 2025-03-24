@@ -35,6 +35,9 @@ Route::prefix('client')->middleware(['auth'])->group(function () {
   Route::get('/recordlist', [App\Http\Controllers\Client\RecordlistControllert::class, 'index']);
   Route::get('mine/deposit', [App\Http\Controllers\Client\PaymentController::class, 'deposit']);
   Route::get('mine/virtualdetail', [App\Http\Controllers\Client\PaymentController::class, 'virtualdetail']);
+  Route::post('mine/depositpost', [App\Http\Controllers\Client\PaymentController::class, 'postVirtualDetail']);
+  
+
   Route::get('/mine', [App\Http\Controllers\Client\MineController::class, 'index']);
   Route::get('/setting', [App\Http\Controllers\Client\MineController::class, 'setting']);
   Route::get('/orders', [App\Http\Controllers\Client\OrderlistController::class, 'getOrders']);
