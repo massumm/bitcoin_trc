@@ -72,4 +72,21 @@ class PaymentController extends Controller
     {
         return view('client.screens.virtualdetail');
     }
+    public function deposit_recordlist(Request $request)
+    {
+        $deposits = DB::table('deposit')
+            ->where('user_id', Auth::id())
+            ->orderBy('date', 'desc')
+            ->get();
+
+        return view('client.screens.deposit_recordlist', compact('deposits'));
+    }
+    public function withdraw_recordlist(Request $request)
+    {
+        return view('client.screens.withdraw_recordlist');
+    }
+    public function withdraw(Request $request)
+    {
+        return view('client.screens.withdraw');
+    }
 }    

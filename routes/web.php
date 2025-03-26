@@ -36,8 +36,13 @@ Route::prefix('client')->middleware(['auth'])->group(function () {
   Route::get('mine/deposit', [App\Http\Controllers\Client\PaymentController::class, 'deposit']);
   Route::get('mine/virtualdetail', [App\Http\Controllers\Client\PaymentController::class, 'virtualdetail']);
   Route::post('mine/depositpost', [App\Http\Controllers\Client\PaymentController::class, 'postVirtualDetail']);
-  
-
+  Route::get('mine/deposit_recordlist', [App\Http\Controllers\Client\PaymentController::class, 'deposit_recordlist']);
+  Route::get('mine/withdraw_recordlist', [App\Http\Controllers\Client\PaymentController::class, 'withdraw_recordlist']);
+  Route::get('mine/profile', [App\Http\Controllers\Client\MineController::class, 'profile']);
+  Route::get('mine/withdraw', [App\Http\Controllers\Client\PaymentController::class, 'withdraw']);
+  Route::get('mine/invite_friend', [App\Http\Controllers\Client\MineController::class, 'invite_friend']);
+  Route::get('mine/team', [App\Http\Controllers\Client\MineController::class, 'team']);
+  Route::get('mine/virtualcurrency', [App\Http\Controllers\Client\MineController::class, 'virtualcurrency']);
   Route::get('/mine', [App\Http\Controllers\Client\MineController::class, 'index']);
   Route::get('/setting', [App\Http\Controllers\Client\MineController::class, 'setting']);
   Route::get('/orders', [App\Http\Controllers\Client\OrderlistController::class, 'getOrders']);
@@ -57,7 +62,10 @@ Route::prefix('client')->middleware(['auth'])->group(function () {
 
 });
 
-
+Route::post('/logout', function () {
+  Auth::logout();
+  return redirect('/');
+})->name('logout');
 
 Route::prefix('admin')->middleware(['auth'])->group(function () {
 
@@ -167,3 +175,7 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
 
 
 });
+
+Route::post('/client/upload-profile-image', [App\Http\Controllers\Client\ProfileController::class, 'uploadProfileImage'])->name('client.uploadProfileImage');
+
+Route::get('/client/get-deposit-address', [App\Http\Controllers\Client\BinanceController::class, 'getDepositAddress'])->name('client.getDepositAddress');

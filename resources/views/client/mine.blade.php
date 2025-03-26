@@ -27,7 +27,7 @@
             <a href="/client/mine/deposit" class="btn btn-outline-primary me-2">
                 <img src="{{ asset('assets/img/wallet.png') }}" width="24" height="24" class="me-1"> Deposit
             </a>
-            <a class="btn btn-outline-danger">
+            <a href="/client/mine/withdraw" class="btn btn-outline-danger">
                 <img src="{{ asset('assets/img/wallet.png') }}" width="24" height="24" class="me-1"> Withdrawal
             </a>
         </div>
@@ -36,7 +36,8 @@
     <!-- Section: Quick Actions -->
     <div class="row text-center mt-4">
         <div class="col-3">
-            <a  class="d-block text-dark">
+            <!-- <a href="/client/mine/team" class="d-block text-dark"> -->
+            <a class="d-block text-dark">
                 <i class="fas fa-users fa-2x"></i>
                 <p class="mt-1">Teams</p>
             </a>
@@ -54,7 +55,8 @@
             </a>
         </div>
         <div class="col-3">
-            <a  class="d-block text-dark">
+        <a href="/client/mine/invite_friend" class="d-block text-dark">
+            <!-- <a href="/client/mine/invite_friend" class="d-block text-dark"> -->
                 <i class="fas fa-user-plus fa-2x"></i>
                 <p class="mt-1">Invite Friends</p>
             </a>
@@ -64,13 +66,13 @@
     <!-- Vertical List -->
     <div class="mt-4">
         <div class="list-group">
-            <a class="list-group-item list-group-item-action d-flex align-items-center">
+            <a href="/client/mine/profile" class="list-group-item list-group-item-action d-flex align-items-center">
                 <i class="fas fa-user me-2"></i> Profile
             </a>
-            <a class="list-group-item list-group-item-action d-flex align-items-center">
+            <a href="/client/mine/deposit_recordlist" class="list-group-item list-group-item-action d-flex align-items-center">
                 <i class="fas fa-file-invoice-dollar me-2"></i> Deposit Records
             </a>
-            <a class="list-group-item list-group-item-action d-flex align-items-center">
+            <a href="/client/mine/withdraw_recordlist" class="list-group-item list-group-item-action d-flex align-items-center">
                 <i class="fas fa-money-bill-wave me-2"></i> Withdrawal Records
             </a>
             <a  href="/client/setting"  class="list-group-item list-group-item-action d-flex align-items-center">

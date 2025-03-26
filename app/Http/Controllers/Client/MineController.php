@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\User2;
 
 class MineController extends Controller
 {
@@ -14,5 +15,72 @@ class MineController extends Controller
     }
     public function setting(){
         return view('client.screens.setting');
+    }
+    public function profile(){
+        return view('client.screens.profile');
+    }
+    public function invite_friend(){
+        return view('client.screens.invite_friend');
+    }
+    public function virtualcurrency(){
+        return view('client.screens.virtualcurrancy');
+    }
+    public function team(){
+        $user = auth()->user();
+        
+        // Get direct referrals (Level 1)
+        $level1Users = User2::where('refer_by', $user->refer_code)->get();
+        
+        // Get level 2 referrals
+        $level2Users = User2::whereIn('refer_by', $level1Users->pluck('refer_code'))->get();
+        
+        // Get level 3 referrals
+        $level3Users = User2::whereIn('refer_by', $level2Users->pluck('refer_code'))->get();
+        
+        // Calculate statistics
+        $stats = [
+            'team_amount' => $level1Users->sum('balance') + $level2Users->sum('balance') + $level3Users->sum('balance'),
+            'agent_profit' => $user->refer_earn,
+            'total_recharge' => \DB::table('deposit')->whereIn('user_id', [
+                $user->id,
+                ...$level1Users->pluck('id'),
+                ...$level2Users->pluck('id'),
+                ...$level3Users->pluck('id')
+            ])->sum('amount'),
+            'total_withdraw' => 0, // Add withdraw calculation if needed
+            'order_commission' => $user->ref_earn ?? 0,
+            'newcomers' => $level1Users->count() + $level2Users->count() + $level3Users->count(),
+            'activities_number' => 0, // Add activities calculation if needed
+            'team_number' => $level1Users->count() + $level2Users->count() + $level3Users->count()
+        ];
+
+        $teamData = [
+            'level1' => $level1Users->map(function($user) {
+                return [
+                    'name' => $user->name,
+                    'balance' => $user->balance,
+                    'total_deposit' => \DB::table('deposit')->where('user_id', $user->id)->sum('amount'),
+                    'joined_date' => $user->created_at
+                ];
+            }),
+            'level2' => $level2Users->map(function($user) {
+                return [
+                    'name' => $user->name,
+                    'balance' => $user->balance,
+                    'total_deposit' => \DB::table('deposit')->where('user_id', $user->id)->sum('amount'),
+                    'joined_date' => $user->created_at
+                ];
+            }),
+            'level3' => $level3Users->map(function($user) {
+                return [
+                    'name' => $user->name,
+                    'balance' => $user->balance,
+                    'total_deposit' => \DB::table('deposit')->where('user_id', $user->id)->sum('amount'),
+                    'joined_date' => $user->created_at
+                ];
+            })
+        ];
+
+        return view('client.screens.team', compact('stats', 'teamData'));
     }
 }

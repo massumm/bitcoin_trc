@@ -100,8 +100,11 @@
                   </div>
 
                   <div class="mb-3">
-                    <label for="refer_code" class="form-label">Referral Code (Optional)</label>
-                    <input id="refer_by" type="text" class="form-control @error('refer_by') is-invalid @enderror" name="refer_by" value="{{ old('refer_by') }}">
+                    <label for="refer_code" class="form-label">Referral Code</label>
+                    <input id="refer_by" type="text" class="form-control @error('refer_by') is-invalid @enderror" 
+                           name="refer_by" 
+                           value="{{ request()->get('code') ?: old('refer_by') }}" 
+                           >
                     @error('refer_by')
                       <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>

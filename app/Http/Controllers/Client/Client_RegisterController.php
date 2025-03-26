@@ -25,25 +25,35 @@ class Client_RegisterController extends Controller
     public function create_client(Request $request)
     {
         // Validate request data
-        // $request->validate([
-        //     'name' => ['required', 'string', 'max:100'],
-        //     'number' => ['required', 'string', 'max:20', 'unique:users,number'],
-        //     'password' => ['required', 'string', 'min:6', 'confirmed'],
-        //     'withdraw_pass' => ['required', 'string', 'min:6'],
-        //     'refer_by' => ['nullable', 'string', 'max:100'],
-        // ]);
+        $validator = Validator::make($request->all(), [
+            'name' => ['required', 'string', 'max:100'],
+            'password' => ['required', 'string', 'min:6', 'confirmed'],
+            'refer_by' => ['required', 'string', 'max:100'],
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        // Check if referral code exists
+        $referrer = User2::where('refer_code', $request->refer_by)->first();
+        if (!$referrer) {
+            return redirect()->back()
+                ->withErrors(['refer_by' => 'Invalid referral code'])
+                ->withInput();
+        }
 
         // Generate a unique referral code
-       $refer_code = 'REF' . rand(10000, 99999);
+        $refer_code = 'REF' . rand(10000, 99999);
 
         // Create user
         User2::create([
             'name' => $request->name,
-            'number' => $request->number,
             'password' => Hash::make($request->password),
-            'withdraw_pass' => Hash::make($request->withdraw_pass),
             'refer_code' => $refer_code,
-            'refer_by' => $request->refer_by ?? null,
+            'refer_by' => $request->refer_by,
             'balance' => 0.00,
             'refer_earn' => 0.00,
             'status' => '1',
