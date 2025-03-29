@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -36,8 +38,11 @@ Route::prefix('client')->middleware(['auth'])->group(function () {
   Route::get('mine/deposit', [App\Http\Controllers\Client\PaymentController::class, 'deposit']);
   Route::get('mine/virtualdetail', [App\Http\Controllers\Client\PaymentController::class, 'virtualdetail']);
   Route::post('mine/depositpost', [App\Http\Controllers\Client\PaymentController::class, 'postVirtualDetail']);
+  Route::post('mine/wallet', [App\Http\Controllers\Client\PaymentController::class, 'postWallet']);
   Route::get('mine/deposit_recordlist', [App\Http\Controllers\Client\PaymentController::class, 'deposit_recordlist']);
   Route::get('mine/withdraw_recordlist', [App\Http\Controllers\Client\PaymentController::class, 'withdraw_recordlist']);
+  Route::post('mine/withdraw', [App\Http\Controllers\Client\PaymentController::class, 'store_withdraw']);
+  Route::get('mine/card_manage', [App\Http\Controllers\Client\PaymentController::class, 'card_manage']);
   Route::get('mine/profile', [App\Http\Controllers\Client\MineController::class, 'profile']);
   Route::get('mine/withdraw', [App\Http\Controllers\Client\PaymentController::class, 'withdraw']);
   Route::get('mine/invite_friend', [App\Http\Controllers\Client\MineController::class, 'invite_friend']);
@@ -67,7 +72,7 @@ Route::post('/logout', function () {
   return redirect('/');
 })->name('logout');
 
-Route::prefix('admin')->middleware(['auth'])->group(function () {
+Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
 
     Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index']);
 
@@ -179,3 +184,19 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
 Route::post('/client/upload-profile-image', [App\Http\Controllers\Client\ProfileController::class, 'uploadProfileImage'])->name('client.uploadProfileImage');
 
 Route::get('/client/get-deposit-address', [App\Http\Controllers\Client\BinanceController::class, 'getDepositAddress'])->name('client.getDepositAddress');
+
+Route::get('language/{lang}', [App\Http\Controllers\LanguageController::class, 'switchLang'])->name('language.switch');
+
+Route::get('/create-admin', function() {
+    // First delete any existing admin user
+    DB::table('users')->where('name', 'admin')->delete();
+    
+    // Create new admin user
+    DB::table('users')->insert([
+        'name' => 'admin',
+        'password' => Hash::make('123456'),
+        'role' => 0
+    ]);
+    
+    return 'Admin user created! Try logging in with username: admin, password: 123456';
+});

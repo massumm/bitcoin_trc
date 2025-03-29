@@ -1,6 +1,6 @@
 @extends('layouts.minimal')
 
-@section('title', 'Setting')
+@section('title', __('messages.settings'))
 
 @section('content')
 <style>
@@ -103,9 +103,10 @@
         margin-top: 10px;
     }
 </style>
+
 <div class="settings-card" onclick="openLanguageModal()">
-    <span class="settings-text">Language settings</span>
-    <span class="settings-arrow">&rsaquo;</span> <!-- Right arrow -->
+    <span class="settings-text">{{ __('messages.language_settings') }}</span>
+    <span class="settings-arrow">&rsaquo;</span>
 </div>
 
 <!-- Logout Button -->
@@ -113,7 +114,7 @@
     <form method="POST" action="{{ route('logout') }}">
         @csrf
         <button type="submit" class="logout-btn">
-            Logout
+            {{ __('messages.logout') }}
         </button>
     </form>
 </div>
@@ -121,18 +122,27 @@
 <!-- Language Modal -->
 <div id="languageModal" class="modal">
     <div class="modal-header">
-        <span>Select Language</span>
+        <span>{{ __('messages.select_language') }}</span>
         <button class="close-btn" onclick="closeLanguageModal()">&times;</button>
     </div>
     <div class="language-list">
-        <div class="language-item">English</div>
-        <div class="language-item">Spanish</div>
-        <div class="language-item">French</div>
-        <div class="language-item">German</div>
-        <div class="language-item">Chinese</div>
-        <div class="language-item">Japanese</div>
-        <div class="language-item">Arabic</div>
-        <div class="language-item">Russian</div>
+        <div class="language-item" onclick="changeLanguage('en')">{{ __('messages.english') }}</div>
+        <div class="language-item" onclick="changeLanguage('es')">{{ __('messages.spanish') }}</div>
+        <div class="language-item" onclick="changeLanguage('ar')">{{ __('messages.arabic') }}</div>
+        <div class="language-item" onclick="changeLanguage('us')">{{ __('messages.english') }}</div>
+        <div class="language-item" onclick="changeLanguage('uk')">{{ __('messages.english') }}</div>
+        <div class="language-item" onclick="changeLanguage('de')">{{ __('messages.german') }}</div>
+        <div class="language-item" onclick="changeLanguage('ae')">{{ __('messages.arabic    ') }}</div>
+        <div class="language-item" onclick="changeLanguage('cz')">{{ __('messages.czech') }}</div>
+        <div class="language-item" onclick="changeLanguage('fr')">{{ __('messages.french') }}</div>
+        <div class="language-item" onclick="changeLanguage('pt')">{{ __('messages.portuguese') }}</div>
+        <div class="language-item" onclick="changeLanguage('it')">{{ __('messages.italian') }}</div>
+        <div class="language-item" onclick="changeLanguage('tr')">{{ __('messages.turkish') }}</div>
+        <div class="language-item" onclick="changeLanguage('ro')">{{ __('messages.romanian') }}</div>
+        <div class="language-item" onclick="changeLanguage('dk')">{{ __('messages.danish') }}</div>
+        <div class="language-item" onclick="changeLanguage('pl')">{{ __('messages.polish') }}</div>
+        <div class="language-item" onclick="changeLanguage('se')">{{ __('messages.swedish') }}</div>
+        <div class="language-item" onclick="changeLanguage('no')">{{ __('messages.norwegian') }}</div>
     </div>
 </div>
 
@@ -140,8 +150,13 @@
     function openLanguageModal() {
         document.getElementById('languageModal').classList.add('active');
     }
+    
     function closeLanguageModal() {
         document.getElementById('languageModal').classList.remove('active');
+    }
+
+    function changeLanguage(lang) {
+        window.location.href = "{{ url('language') }}/" + lang;
     }
 </script>
 @endsection

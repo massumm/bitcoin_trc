@@ -57,21 +57,21 @@
 
 <div class="container-xxl flex-grow-1 container-p-y">
     <!-- Menu Title -->
-    <h3 class="text-center my-3">Menu</h3>
+    <h3 class="text-center my-3">{{ __('messages.menu') }}</h3>
     
     <!-- Tabs for filtering -->
     <ul class="nav nav-tabs mb-3" id="menuTabs">
         <li class="nav-item">
-            <a class="nav-link active" data-category="all" href="#">All</a>
+            <a class="nav-link active" data-category="all" href="#">{{ __('messages.all') }}</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-category="vip1" href="#">VIP 1</a>
+            <a class="nav-link" data-category="vip1" href="#">{{ __('messages.vip1') }}</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-category="vip2" href="#">VIP 2</a>
+            <a class="nav-link" data-category="vip2" href="#">{{ __('messages.vip2') }}</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-category="vip3" href="#">VIP 3</a>
+            <a class="nav-link" data-category="vip3" href="#">{{ __('messages.vip3') }}</a>
         </li>
     </ul>
     
@@ -84,9 +84,9 @@
                         <img src="{{ asset('assets/img/amazon.jpg') }}" alt="Amazon" class="menu-image">
                     </div>
                     <div class="menu-content">
-                        <h5 class="card-title">Amazon</h5>
-                        <p class="card-text">Available balance: 20USDT-499USDT</p>
-                        <p class="card-text text-danger">Commissions: 4%</p>
+                        <h5 class="card-title">{{ __('messages.amazon') }}</h5>
+                        <p class="card-text">{{ __('messages.available_balance') }}: 20USDT-499USDT</p>
+                        <p class="card-text text-danger">{{ __('messages.commissions') }}: 4%</p>
                     </div>
                 </div>
             </div>
@@ -98,9 +98,9 @@
                         <img src="{{ asset('assets/img/alibaba.png') }}" alt="Alibaba" class="menu-image">
                     </div>
                     <div class="menu-content">
-                        <h5 class="card-title">Alibaba</h5>
-                        <p class="card-text">Available balance: 499USDT-899USDT</p>
-                        <p class="card-text text-danger">Commissions: 8%</p>
+                        <h5 class="card-title">{{ __('messages.alibaba') }}</h5>
+                        <p class="card-text">{{ __('messages.available_balance') }}: 499USDT-899USDT</p>
+                        <p class="card-text text-danger">{{ __('messages.commissions') }}: 8%</p>
                     </div>
                 </div>
             </div>
@@ -112,9 +112,9 @@
                         <img src="{{ asset('assets/img/aliexpress.jpeg') }}" alt="Aliexpress" class="menu-image">
                     </div>
                     <div class="menu-content">
-                        <h5 class="card-title">Aliexpress</h5>
-                        <p class="card-text">Available balance: ≥899USDT</p>
-                        <p class="card-text text-danger">Commissions: 12%</p>
+                        <h5 class="card-title">{{ __('messages.aliexpress') }}</h5>
+                        <p class="card-text">{{ __('messages.available_balance') }}: ≥899USDT</p>
+                        <p class="card-text text-danger">{{ __('messages.commissions') }}: 12%</p>
                     </div>
                 </div>
             </div>

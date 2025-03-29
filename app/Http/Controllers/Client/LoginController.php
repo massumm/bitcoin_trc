@@ -31,7 +31,7 @@ class LoginController extends Controller
         if(Auth ::user()){
           return   redirect('/client/dashboard')->with('status','welcome dashboards');
         }else{
-            return   redirect('/admin/login')->with('status','welcome logins');
+            return   redirect('/')->with('status','welcome logins');
         }
 
     }

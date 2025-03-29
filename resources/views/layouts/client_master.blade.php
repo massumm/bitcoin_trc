@@ -88,31 +88,31 @@
             <li>
                 <a href="/client/dashboard" class="{{ request()->is('client/dashboard') ? 'active' : '' }}">
                     <i class="fas fa-home"></i>
-                    <span>Home</span>
+                    <span>{{ __('messages.home') }}</span>
                 </a>
             </li>
             <li>
                 <a href="/client/service" class="{{ request()->is('client/service') ? 'active' : '' }}">
                     <i class="fas fa-wallet"></i>
-                    <span>Service</span>
+                    <span>{{ __('messages.service') }}</span>
                 </a>
             </li>
             <li>
                 <a href="/client/projectspage" class="{{ request()->is('client/projectspage') ? 'active' : '' }}">
                     <i class="fas fa-credit-card"></i>
-                    <span>Menu</span>
+                    <span>{{ __('messages.menu') }}</span>
                 </a>
             </li>
             <li>
                 <a href="/client/recordlist" class="{{ request()->is('client/recordlist') ? 'active' : '' }}">
                     <i class="fas fa-credit-card"></i>
-                    <span>Record</span>
+                    <span>{{ __('messages.record') }}</span>
                 </a>
             </li>
             <li>
                 <a href="/client/mine" class="{{ request()->is('client/mine') ? 'active' : '' }}">
                     <i class="fas fa-user"></i>
-                    <span>Mine</span>
+                    <span>{{ __('messages.mine') }}</span>
                 </a>
             </li>
         </ul>

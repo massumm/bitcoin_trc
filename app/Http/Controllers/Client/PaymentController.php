@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Wallet;
 
 class PaymentController extends Controller
 {
@@ -83,10 +84,159 @@ class PaymentController extends Controller
     }
     public function withdraw_recordlist(Request $request)
     {
-        return view('client.screens.withdraw_recordlist');
+        $withdraws = DB::table('withdraw')
+        ->where('user_id', Auth::id())
+        ->orderBy('date', 'desc')
+        ->get();
+        return view('client.screens.withdraw_recordlist', compact('withdraws'));
     }
     public function withdraw(Request $request)
     {
         return view('client.screens.withdraw');
     }
-}    
+    public function card_manage(Request $request)
+    {
+        $wallets = DB::table('wallet')  
+        ->where('user_id', Auth::id())
+        ->orderBy('date', 'desc')
+        ->get();
+        return view('client.screens.wallet_manage', compact('wallets'));
+    }
+    public function postWallet(Request $request)
+  
+    {
+        
+        try {
+            // Validate the form data
+            $validated = $request->validate([
+                'wallet_name' => 'required|string|max:255',
+                'currency_protocol' => 'required|string',
+                'wallet_address' => 'required|string|max:255',
+                'names' => 'required|string|max:255',
+            ]);
+        
+            // Get authenticated user ID
+            $userId = Auth::id();
+        
+            // Check if the wallet exists for this user
+            $existingWallet = DB::table('wallet')->where('user_id', $userId)->first();
+        
+            if ($existingWallet) {
+                // Update existing wallet
+                DB::table('wallet')
+                    ->where('user_id', $userId)
+                    ->update([
+                        'user_name' => Auth::user()->name,
+                        'wallet_name' => $validated['wallet_name'],
+                        'currency_protocol' => $validated['currency_protocol'],
+                        'wallet_address' => $validated['wallet_address'],
+                        'names' => $validated['names'],
+                        'date' => now()
+                    ]);
+            } else {
+                // Insert new wallet record
+                DB::table('wallet')->insert([
+                    'user_id' => $userId,
+                    'user_name' => Auth::user()->name,
+                    'wallet_name' => $validated['wallet_name'],
+                    'currency_protocol' => $validated['currency_protocol'],
+                    'wallet_address' => $validated['wallet_address'],
+                    'names' => $validated['names'],
+                    'date' => now()
+                ]);
+            }
+        
+            // Update withdraw_status in users table
+            DB::table('users')->where('id', $userId)->update(['withdraw_status' => 1]);
+        
+            return response()->json([
+                'success' => true,
+                'message' => $existingWallet ? 'Wallet updated successfully' : 'Wallet added successfully'
+            ]);
+        
+        } catch (\Exception $e) {
+            \Log::error('Wallet creation failed: ' . $e->getMessage());
+        
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to process wallet. Please try again.'
+            ], 500);
+        }
+        
+
+    }
+    public function store_withdraw(Request $request)
+    {
+        try {
+            // Validate the form data
+            $validated = $request->validate([
+                'amount' => 'required|numeric|min:0',
+                'withdrawal_password' => 'required|string|max:255',
+               
+            
+            ]);
+            if(Auth::user()->todays_task != 25){
+                return response()->json([
+                    'success' => false,
+                    'message' => 'You have to complete 25 tasks to withdraw'
+                ], 400);
+            }
+            if($validated['withdrawal_password'] != Auth::user()->withdraw_pass){
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Withdrawal password is incorrect'
+                ], 400);
+            }   
+            $wallet = DB::table('wallet')->where('user_id', Auth::id())->first();
+            $validated['address'] = $wallet->wallet_address;
+            $validated['method'] = $wallet->currency_protocol;
+            // Get authenticated user ID
+            $userId = Auth::id();
+            
+            // Check if the wallet exists for this user
+            $existingWallet = DB::table('withdraw')->where('user_id', $userId)->first();
+        
+            if ($existingWallet) {
+                // Update existing wallet
+                    DB::table('withdraw')
+                    ->where('user_id', $userId)
+                    ->update([
+                        'user_name' => Auth::user()->name,
+                        'amount' => $validated['amount'],
+                        'status' => 'pending',
+                        'address' => $validated['address'],
+                        'method' => $validated['method'],
+                        'date' => now()
+                    ]);
+            } else {
+                // Insert new wallet record
+                DB::table('withdraw')->insert([
+                    'user_id' => $userId,
+                    'user_name' => Auth::user()->name,
+                    'amount' => $validated['amount'],
+                    'status' => 'pending',
+                    'address' => $validated['address'],
+                    'method' => $validated['method'],
+                    'date' => now()
+                ]);
+            }
+        
+            // Update withdraw_status in users table
+            DB::table('users')->where('id', $userId)->update(['withdraw_status' => 1]);
+        
+            return response()->json([
+                'success' => true,
+                'message' => $existingWallet ? 'Withdrawal updated successfully' : 'Withdrawal added successfully'
+            ]);
+        
+        } catch (\Exception $e) {
+            \Log::error('Withdrawal creation failed: ' . $e->getMessage());
+        
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to process withdraw. Please try again.'
+            ], 500);
+        }
+      
+    }
+}

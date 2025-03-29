@@ -90,7 +90,7 @@
                     @csrf
              
                   <div class="mb-3">
-                    <label for="name" class="form-label">Enter Your Name</label>
+                      <label for="name" class="form-label">{{ __('messages.enterYourName') }}</label>
                     <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
                     @error('name')
                       <span class="invalid-feedback" role="alert">
@@ -100,7 +100,7 @@
                   </div>
 
                   <div class="mb-3">
-                    <label for="refer_code" class="form-label">Referral Code</label>
+                    <label for="refer_code" class="form-label">{{ __('messages.referralCode') }}</label>
                     <input id="refer_by" type="text" class="form-control @error('refer_by') is-invalid @enderror" 
                            name="refer_by" 
                            value="{{ request()->get('code') ?: old('refer_by') }}" 
@@ -114,7 +114,7 @@
 
                   <div class="mb-3 form-password-toggle">
                     <div class="d-flex justify-content-between">
-                      <label class="form-label" for="password">Password</label>
+                      <label class="form-label" for="password">{{ __('messages.password') }}</label>
                     </div>
                     <div class="input-group input-group-merge">
                       <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required>
@@ -129,7 +129,7 @@
 
                   <div class="mb-3 form-password-toggle">
                     <div class="d-flex justify-content-between">
-                      <label class="form-label" for="password_confirmation">Confirm Password</label>
+                      <label class="form-label" for="password_confirmation">{{ __('messages.confirmPassword') }}</label>
                     </div>
                     <div class="input-group input-group-merge">
                       <input id="password_confirmation" type="password" class="form-control" name="password_confirmation" required>
@@ -139,7 +139,7 @@
 
                   <div class="mb-3">
                     <button type="submit" class="btn btn-primary">
-                        Sign Up
+                        {{ __('messages.signUp') }}
                     </button>
                   </div>
                 </form>
@@ -192,7 +192,7 @@
         
         if (password !== confirmPassword) {
             e.preventDefault();
-            alert('Password and confirmation password do not match');
+              alert('{{ __('messages.passwordAndConfirmationPasswordDoNotMatch') }}');
             return false;
         }
     });

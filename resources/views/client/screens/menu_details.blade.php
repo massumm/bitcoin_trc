@@ -1,6 +1,6 @@
 @extends('layouts.minimal')
 
-@section('title', $name ?? 'Project Details')
+@section('title', $name ?? __('messages.project_details'))
 
 @section('content')
 <style>
@@ -284,52 +284,52 @@
 <div class="container">
     <!-- Page Title --> <!-- Account Balance -->
     <div class="balance">
-        <p>Account Balance:</p>
-        <h2><span class="text-success">{{ Auth::user()->balance }}</span> USDT</h2>
+        <p>{{ __('messages.account_balance') }}:</p>
+        <h2><span class="text-success">{{ Auth::user()->balance }}</span> {{ __('messages.usdt') }}</h2>
     </div>
 
     <!-- Centered Card -->
     <div class="info-card">
         <div class="row">
             <div class="col-6">
-                <p>Today's Times</p>
+                <p>{{ __('messages.today_times') }}</p>
                 <h5>{{ Auth::user()->today_task }}</h5>
             </div>
             <div class="col-6">
-                <p>Today's Commission</p>
-                <h5><span class="text-success">{{ Auth::user()->min_earn }}</span> USDT</h5>
+                <p>{{ __('messages.today_commission') }}</p>
+                <h5><span class="text-success">{{ Auth::user()->min_earn }}</span> {{ __('messages.usdt') }}</h5>
             </div>
         </div>
         <div class="row">
             <div class="col-6">
-                <p>Cash gap between tasks</p>
-                <h5>0 USDT</h5>
+                <p>{{ __('messages.cash_gap_between_tasks') }}</p>
+                <h5>0 {{ __('messages.usdt') }}</h5>
             </div>
             <div class="col-6">
-                <p>Yesterday's Buy Commission</p>
-                <h5>0 USDT</h5>
+                <p>{{ __('messages.yesterday_buy_commission') }}</p>
+                <h5>0 {{ __('messages.usdt') }}</h5>
             </div>
         </div>
         <div class="row">
             <div class="col-6">
-                <p>Yesterday's Team Commission</p>
-                <h5>0 USDT</h5>
+                <p>{{ __('messages.yesterday_team_commission') }}</p>
+                <h5>0 {{ __('messages.usdt') }}</h5>
             </div>
             <div class="col-6">
-                <p>Money Frozen in Accounts</p>
-                <h5>0 USDT</h5>
+                <p>{{ __('messages.money_frozen_in_accounts') }}</p>
+                <h5>0 {{ __('messages.usdt') }}</h5>
             </div>
         </div>
     </div>
 
     <!-- Grab Order Button -->
-    <button class="btn btn-primary" onclick="openPopup()">Grab the order immediately</button>
+    <button class="btn btn-primary" onclick="openPopup()">{{ __('messages.grab_order_immediately') }}</button>
 
     <!-- Hint Section -->
     <div class="hint-box">
-        <h6>Hint:</h6>
-        <p>1: 5% of the amount of completed transactions earned.</p>
-        <p>2: The system sends tasks randomly. Complete them as soon as possible after matching them, to avoid hanging all the time.</p>
+        <h6>{{ __('messages.hint') }}:</h6>
+        <p>{{ __('messages.hint_1') }}</p>
+        <p>{{ __('messages.hint_2') }}</p>
     </div>
 </div>
 
@@ -337,17 +337,17 @@
 <div class="popup-bg" id="orderPopup">
     <div class="popup-card">
         <span class="close-btn" onclick="closePopup()">✖</span>
-        <h4>Order Details</h4>
+        <h4>{{ __('messages.order_details') }}</h4>
 
         <div class="order-details">
-            <p><strong>Order No:</strong> 12345678</p>
+            <p><strong>{{ __('messages.order_no') }}:</strong> 12345678</p>
             <div class="mt-3">
-                <p><strong>Transaction Time:</strong> 2025-03-16 12:30 PM</p>
-                <p><strong>Order Commission:</strong> 5.25 USDT</p>
+                <p><strong>{{ __('messages.transaction_time') }}:</strong> 2025-03-16 12:30 PM</p>
+                <p><strong>{{ __('messages.order_commission') }}:</strong> 5.25 USDT</p>
             </div>
         </div>
 
-        <button class="btn-submit">Submit Order</button>
+        <button class="btn-submit">{{ __('messages.submit_order') }}</button>
     </div>
 </div>
 
@@ -405,13 +405,13 @@
     data-commission='${data.commission}'
     data-products='${JSON.stringify(data.products).replace(/'/g, "\\'").replace(/"/g, '&quot;')}'
     onclick="handleOrder(this)">
-    Submit order
+    {{ __('messages.submit_order') }}
 </button>
                         </div>
                     </div>
                 `;
             })
-            .catch(error => console.error("Error fetching products:", error));
+            .catch(error => console.error("{{ __('messages.error_fetching_products') }}:", error));
     }
     
     function openPopup() {
@@ -421,22 +421,22 @@
         const projectName = "{{ $name }}"; // Get project name
         const status =  {{ Auth::user()->status }};  // Get project name
         if (status === 0) {
-        showErrorMessage("Your account is not active. Please contact support.");
+        showErrorMessage("{{ __('messages.your_account_is_not_active_please_contact_support') }}");
         return;
     }
     if (status === 2) {
-        showErrorMessage("Please complete the order before grabbing another one");
+        showErrorMessage("{{ __('messages.please_complete_the_order_before_grabbing_another_one') }}");
         return;
     }
         // Define balance ranges for each project
         let allowedToOrder = false;
         let errorMessage = "";
         
-        if (projectId == 1 && userBalance >= 0 && userBalance <= 200) {
+        if (projectId == 1 && userBalance >=20 && userBalance <= 499) {
             allowedToOrder = true;
-        } else if (projectId == 2 && userBalance > 200 && userBalance <= 300) {
+        } else if (projectId == 2 && userBalance > 499 && userBalance <= 899) {
             allowedToOrder = true;
-        } else if (projectId == 3 && userBalance > 300 && userBalance <= 400) {
+        } else if (projectId == 3 && userBalance > 899) {
             allowedToOrder = true;
         }
         
@@ -447,11 +447,11 @@
         } else {
             // Determine error message based on project ID
             if (projectId == 1) {
-                errorMessage = projectName + " only allows users with balances 0 to 200 USDT";
+                errorMessage = projectName + " only allows users with balances 20 to 499 USDT";
             } else if (projectId == 2) {
-                errorMessage = projectName + " only allows users with balances 201 to 300 USDT";
+                errorMessage = projectName + " only allows users with balances 499 to 899 USDT";
             } else if (projectId == 3) {
-                errorMessage = projectName + " only allows users with balances 301 to 400 USDT";
+                errorMessage = projectName + " only allows users with balances 899 USDT and above";
             }
             
             // Show error message with overlay
@@ -562,12 +562,12 @@
         };
 
         // Debug log
-        console.log('Submitting order with data:', orderData);
+        console.log('{{ __('messages.submitting_order_with_data') }}:', orderData);
 
         // Get CSRF token
         const token = document.querySelector('meta[name="csrf-token"]')?.content;
         if (!token) {
-            showErrorMessage('CSRF token not found');
+            showErrorMessage('{{ __('messages.csrf_token_not_found') }}');
             return;
         }
 
@@ -586,13 +586,13 @@
                 if(response.status === 403 && data.need_balance)
                 {
                     showErrorMessage(data.message);
-                    return Promise.reject(new Error('insufficient_balance'));
+                    return Promise.reject(new Error('{{ __('messages.insufficient_balance') }}'));
                 }
                 if (response.status === 403 && data.need_balance) {
                     // Handle insufficient balance case
                     showErrorMessage(data.message);
                     // Optionally redirect to top-up page or show top-up modal
-                    return Promise.reject(new Error('insufficient_balance'));
+                    return Promise.reject(new Error('{{ __('messages.insufficient_balance') }}'));
                 }
                 throw new Error(data.message || `HTTP error! status: ${response.status}`);
             }
@@ -600,14 +600,14 @@
         })
         .then(data => {
             if (data.success) {
-                showSuccessMessage('Order submitted successfully!');
+                showSuccessMessage('{{ __('messages.order_submitted_successfully') }}');
                 closeOrderPopup();
                 // Optionally refresh the page or update UI
                 setTimeout(() => {
                     window.location.reload();
                 }, 1500);
             } else {
-                throw new Error(data.message || 'Failed to submit order');
+                throw new Error(data.message || '{{ __('messages.failed_to_submit_order') }}');
             }
         })
         .catch(error => {
@@ -616,7 +616,7 @@
                 // Already handled by the 403 case
                 return;
             }
-            showErrorMessage('Failed to submit order. Please try again.');
+            showErrorMessage('{{ __('messages.failed_to_submit_order_please_try_again') }}');
         });
     }
 

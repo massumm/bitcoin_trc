@@ -1,16 +1,16 @@
-@extends('layouts.minimal')
+@extends('layouts.minimal2')
 
-@section('title', 'Withdraw')
+@section('title', __('messages.withdraw'))  
 
 @section('content')
 
 <style>
     .withdraw-container {
         background: white;
-        padding: 15px;
+   
         border-radius: 12px;
         box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        margin: 20px;
+      
     }
     .wallet-section {
         display: flex;
@@ -108,47 +108,76 @@
     }
 </style>
 
-<!-- Initial Add Wallet Screen -->
-<div class="add-wallet-container" id="addWalletScreen">
-    <a href="/client/mine/virtualcurrency" class="add-wallet-link">
-        <div class="add-wallet-btn">+</div>
-        <span class="add-wallet-text">Add e-wallet</span>
-    </a>
-</div>
+@if(Auth::user()->withdraw_status != 1)
+    <div class="add-wallet-container" id="addWalletScreen">
+        <a href="/client/mine/virtualcurrency" class="add-wallet-link">
+            <div class="add-wallet-btn">+</div>
+            <span class="add-wallet-text">{{ __('messages.add_e_wallet') }}</span>
+        </a>
+    </div>
+@else
+
+
 
 <!-- Wallet Details Form (Initially Hidden) -->
-<div class="withdraw-container" id="walletDetailsForm" style="display: none;">
+<div class="withdraw-container" id="walletDetailsForm" style="display: block;">
     <!-- Wallet Selection -->
     <div class="wallet-section">
         <div class="wallet-icon">
             <img src="{{ asset('assets/img/wallet-icon.png') }}" alt="Wallet">
-            <span class="wallet-name">Binance (TRC-20)</span>
+            <span class="wallet-name">{{ __('messages.binance') }} ({{ __('messages.trc20') }})</span>
         </div>
         <span class="wallet-check">✔</span>
     </div>
 
     <!-- Amount Input -->
     <div class="input-group">
-        <label class="input-label">USDT</label>
-        <input type="number" class="input-field" id="amountInput" placeholder="Enter amount">
-        <div class="max-amount">Maximum amount</div>
+        <label class="input-label">{{ __('messages.usdt') }}</label>
+        <input type="number" class="input-field" id="amountInput" placeholder="{{ __('messages.enter_amount') }}">
+        <div class="max-amount">{{ __('messages.maximum_amount') }}</div>
     </div>
 
     <!-- Withdrawal Password -->
     <div class="input-group">
-        <label class="input-label">Withdrawal password</label>
-        <input type="password" class="input-field" placeholder="Please enter your password">
+        <label class="input-label">{{ __('messages.withdrawal_password') }}</label>
+        <input type="password" class="input-field" id="withdrawalPassword" placeholder="{{ __('messages.please_enter_your_password') }}">
     </div>
 
     <!-- Withdraw Button -->
-    <button class="withdraw-btn" id="withdrawButton" disabled>OK</button>
+    <button class="withdraw-btn" id="withdrawButton" disabled>{{ __('messages.ok') }}</button>
 </div>
-
+@endif
 <script>
     // Amount input validation
     document.getElementById('amountInput').addEventListener('input', function() {
         let button = document.getElementById('withdrawButton');
         button.disabled = this.value.trim() === '';
+       
+    });
+    document.getElementById('withdrawButton').addEventListener('click', function() {
+        let amount = document.getElementById('amountInput').value;
+        let withdrawalPassword = document.getElementById('withdrawalPassword').value;
+
+        fetch('/client/mine/withdraw', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({ amount: amount, withdrawal_password: withdrawalPassword })
+                })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log(data);
+            } else {
+                alert(data.message);
+            }       
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+        });
     });
 </script>
 

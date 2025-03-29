@@ -1,6 +1,6 @@
 @extends('layouts.minimal2')
 
-@section('title', 'Deposit Records')
+@section('title', __('messages.deposit_records'))
 
 @section('content')
 <style>
@@ -58,7 +58,7 @@
         <div class="record-item">
             <div class="record-header">
                 <div class="record-type">
-                    <span>Deposit</span>
+                    <span>{{ __('messages.deposit') }}</span>
                     <span class="record-status {{ $deposit->status == 0 ? 'status-failed' : 'status-success' }}">
                         {{ $deposit->status}}
                     </span>
@@ -72,7 +72,7 @@
                     {{ $deposit->trxid }}
                 </div>
                 <div class="record-amount">
-                    {{ number_format($deposit->amount, 2) }} USDT
+                    {{ number_format($deposit->amount, 2) }} {{ __('messages.usdt') }}
                 </div>
             </div>
         </div>
@@ -80,7 +80,7 @@
 
     @if($deposits->isEmpty())
         <div class="text-center py-5">
-            <p>No deposit records found</p>
+            <p>{{ __('messages.no_deposit_records_found') }}</p>
         </div>
     @endif
 </div>

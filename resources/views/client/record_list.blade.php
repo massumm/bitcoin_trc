@@ -3,15 +3,15 @@
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
     <!-- Menu Title -->
-    <h3 class="text-center my-3">RecordList</h3>
+    <h3 class="text-center my-3">{{ __('messages.record_list') }}</h3>
     
     <!-- Tabs for filtering -->
     <ul class="nav nav-tabs border-bottom-0 d-flex justify-content-center" id="menuTabs">
         <li class="nav-item">
-            <a class="nav-link active position-relative" data-category="incomplete" href="#">Incomplete</a>
+            <a class="nav-link active position-relative" data-category="incomplete" href="#">{{ __('messages.incomplete') }}</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link position-relative" data-category="complete" href="#">Complete</a>
+            <a class="nav-link position-relative" data-category="complete" href="#">{{ __('messages.complete') }}</a>
         </li>
     </ul>
     
@@ -49,15 +49,15 @@
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert('Order submitted successfully!');
+                alert('{{ __('messages.order_submitted_successfully') }}');
                 //loadOrders('incomplete');  // Reload orders after submission
             } else {
-                alert('Failed to submit order: ' + data.message);
+                alert('{{ __('messages.failed_to_submit_order') }}');
             }
         })
         .catch(error => {
             console.error('Error submitting order:', error);
-            alert('Failed to submit order. Please try again.');
+            alert('{{ __('messages.failed_to_submit_order_please_try_again') }}');
         });
     }
 
@@ -85,7 +85,7 @@
                             <div class="card mb-3">
                                 <div class="card-body">
                                     <div class="order-header">
-                                        <h5 class="card-title">Order ${order.order_number}</h5>
+                                        <h5 class="card-title">{{ __('messages.order') }} ${order.order_number}</h5>
                                         <span class="order-date">${new Date(order.created_at).toLocaleString()}</span>
                                     </div>
                                     <div class="product-list">
@@ -104,19 +104,19 @@
                                     </div>
                                     <div class="order-footer">
                                         <div class="order-summary">
-                                            <span>Transaction time</span>
+                                            <span>{{ __('messages.transaction_time') }}</span>
                                             <span>${new Date(order.created_at).toLocaleString()}</span>
                                         </div>
                                         <div class="order-summary">
-                                            <span>Order amount</span>
+                                            <span>{{ __('messages.order_amount') }}</span>
                                             <span>${order.total_amount} USDT</span>
                                         </div>
                                         <div class="order-summary">
-                                            <span>Commissions</span>
+                                            <span>{{ __('messages.commission') }}</span>
                                             <span>${order.commission} USDT</span>
                                         </div>
                                         <div class="order-summary">
-                                            <span>Expected income</span>
+                                            <span>{{ __('messages.expected_income') }}</span>
                                             <span style="color: #E67E22;">${order.expected_income} USDT</span>
                                         </div>
                                         ${category === 'incomplete' ? `
@@ -127,7 +127,7 @@
                                                 data-expected_income="${order.expected_income}"
                                                 data-products='${JSON.stringify(order.products).replace(/'/g, "\\'")}'
                                                 onclick="handleOrder(this)">
-                                                Submit order
+                                                {{ __('messages.submit_order') }}
                                             </button>
                                         ` : ''}
                                     </div>
@@ -136,12 +136,12 @@
                         </div>
                     `).join('');
                 } else {
-                    menuList.innerHTML = '<p class="text-center">No orders found</p>';
+                    menuList.innerHTML = '<p class="text-center">{{ __('messages.no_orders_found') }}</p>';
                 }
             })
             .catch(error => {
                 console.error('Error fetching orders:', error);
-                menuList.innerHTML = '<p class="text-center text-danger">Failed to load orders</p>';
+                    menuList.innerHTML = '<p class="text-center text-danger">{{ __('messages.failed_to_load_orders') }}</p>';
             });
         }
 

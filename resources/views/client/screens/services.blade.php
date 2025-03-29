@@ -5,9 +5,9 @@
 
     <!-- First Section: Customer Service Info -->
     <div class="bg-rose text-black p-4 text-center rounded">
-        <h4 class="mb-2">Customer Service Center</h4>
-        <p class="mb-2">Online customer service time</p>
-        <p class="fw-bold">07:00 - 23:00 (UK)</p>
+        <h4 class="mb-2">{{ __('messages.customer_service_center') }}</h4>
+        <p class="mb-2">{{ __('messages.online_customer_service_time') }}</p>
+        <p class="fw-bold"> (UK)</p>
         
     </div>
 
@@ -16,13 +16,13 @@
         <div class="list-group">
             <a href="https://t.me/maasuumm" target="_blank" class="list-group-item list-group-item-action d-flex align-items-center justify-content-between">
                 <div>
-                    <i class="fas fa-headset me-2"></i> Online Customer Service
+                    <i class="fas fa-headset me-2"></i> {{ __('messages.online_customer_service') }}
                 </div>
                 <i class="fas fa-chevron-right text-muted"></i>
             </a>
             <a href="/client/help" class="list-group-item list-group-item-action d-flex align-items-center justify-content-between">
                 <div>
-                    <i class="fas fa-question-circle me-2"></i> Help
+                    <i class="fas fa-question-circle me-2"></i> {{ __('messages.help') }}
                 </div>
                 <i class="fas fa-chevron-right text-muted"></i>
             </a>

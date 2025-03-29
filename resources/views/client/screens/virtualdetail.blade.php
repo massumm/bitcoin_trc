@@ -1,6 +1,6 @@
 @extends('layouts.minimal')
 
-@section('title', 'deposit information')
+@section('title', __('messages.deposit_information'))
 
 @section('content')
 <style>
@@ -78,15 +78,15 @@
         <!-- Instructions -->
         <div class="text-center mb-4">
             <p style="color: #666; font-size: 14px; line-height: 1.5;">
-                After successful payment, you need to click the paid button,<br>
-                and <a href="#" class="text-warning text-decoration-none">Contact Customer Service</a> Confirm
+                {{ __('messages.after_successful_payment') }}, {{ __('messages.you_need_to_click_the_paid_button') }},<br>
+                {{ __('messages.and') }} <a href="#" class="text-warning text-decoration-none">{{ __('messages.contact_customer_service') }}</a> {{ __('messages.confirm') }}
             </p>
         </div>
 
         <!-- QR Code Section -->
         <div class="card">
             <p class="text-center mb-4" style="color: #666; font-size: 14px;">
-                Please use any wallet APP to scan or copy the payment address to pay(TRC20)
+                {{ __('messages.please_use_any_wallet_app_to_scan_or_copy_the_payment_address_to_pay') }} ({{ __('messages.trc20') }})
             </p>
             
             <div class="text-center">
@@ -101,7 +101,7 @@
             <!-- Wallet Address -->
             <div class="text-center">
                 <p class="wallet-address" id="walletAddress"></p>
-                <button class="btn btn-outline-secondary btn-sm" onclick="copyAddress()">Copy</button>
+                <button class="btn btn-outline-secondary btn-sm" onclick="copyAddress()">{{ __('messages.copy') }}</button>
             </div>
         </div>
     </div>
@@ -110,10 +110,10 @@
     <div class="bottom-buttons">
         <div class="d-flex justify-content-between gap-3">
             <button class="btn btn-outline-secondary flex-grow-1" onclick="cancelDeposit()">
-                Cancel deposit<br>application
+                    {{ __('messages.cancel_deposit_application') }}
             </button>
             <button class="btn btn-primary flex-grow-1" onclick="markTransferred()">
-                Transferred
+                {{ __('messages.transferred') }}
             </button>
         </div>
     </div>
@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
     const amount = urlParams.get('amount') || '100.00';
 
-    document.getElementById('displayAmount').innerHTML = `${amount}<span style="font-size: 16px; margin-left: 4px;">USDT</span>`;
+    document.getElementById('displayAmount').innerHTML = `${amount}<span style="font-size: 16px; margin-left: 4px;">{{ __('messages.usdt') }}</span>`;
 
     let orderNumber = localStorage.getItem('orderNumber');
     if (!orderNumber) {
@@ -132,7 +132,26 @@ document.addEventListener('DOMContentLoaded', function() {
         localStorage.setItem('orderNumber', orderNumber);
     }
     document.getElementById('orderNumber').textContent = orderNumber;
-
+    fetch('/client/mine/depositpost', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({ amount: amount, orderNumber: orderNumber })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            console.log(data);
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again.');
+    });
     fetchDepositAddress();
     startTimer();
 });
@@ -153,7 +172,7 @@ function fetchDepositAddress() {
         .catch(error => {
             console.error('Error:', error);
             document.getElementById('loadingQR').innerHTML = 
-                '<p class="text-danger">Failed to load deposit address. Please try again.</p>';
+                '<p class="text-danger">{{ __('messages.failed_to_load_deposit_address_please_try_again') }}</p>';
         });
 }
 
@@ -166,19 +185,19 @@ function generateOrderNumber() {
 function copyAddress() {
     const address = document.getElementById('walletAddress').textContent;
     navigator.clipboard.writeText(address).then(() => {
-        alert('Address copied to clipboard!');
+        alert('{{ __('messages.address_copied_to_clipboard') }}');
     });
 }
 
 function cancelDeposit() {
-    if (confirm('Are you sure you want to cancel this deposit?')) {
+    if (confirm('{{ __('messages.are_you_sure_you_want_to_cancel_this_deposit') }}')) {
         localStorage.removeItem('orderNumber');
         history.back();
     }
 }
 
 function markTransferred() {
-    alert('Please wait for confirmation from customer service.');
+    alert('{{ __('messages.please_wait_for_confirmation_from_customer_service') }}');
     localStorage.removeItem('orderNumber');
 }
 

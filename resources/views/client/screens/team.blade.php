@@ -29,7 +29,7 @@
             left: 15px;
             font-size: 18px;
             text-decoration: none;
-            color: black;
+            color: black;kljm
         }
         .back-btn i {
             font-size: 20px;

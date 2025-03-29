@@ -14,28 +14,48 @@ class OrderlistController extends Controller
         $projectId = $request->query('projectId');
         // Check if ordering is allowed
         $orderAllowed = true; // Replace with your condition
-                // Fetch 5 random products from the database
-        $products = DB::table('products')->inRandomOrder()->limit(1)->get();
-        // $commissionPercentage = DB::table('packages')
-        //         ->where('pack_vip', 1);
-        $commissionPercentage = 0;
-if($projectId == 1){
-    $commissionPercentage = 4;
-}else if($projectId == 2){
-    $commissionPercentage = 8;
-}else if($projectId == 3){
-    $commissionPercentage = 12;
-}
-                   
-                // // Calculate total amount (sum of price * quantity)
-        $totalAmount = $products->sum(function ($product) {
-                    return $product->price * $product->quantity;
-                });
-                 $commission = ($totalAmount * $commissionPercentage) / 100;
+        $taskNumber = Auth::user()->today_task + 1;
     
+        // Get the combo for the current task number and user
+        $combo = DB::table('combos')
+            ->where('task_number', $taskNumber)
+            ->where('user_id', Auth::id()) // Ensure it's assigned to the correct user
+            ->first();
+    
+        if ($combo) {
+            // If combo exists, decode the products JSON into an array
+            $products = json_decode($combo->products, true);
+        } else {
+            // If no combo exists, fetch 5 random products from the database
+            $products = DB::table('products')->inRandomOrder()->limit(1)->get();
+        }
+    
+        // Set commission percentage based on the project ID
+        $commissionPercentage = 0;
+        if ($projectId == 1) {
+            $commissionPercentage = 4;
+        } elseif ($projectId == 2) {
+            $commissionPercentage = 8;
+        } elseif ($projectId == 3) {
+            $commissionPercentage = 12;
+        }
+    
+        // Calculate the total amount (sum of price * quantity)
+        if($combo){
+            $totalAmount = collect($products)->sum(function ($product) {
+                return $product['price'] * $product['quantity'];
+            });
+        }else{
+            $totalAmount = $products->sum(function ($product) {
+                return $product->price * $product->quantity;
+            });
+        }
+    
+        // Calculate the commission
+        $commission = ($totalAmount * $commissionPercentage) / 100;
+    
+        // Return the response
         if ($orderAllowed) {
-            // Fetch 5 random products from the database
-   
             return response()->json([
                 'products' => $products,
                 'total_amount' => $totalAmount,
@@ -43,6 +63,7 @@ if($projectId == 1){
             ]);
         }
     
+        // If ordering is not allowed, return a message
         return response()->json(['message' => 'Ordering is not allowed'], 403);
     }
     

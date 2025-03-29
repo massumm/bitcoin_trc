@@ -46,7 +46,7 @@ class Client_RegisterController extends Controller
         }
 
         // Generate a unique referral code
-        $refer_code = 'REF' . rand(10000, 99999);
+        $refer_code = rand(10000, 99999);
 
         // Create user
         User2::create([

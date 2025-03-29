@@ -32,7 +32,7 @@
 
 <div class="container px-3">
     <div class="profile-card">
-        <span class="profile-text">Personal Avatar</span>
+        <span class="profile-text">{{ __('messages.personal_avatar') }}</span>
         <label for="imageUpload">
             <img src="{{ asset('assets/img/profile.jpg') }}" alt="Avatar" class="profile-avatar" id="profileImage">
         </label>

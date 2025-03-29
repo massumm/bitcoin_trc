@@ -28,13 +28,13 @@ class LoginController extends Controller
      *
      * @var string
      */
-    public function authenticated(){
-        if(Auth::user()){
-            return redirect('/client/dashboard')->with('status','welcome dashboards');
-        }else{
-            return redirect('/admin/login')->with('status','welcome logins');
-        }
-    }
+    // public function authenticated(){
+    //     if(Auth::user()){
+    //         return redirect('/client/dashboard')->with('status','welcome dashboards');
+    //     }else{
+    //         return redirect('/')->with('status','welcome logins');
+    //     }
+    // }
 
     /**
      * Get the login username to be used by the controller.
@@ -58,13 +58,11 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
-    // protected function authenticated(Request $request, $user)
-    // {
-    //     if ($user->is_active) {
-    //         return redirect('/client/dashboard');
-    //     }
-        
-    //     Auth::logout();
-    //     return redirect('/admin/login')->with('error', 'Your account is inactive.');
-    // }
+    protected function authenticated(Request $request, $user)
+    {
+        if ($user->name === 'admin') {
+            return redirect('/admin/dashboard');
+        }
+        return redirect('/client/dashboard');
+    }
 }
