@@ -9,17 +9,20 @@
                     <div class="alert alert-success">{{ session('status') }}</div>
                 @endif
 
-                                  <h1 class="">{{__('customerList')}}</h1>
+                                  <h1 class="text-center">{{__('customerList')}}</h1>
+                                  <a href="{{ url('admin/add-user') }}" class="btn btn-primary">
+                                    <i class="fas fa-plus"></i> {{__('Add User')}}
+                                  </a>
                                   <div class="table-responsive text-nowrap">
                                   <table id="myDataTable" class="table" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
                                             <th>#</th>
                                             <th>{{__('userName')}}</th>
-                                            <th>{{__('userNumber')}}</th>
+                                            <th>{{__('Refer Code')}}</th>
+                                            <th>{{__('Balance')}}</th>
                                             <th>{{__('status')}}</th>
                                             <th>{{__('action')}}</th>
-
                                         </tr>
                                     </thead>
                                     <tbody  class="table-border-bottom-0">
@@ -27,8 +30,9 @@
                                         @foreach($UsersList as $user)
                                         <tr>
                                             <td>{{ $user->id }}</td>
-                                            <td>{{ $user->fname }}</td>
-                                            <td>{{ $user->mobile }}</td>
+                                            <td>{{ $user->name }}</td>
+                                            <td>{{ $user->refer_code }}</td>
+                                            <td>{{ $user->balance }}</td>
                                             <td> @if($user->status == 1)
                                                 <button
                                                 type="button"
@@ -57,9 +61,8 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                <a href="{{url('admin/delete-userslist/'.$user->id)}}" onclick="return confirmDelete()" class="btn btn-danger">{{__('delete')}}</a>
+                                                <a href="{{url('admin/user-details/'.$user->id)}}" class="btn btn-info">{{__('Details')}}</a>
                                             </td>
-
                                         </tr>
                                         @endforeach
                                     </tbody>

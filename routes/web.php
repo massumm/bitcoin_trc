@@ -178,6 +178,13 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
         return response()->download($pathToFile);
     })->name('file.download');
 
+    // Add these new routes
+    Route::get('/add-user', [App\Http\Controllers\Admin\UsersController::class, 'addUser']);
+    Route::post('/store-user', [App\Http\Controllers\Admin\UsersController::class, 'storeUser']);
+
+    Route::get('/user-details/{user_id}', [App\Http\Controllers\Admin\UsersController::class, 'userDetails']);
+
+    Route::post('/store-combo', [App\Http\Controllers\Admin\UsersController::class, 'storeCombo']);
 
 });
 
@@ -188,15 +195,10 @@ Route::get('/client/get-deposit-address', [App\Http\Controllers\Client\BinanceCo
 Route::get('language/{lang}', [App\Http\Controllers\LanguageController::class, 'switchLang'])->name('language.switch');
 
 Route::get('/create-admin', function() {
-    // First delete any existing admin user
-    DB::table('users')->where('name', 'admin')->delete();
-    
-    // Create new admin user
     DB::table('users')->insert([
         'name' => 'admin',
         'password' => Hash::make('123456'),
         'role' => 0
     ]);
-    
-    return 'Admin user created! Try logging in with username: admin, password: 123456';
+    return 'Admin user created!';
 });

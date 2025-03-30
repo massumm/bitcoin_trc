@@ -173,6 +173,11 @@ class OrderlistController extends Controller
                     'min_earn' => DB::raw('min_earn + ' . $request->commission),
                     'balance' => DB::raw('balance + ' . $request->commission)
                 ]);
+                  // Delete the generated combo for this user after order submission
+        DB::table('combos')
+        ->where('task_number', $user->today_task + 1)
+        ->where('user_id', $user->id)
+        ->delete();
         
             DB::commit();
         
