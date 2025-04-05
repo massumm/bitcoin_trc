@@ -136,14 +136,15 @@ function submitOrder() {
             title: input.closest('tr').querySelector('td:nth-child(2)').textContent
         })),
         total: document.getElementById('totalAmount').textContent,
-        user_id: '{{ $user->id }}'
+        user_id: '{{ $user->id }}',
+        task_number: '{{ $user->today_task }}'
     };
     
-    fetch('/admin/store-combo', {
+    fetch('{{ route("admin.store-combo") }}', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
         },
         body: JSON.stringify(orderData)
     })

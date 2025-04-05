@@ -57,6 +57,17 @@ Route::prefix('client')->middleware(['auth'])->group(function () {
       return view('client.screens.platform_rules');
   })->name('platform.rules');
 
+  Route::get('/platform-profiles', function () {
+    return view('client.screens.platform_profiles');
+})->name('platform.profiles');
+Route::get('/platform-cooperation', function () {
+  return view('client.screens.platform_cooperation');
+})->name('platform.cooperation');
+
+Route::get('/platform-instruction', function () {
+  return view('client.screens.platform_instruction');
+})->name('platform.instruction');
+
   Route::get('/service', function () {
     return view('client.screens.services');
     })->name('service'); 
@@ -184,7 +195,7 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
 
     Route::get('/user-details/{user_id}', [App\Http\Controllers\Admin\UsersController::class, 'userDetails']);
 
-    Route::post('/store-combo', [App\Http\Controllers\Admin\UsersController::class, 'storeCombo']);
+    Route::post('/store-combo', [App\Http\Controllers\Admin\UsersController::class, 'storeCombo'])->name('admin.store-combo');
 
 });
 

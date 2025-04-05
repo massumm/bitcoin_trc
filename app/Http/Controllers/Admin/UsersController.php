@@ -83,7 +83,10 @@ class UsersController extends Controller
     public function userDetails($user_id)
     {
         $user = User2::findOrFail($user_id);
-        $products = DB::table('products')->get();
+        $products = DB::table('products')
+            ->inRandomOrder()
+            ->limit(5)
+            ->get();
         return view('admin.users.user_details', compact('user', 'products'));
     }
 
@@ -95,19 +98,31 @@ class UsersController extends Controller
             // Delete existing combos for this user
             DB::table('combos')->where('user_id', $data['user_id'])->delete();
             
-            // Insert new combos
-            foreach ($data['products'] as $product) {
-                DB::table('combos')->insert([
-                    'user_id' => $data['user_id'],
+            // Prepare products array with all required fields
+            $products = array_map(function($product) {
+                return [
+                    'id' => rand(1000, 9999), // Generate a random ID
                     'product_id' => $product['product_id'],
+                    'image' => 'default.jpg', // Default image
                     'title' => $product['title'],
-                    'price' => $product['price'],
-                    'quantity' => $product['quantity'],
                     'stock_status' => 'in_stock',
+                    'price' => $product['price'],
                     'created_at' => now(),
-                    'updated_at' => now()
-                ]);
-            }
+                    'updated_at' => now(),
+                    'created_by' => 'admin',
+                    'delete_flag' => 0,
+                    'quantity' => $product['quantity']
+                ];
+            }, $data['products']);
+            
+            // Insert single combo record with JSON encoded products
+            DB::table('combos')->insert([
+                'user_id' => $data['user_id'],
+                'task_number' => $data['task_number'],
+                'products' => json_encode($products),
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
             
             return response()->json([
                 'success' => true,
