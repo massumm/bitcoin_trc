@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Client;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class BinanceController extends Controller
 {
@@ -21,61 +23,62 @@ class BinanceController extends Controller
     public function getDepositAddress()
     {
         try {
-            $timestamp = round(microtime(true) * 1000);
-            $params = [
-                'coin' => 'USDT',
-                'network' => 'TRX',
-                'timestamp' => $timestamp
-            ];
-            
-            // Sort parameters alphabetically
-            ksort($params);
-            
-            // Create query string
-            $queryString = http_build_query($params);
-            
-            // Generate signature
-            $signature = hash_hmac('sha256', $queryString, $this->apiSecret);
-            
-            // Add signature to parameters
-            $params['signature'] = $signature;
-            
-            // Make API request
-            $response = Http::withHeaders([
-                'X-MBX-APIKEY' => $this->apiKey
-            ])->get("{$this->apiUrl}/sapi/v1/capital/deposit/address", $params);
+            // Get current user's ID
+            $userId = Auth::id();
 
-            \Log::info('Binance API Response:', [
-                'status' => $response->status(),
-                'body' => $response->body(),
-                'url' => $response->effectiveUri()
-            ]);
+            // Check for pending deposits
+            $pendingDeposit = DB::table('deposit')
+                ->where('user_id', $userId)
+                ->where('status', 'pending')
+                ->first();
 
-            if ($response->successful()) {
-                $data = $response->json();
-                if (isset($data['address'])) {
-                    return response()->json([
-                        'success' => true,
-                        'address' => $data['address'],
-                        'qrCode' => $this->generateQRCode($data['address'])
-                    ]);
-                }
+            if ($pendingDeposit) {
+                return response()->json([
+                    'success' => true,
+                    'hasPendingDeposit' => true,
+                    'pendingDeposit' => [
+                        'orderNumber' => $pendingDeposit->order_number,
+                        'amount' => $pendingDeposit->amount,
+                        'address' => $pendingDeposit->trxid,
+                        'date' => $pendingDeposit->date
+                    ]
+                ]);
             }
 
-            // If we reach here, something went wrong
-            $errorMessage = $response->json()['msg'] ?? 'Failed to fetch deposit address';
-            \Log::error('Binance API Error:', [
-                'response' => $response->json(),
-                'status' => $response->status()
-            ]);
+            // If no pending deposit, get a new address
+            $lastUsedId = session('last_used_address_id', 0);
+            
+            $nextAddress = DB::table('deposit_address')
+                ->where('id', '>', $lastUsedId)
+                ->where('user_status', 0)
+                ->orderBy('id')
+                ->first();
+
+            if (!$nextAddress) {
+                $nextAddress = DB::table('deposit_address')
+                    ->where('user_status', 0)
+                    ->orderBy('id')
+                    ->first();
+            }
+
+            if ($nextAddress) {
+                session(['last_used_address_id' => $nextAddress->id]);
+
+                return response()->json([
+                    'success' => true,
+                    'hasPendingDeposit' => false,
+                    'address' => $nextAddress->address,
+                    'qrCode' => $this->generateQRCode($nextAddress->address)
+                ]);
+            }
 
             return response()->json([
                 'success' => false,
-                'message' => $errorMessage
-            ], 400);
+                'message' => 'No available deposit addresses found'
+            ], 404);
 
         } catch (\Exception $e) {
-            \Log::error('Binance API Exception:', [
+            \Log::error('Deposit Address Error:', [
                 'message' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
@@ -94,5 +97,4 @@ class BinanceController extends Controller
         $qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size={$size}x{$size}&data=" . urlencode($address);
         return $qrUrl;
     }
-    
 } 

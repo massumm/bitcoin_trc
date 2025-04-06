@@ -7,7 +7,6 @@
     .container {
         max-width: 400px;
         margin: 0 auto;
-        padding: 20px;
     }
     .display-4 {
         margin: 0;

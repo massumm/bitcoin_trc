@@ -100,7 +100,7 @@
 .estimated-payment {
     background: #F9FAFB;
     border-radius: 12px;
-    padding: 1.25rem;
+
     margin-top: 1.5rem;
 }
 
@@ -141,6 +141,83 @@
     box-shadow: none;
 }
 
+.pending-deposit-container {
+    display: none;
+    background: white;
+    border: 1px solid #E5E7EB;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.pending-icon {
+    color: #EF4444;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.pending-title {
+    color: #1F2937;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.address-box {
+    background: #F3F4F6;
+    border: 1px dashed #D1D5DB;
+    border-radius: 8px;
+    padding: 0.75rem;
+    margin: 1rem 0;
+    position: relative;
+}
+
+.address-text {
+    font-family: monospace;
+    color: #374151;
+    font-size: 0.9rem;
+    word-break: break-all;
+}
+
+.copy-btn {
+    background: #3B82F6;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 0.5rem;
+}
+
+.copy-btn:hover {
+    background: #2563EB;
+}
+
+.contact-support-btn {
+    background: none;
+    border: 1px solid #3B82F6;
+    color: #3B82F6;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+}
+
+.contact-support-btn:hover {
+    background: #EBF5FF;
+}
+
+.help-text {
+    color: #6B7280;
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+}
+
 @media (max-width: 768px) {
     .deposit-container {
         padding: 1rem;
@@ -158,62 +235,67 @@
 </style>
 
 <div class="deposit-container">
-    <!-- Page Title -->
-    <h1 class="page-title">
-        <i class="fas fa-wallet"></i>
-        {{ __('messages.deposit') }}
-    </h1>
-
-    <!-- Payment Method Section -->
-    <h2 class="section-title">{{ __('messages.payment_method') }}</h2>
-    <div class="payment-method-card selected">
-        <div class="d-flex flex-column align-items-center">
-            <img src="{{ asset('images/usdt-icon.png') }}" alt="USDT" class="mb-2">
-            <span class="card-label">{{ __('messages.usdt') }}</span>
+    <!-- Pending Deposit Container -->
+    <div id="pendingDepositContainer" class="pending-deposit-container">
+        <i class="fas fa-exclamation-circle pending-icon"></i>
+        <div class="pending-title">{{ __('messages.unpaid_order') }}</div>
+        <div class="address-box">
+            <div class="address-text" id="pendingAddress"></div>
+            <button class="copy-btn" onclick="copyAddress()">
+                <i class="fas fa-copy me-1"></i> {{ __('messages.copy') }}
+            </button>
+        </div>
+        <button class="contact-support-btn" onclick="contactSupport()">
+            {{ __('messages.contact_customer_service') }}
+        </button>
+        <div class="help-text">
+            {{ __('messages.click_to_copy_address_help') }}
         </div>
     </div>
 
-    <!-- Protocol Selection -->
-    <h2 class="section-title mt-4">{{ __('messages.select_protocol') }}</h2>
-    <div class="protocol-card selected">
-        <div class="d-flex flex-column align-items-center">
-            <span class="card-label">{{ __('messages.trc20') }}</span>
-        </div>
-    </div>
-
-    <!-- Deposit Amount -->
-    <div class="amount-input-container">
-        <h2 class="section-title mb-3">{{ __('messages.deposit_amount') }}</h2>
-        <div class="d-flex align-items-center">
-            <span class="currency-label">{{ __('messages.usdt') }}</span>
-            <input type="number" 
-                   class="amount-input" 
-                   id="depositAmount" 
-                   min="10" 
-                   placeholder="{{ __('messages.deposit_amount_must_be_greater_than_10_usdt') }}">
-        </div>
-    </div>
-
-    <!-- Estimated Payment -->
-    <div class="estimated-payment">
-        <div class="d-flex justify-content-between align-items-center">
-            <span class="text-secondary">{{ __('messages.estimated_payment') }}:</span>
-            <div>
-                <span class="estimated-amount" id="estimatedPayment">0.00</span>
-                <span class="ms-1 text-secondary">{{ __('messages.usdt') }}</span>
+    <!-- Regular Deposit Form -->
+    <div id="regularDepositContainer">
+        <h2 class="section-title mt-4">{{ __('messages.select_protocol') }}</h2>
+        <div class="protocol-card selected">
+            <div class="d-flex flex-column align-items-center">
+                <span class="card-label">{{ __('messages.trc20') }}</span>
             </div>
         </div>
-        <div class="rate-info">
-            <p class="mb-1">{{ __('messages.reference_rate') }}: 1{{ __('messages.usdt') }}=1{{ __('messages.usdt') }}</p>
-            <p class="mb-0 text-muted small">{{ __('messages.payment_amount_and_exchange_rate_are_subject_to_actual_payment') }}</p>
-        </div>
-    </div>
 
-    <!-- Deposit Button -->
-    <button id="depositNow" class="deposit-btn">
-        <i class="fas fa-arrow-right me-2"></i>
-        {{ __('messages.deposit_now') }}
-    </button>
+        <!-- Deposit Amount -->
+        <div class="amount-input-container">
+            <h2 class="section-title mb-3">{{ __('messages.deposit_amount') }}</h2>
+            <div class="d-flex align-items-center">
+                <span class="currency-label">{{ __('messages.usdt') }}</span>
+                <input type="number" 
+                       class="amount-input" 
+                       id="depositAmount" 
+                       min="10" 
+                       placeholder="{{ __('messages.deposit_amount_must_be_greater_than_10_usdt') }}">
+            </div>
+        </div>
+
+        <!-- Estimated Payment -->
+        <div class="estimated-payment">
+            <div class="d-flex justify-content-between align-items-center">
+                <span class="text-secondary">{{ __('messages.estimated_payment') }}:</span>
+                <div>
+                    <span class="estimated-amount" id="estimatedPayment">0.00</span>
+                    <span class="ms-1 text-secondary">{{ __('messages.usdt') }}</span>
+                </div>
+            </div>
+            <div class="rate-info">
+                <p class="mb-1">{{ __('messages.reference_rate') }}: 1{{ __('messages.usdt') }}=1{{ __('messages.usdt') }}</p>
+                <p class="mb-0 text-muted small">{{ __('messages.payment_amount_and_exchange_rate_are_subject_to_actual_payment') }}</p>
+            </div>
+        </div>
+
+        <!-- Deposit Button -->
+        <button id="depositNow" class="deposit-btn">
+            <i class="fas fa-arrow-right me-2"></i>
+            {{ __('messages.deposit_now') }}
+        </button>
+    </div>
 </div>
 
 <script>
@@ -221,6 +303,58 @@ document.addEventListener('DOMContentLoaded', function() {
     const depositAmount = document.getElementById('depositAmount');
     const estimatedPayment = document.getElementById('estimatedPayment');
     const depositBtn = document.getElementById('depositNow');
+    const pendingContainer = document.getElementById('pendingDepositContainer');
+    const regularContainer = document.getElementById('regularDepositContainer');
+
+    // Check for pending deposits when page loads
+    checkPendingDeposits();
+
+    function checkPendingDeposits() {
+        fetch('/client/get-deposit-address')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    if (data.hasPendingDeposit) {
+                        // Show pending deposit container
+                        pendingContainer.style.display = 'block';
+                        regularContainer.style.display = 'none';
+                        document.getElementById('pendingAddress').textContent = data.pendingDeposit.address;
+                    } else {
+                        // Show regular deposit form
+                        pendingContainer.style.display = 'none';
+                        regularContainer.style.display = 'block';
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Show error toast
+                showToast('Error checking deposit status', 'error');
+            });
+    }
+
+    function copyAddress() {
+        const address = document.getElementById('pendingAddress').textContent;
+        navigator.clipboard.writeText(address).then(() => {
+            showToast('Address copied to clipboard', 'success');
+        }).catch(() => {
+            showToast('Failed to copy address', 'error');
+        });
+    }
+
+    function contactSupport() {
+        // Implement your contact support logic here
+        window.location.href = '/client/support';
+    }
+
+    function showToast(message, type = 'success') {
+        const toast = document.createElement('div');
+        toast.className = `alert alert-${type} position-fixed top-0 end-0 m-3`;
+        toast.style.zIndex = '1050';
+        toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>${message}`;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
 
     depositAmount.addEventListener('input', function() {
         const amount = this.value || '0.00';
