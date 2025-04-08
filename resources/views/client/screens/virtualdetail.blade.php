@@ -131,48 +131,52 @@ document.addEventListener('DOMContentLoaded', function() {
         localStorage.setItem('orderNumber', orderNumber);
     }
     document.getElementById('orderNumber').textContent = orderNumber;
-    fetch('/client/mine/depositpost', {
+  
+    fetchDepositAddress(orderNumber);
+    startTimer();
+});
+
+function fetchDepositAddress(orderNumber) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const amount = urlParams.get('amount') || '100.00';
+   
+
+    fetch('/client/get-deposit-address', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
         },
-        body: JSON.stringify({ amount: amount, orderNumber: orderNumber })
+        body: JSON.stringify({
+            amount: amount,
+            orderNumber: orderNumber
+        })
     })
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            console.log(data);
-        } else {
-            alert(data.message);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('An error occurred. Please try again.');
-    });
-    fetchDepositAddress();
-    startTimer();
-});
-
-function fetchDepositAddress() {
-    fetch('/client/get-deposit-address')
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
+            if (data.hasPendingDeposit) {
+                // Handle existing pending deposit
+                document.getElementById('qrCode').src = data.qrCode;
+                document.getElementById('qrCode').style.display = 'block';
+                document.getElementById('loadingQR').style.display = 'none';
+                document.getElementById('walletAddress').textContent = data.pendingDeposit.address;
+            } else {
+                // Handle new deposit
                 document.getElementById('qrCode').src = data.qrCode;
                 document.getElementById('qrCode').style.display = 'block';
                 document.getElementById('loadingQR').style.display = 'none';
                 document.getElementById('walletAddress').textContent = data.address;
-            } else {
-                throw new Error(data.message);
             }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            document.getElementById('loadingQR').innerHTML = 
-                '<p class="text-danger">{{ __('messages.failed_to_load_deposit_address_please_try_again') }}</p>';
-        });
+        } else {
+            throw new Error(data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('loadingQR').innerHTML = 
+            '<p class="text-danger">{{ __('messages.failed_to_load_deposit_address_please_try_again') }}</p>';
+    });
 }
 
 function generateOrderNumber() {

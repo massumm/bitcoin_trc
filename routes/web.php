@@ -201,7 +201,10 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
 
 Route::post('/client/upload-profile-image', [App\Http\Controllers\Client\ProfileController::class, 'uploadProfileImage'])->name('client.uploadProfileImage');
 
-Route::get('/client/get-deposit-address', [App\Http\Controllers\Client\BinanceController::class, 'getDepositAddress'])->name('client.getDepositAddress');
+
+Route::post('/client/mine/depositpost', [App\Http\Controllers\Client\BinanceController::class, 'postVirtualDetail'])->name('client.depositpost');
+Route::post('/client/get-deposit-address', [App\Http\Controllers\Client\BinanceController::class, 'getDepositAddress'])->name('client.getDepositAddress');
+Route::get('/client/get-deposit-addresss', [App\Http\Controllers\Client\BinanceController::class, 'getDepositAddress'])->name('client.getDepositAddress');
 
 Route::get('language/{lang}', [App\Http\Controllers\LanguageController::class, 'switchLang'])->name('language.switch');
 

@@ -310,9 +310,10 @@ document.addEventListener('DOMContentLoaded', function() {
     checkPendingDeposits();
 
     function checkPendingDeposits() {
-        fetch('/client/get-deposit-address')
+        fetch('/client/get-deposit-addresss')
             .then(response => response.json())
             .then(data => {
+                console.log(data)
                 if (data.success) {
                     if (data.hasPendingDeposit) {
                         // Show pending deposit container

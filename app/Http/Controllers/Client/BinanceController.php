@@ -20,28 +20,43 @@ class BinanceController extends Controller
         $this->apiSecret = "0wZvlCDovUEYhBMZ8Qp3o1N4j5CHylK1nSOOeQyHCmaaojDkAh3AWwZU7jzvvDGs";
     }
 
-    public function getDepositAddress()
+    public function getDepositAddress(Request $request)
     {
         try {
+            // Check if user is active
+            if (Auth::user()->status == 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'User not active yet'
+                ], 403);
+            }
+
+            // Validate the amount
+            $request->validate([
+                'amount' => 'required|numeric|min:10',
+                'orderNumber' => 'required|string'
+            ]);
+
             // Get current user's ID
             $userId = Auth::id();
 
-            // Check for pending deposits
-            $pendingDeposit = DB::table('deposit')
-                ->where('user_id', $userId)
+            // Check for existing deposit with same order number and pending status
+            $existingDeposit = DB::table('deposit')
+                ->where('order_number', $request->orderNumber)
                 ->where('status', 'pending')
                 ->first();
 
-            if ($pendingDeposit) {
+            if ($existingDeposit) {
                 return response()->json([
                     'success' => true,
                     'hasPendingDeposit' => true,
                     'pendingDeposit' => [
-                        'orderNumber' => $pendingDeposit->order_number,
-                        'amount' => $pendingDeposit->amount,
-                        'address' => $pendingDeposit->trxid,
-                        'date' => $pendingDeposit->date
-                    ]
+                        'orderNumber' => $existingDeposit->order_number,
+                        'amount' => $existingDeposit->amount,
+                        'address' => $existingDeposit->trxid,
+                        'date' => $existingDeposit->date
+                    ],
+                    'qrCode' => $this->generateQRCode($existingDeposit->trxid)
                 ]);
             }
 
@@ -64,11 +79,25 @@ class BinanceController extends Controller
             if ($nextAddress) {
                 session(['last_used_address_id' => $nextAddress->id]);
 
+                // Create a new deposit record
+                DB::table('deposit')->insert([
+                    'order_number' => $request->orderNumber,
+                    'user_id' => $userId,
+                    'user_name' => Auth::user()->name,
+                    'trxid' => $nextAddress->address,
+                    'amount' => $request->amount,
+                    'status' => 'pending',
+                    'date' => now(),
+                    'image' => null
+                ]);
+
                 return response()->json([
                     'success' => true,
                     'hasPendingDeposit' => false,
                     'address' => $nextAddress->address,
-                    'qrCode' => $this->generateQRCode($nextAddress->address)
+                    'qrCode' => $this->generateQRCode($nextAddress->address),
+                    'orderNumber' => $request->orderNumber,
+                    'amount' => $request->amount
                 ]);
             }
 

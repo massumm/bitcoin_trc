@@ -25,7 +25,7 @@ class PaymentController extends Controller
         $trxid = 'TRX' . time() . rand(1000, 9999);
 
         // Check if the order_number already exists
-        $existingDeposit = DB::table('deposit')->where('order_number', $request->orderNumber)->first();
+        $existingDeposit = DB::table('deposit')->where('order_number', $request->orderNumber,'status',"Pending")->first();
 
         if ($existingDeposit) {
             // If order exists, update it
