@@ -204,7 +204,7 @@ Route::post('/client/upload-profile-image', [App\Http\Controllers\Client\Profile
 
 Route::post('/client/mine/depositpost', [App\Http\Controllers\Client\BinanceController::class, 'postVirtualDetail'])->name('client.depositpost');
 Route::post('/client/get-deposit-address', [App\Http\Controllers\Client\BinanceController::class, 'getDepositAddress'])->name('client.getDepositAddress');
-Route::get('/client/get-deposit-addresss', [App\Http\Controllers\Client\BinanceController::class, 'getDepositAddress'])->name('client.getDepositAddress');
+Route::get('/client/check-deposit-addresss', [App\Http\Controllers\Client\BinanceController::class, 'fetchdeposit_info'])->name('client.fetchdeposit_info');
 
 Route::get('language/{lang}', [App\Http\Controllers\LanguageController::class, 'switchLang'])->name('language.switch');
 

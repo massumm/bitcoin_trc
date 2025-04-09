@@ -310,7 +310,7 @@ document.addEventListener('DOMContentLoaded', function() {
     checkPendingDeposits();
 
     function checkPendingDeposits() {
-        fetch('/client/get-deposit-addresss')
+        fetch('/client/check-deposit-addresss')
             .then(response => response.json())
             .then(data => {
                 console.log(data)
@@ -320,6 +320,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         pendingContainer.style.display = 'block';
                         regularContainer.style.display = 'none';
                         document.getElementById('pendingAddress').textContent = data.pendingDeposit.address;
+                    } else if (data.deactiveuser) {
+                        // Disable deposit button and show alert for deactivated user
+                        depositBtn.style.display = 'none';
+                        depositBtn.innerHTML = '<i class="fas fa-ban me-2"></i>{{ __('messages.user_not_active') }}';
+                        showToast('{{ __('messages.user_not_active_please_contact_support') }}', 'error');
                     } else {
                         // Show regular deposit form
                         pendingContainer.style.display = 'none';
@@ -330,23 +335,24 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => {
                 console.error('Error:', error);
                 // Show error toast
-                showToast('Error checking deposit status', 'error');
+                //showToast('Error checking deposit status', 'error');
             });
     }
 
-    function copyAddress() {
+    // Define copyAddress function
+    window.copyAddress = function() {
         const address = document.getElementById('pendingAddress').textContent;
         navigator.clipboard.writeText(address).then(() => {
-            showToast('Address copied to clipboard', 'success');
+            showToast('{{ __('messages.address_copied_to_clipboard') }}', 'success');
         }).catch(() => {
-            showToast('Failed to copy address', 'error');
+            showToast('{{ __('messages.failed_to_copy_address') }}', 'error');
         });
-    }
+    };
 
-    function contactSupport() {
-        // Implement your contact support logic here
-        window.location.href = '/client/support';
-    }
+    // Define contactSupport function
+    window.contactSupport = function() {
+        window.location.href = 'https://t.me/customerservice10002';
+    };
 
     function showToast(message, type = 'success') {
         const toast = document.createElement('div');

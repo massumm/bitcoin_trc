@@ -77,8 +77,7 @@
         <!-- Instructions -->
         <div class="text-center mb-4">
             <p style="color: #666; font-size: 14px; line-height: 1.5;">
-                {{ __('messages.after_successful_payment') }}, {{ __('messages.you_need_to_click_the_paid_button') }},<br>
-                {{ __('messages.and') }} <a href="#" class="text-warning text-decoration-none">{{ __('messages.contact_customer_service') }}</a> {{ __('messages.confirm') }}
+                {{ __('messages.after_successful_payment') }}
             </p>
         </div>
 
@@ -111,9 +110,9 @@
             <button class="btn btn-outline-secondary flex-grow-1" onclick="cancelDeposit()">
                     {{ __('messages.cancel_deposit_application') }}
             </button>
-            <button class="btn btn-primary flex-grow-1" onclick="markTransferred()">
+            <!-- <button class="btn btn-primary flex-grow-1" onclick="markTransferred()">
                 {{ __('messages.transferred') }}
-            </button>
+            </button> -->
         </div>
     </div>
 </div>

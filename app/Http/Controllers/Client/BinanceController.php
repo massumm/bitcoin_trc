@@ -24,12 +24,7 @@ class BinanceController extends Controller
     {
         try {
             // Check if user is active
-            if (Auth::user()->status == 0) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'User not active yet'
-                ], 403);
-            }
+        
 
             // Validate the amount
             $request->validate([
@@ -41,24 +36,7 @@ class BinanceController extends Controller
             $userId = Auth::id();
 
             // Check for existing deposit with same order number and pending status
-            $existingDeposit = DB::table('deposit')
-                ->where('order_number', $request->orderNumber)
-                ->where('status', 'pending')
-                ->first();
-
-            if ($existingDeposit) {
-                return response()->json([
-                    'success' => true,
-                    'hasPendingDeposit' => true,
-                    'pendingDeposit' => [
-                        'orderNumber' => $existingDeposit->order_number,
-                        'amount' => $existingDeposit->amount,
-                        'address' => $existingDeposit->trxid,
-                        'date' => $existingDeposit->date
-                    ],
-                    'qrCode' => $this->generateQRCode($existingDeposit->trxid)
-                ]);
-            }
+            
 
             // If no pending deposit, get a new address
             $lastUsedId = session('last_used_address_id', 0);
@@ -119,6 +97,33 @@ class BinanceController extends Controller
         }
     }
 
+    public function fetchdeposit_info(){
+        $userId = Auth::id();
+        if (Auth::user()->status == 0) {
+            return response()->json([
+                'success' => true,
+                'deactiveuser' => true,
+                'message' => 'User not active yet'
+            ]);
+        }
+        $existingDeposit = DB::table('deposit')
+                ->where('user_id', $userId)
+                ->where('status', 'pending')
+                ->first();
+
+            if ($existingDeposit) {
+                return response()->json([
+                    'success' => true,
+                    'hasPendingDeposit' => true,
+                    'pendingDeposit' => [
+                        'orderNumber' => $existingDeposit->order_number,
+                        'amount' => $existingDeposit->amount,
+                        'address' => $existingDeposit->trxid,
+                        'date' => $existingDeposit->date
+                    ]
+                ]);
+            }
+    }
     private function generateQRCode($address)
     {
         // Using qrserver.com API for QR code generation

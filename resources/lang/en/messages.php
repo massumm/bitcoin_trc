@@ -287,6 +287,11 @@ Let us work hard to achieve win-win cooperation and gain huge benefits!',
   'insctruction_3_3'=>' 3.After clicking on the service, click on the online customer service to get the customer service contact information. This is the only way to get the coin bit customer service link! 
  ',
   'insctruction_3_4'=>'  4.Recently, many criminals have pretended to be the customer service of the coin bit to commit fraud, causing users to lose money. The coin bit once again emphasizes that anyone who requires users to trade privately is a liar. The only way to recharge is to obtain the payment address through the coin bit to make a deposit! Please do not believe anyone who asks users to trade privately in the name of the coin bit staff! Once the funds are transferred out, they cannot be recovered!!! ',
+'unpaid_order'=>'You have an order that has not been paid',
+'contact_customer_service'=>' Contact Customer Service ',
+'click_to_copy_address_help'=>'  Click to copy the address to transfer USDT. If it does not arrive automatically, click to contact customer service for processing. ',
+'after_successful_payment'=>' After successful payment, you need to click the paid button, and Contact with Customer Care Service'
+
 
 ];
 

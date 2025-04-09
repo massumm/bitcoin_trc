@@ -14,7 +14,7 @@
     <!-- Second Section: Clickable Cards -->
     <div class="mt-4">
         <div class="list-group">
-            <a href="https://t.me/maasuumm" target="_blank" class="list-group-item list-group-item-action d-flex align-items-center justify-content-between">
+            <a href="https://t.me/customerservice10002" target="_blank" class="list-group-item list-group-item-action d-flex align-items-center justify-content-between">
                 <div>
                     <i class="fas fa-headset me-2"></i> {{ __('messages.online_customer_service') }}
                 </div>
