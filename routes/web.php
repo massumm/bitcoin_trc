@@ -216,3 +216,8 @@ Route::get('/create-admin', function() {
     ]);
     return 'Admin user created!';
 });
+
+// Withdrawal password and wallet routes
+Route::get('/client/check-withdrawal-password', [WalletController::class, 'checkWithdrawalPassword'])->name('client.check-withdrawal-password');
+Route::post('/client/set-withdrawal-password', [WalletController::class, 'setWithdrawalPassword'])->name('client.set-withdrawal-password');
+Route::post('/client/store-wallet', [WalletController::class, 'storeWallet'])->name('client.store-wallet');

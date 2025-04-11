@@ -291,7 +291,10 @@ Let us work hard to achieve win-win cooperation and gain huge benefits!',
 'contact_customer_service'=>' Contact Customer Service ',
 'click_to_copy_address_help'=>'  Click to copy the address to transfer USDT. If it does not arrive automatically, click to contact customer service for processing. ',
 'after_successful_payment'=>' After successful payment, you need to click the paid button, and Contact with Customer Care Service'
-
+,'enter_your_password'=>'please enter your password',
+'submit'=>'submit',
+'names'=>'name',
+'virtual_currency_protocol'=>'virtual_currency_protocol'
 
 ];
 

@@ -5,45 +5,75 @@
 @section('content')
     <form id="walletForm" onsubmit="submitWallet(event)">
         @csrf
-        <div class="form-group">
-            <label class="input-label">{{ __('messages.wallet_name') }}</label>
-            <input type="text" name="wallet_name" class="form-control input-field" required 
-                   placeholder="{{ __('messages.please_enter_the_wallet_name') }}">
+
+        {{-- Step 1: Password --}}
+        <div id="passwordSection">
+            <div class="form-group">
+                <label class="input-label">{{ __('messages.password') }}</label>
+                <input type="password" name="password" class="form-control input-field" required
+                       placeholder="{{ __('messages.enter_your_password') }}">
+            </div>
+            <button type="button" class="btn btn-primary submit-btn" onclick="showWalletFields()">
+                {{ __('messages.submit') }}
+            </button>
         </div>
 
-        <div class="form-group">
-            <label class="input-label">{{ __('messages.virtual_currency_protocol') }}</label>
-            <select name="currency_protocol" class="form-control input-field" required>
-                <option selected disabled>{{ __('messages.please_select_a_virtual_currency_protocol') }}</option>
-                <option value="USDT-TRC20">{{ __('messages.usdt_trc20') }}</option>
-                <option value="USDT-ERC20">{{ __('messages.usdt_erc20') }}</option>
-                <option value="BTC">{{ __('messages.btc') }}</option>
-                <option value="ETH">{{ __('messages.eth') }}</option>
-            </select>
-        </div>
+        {{-- Step 2: Full Wallet Form --}}
+        <div id="walletFields" style="display: none;">
+            <div class="form-group">
+                <label class="input-label">{{ __('messages.wallet_name') }}</label>
+                <input type="text" name="wallet_name" class="form-control input-field" required 
+                       placeholder="{{ __('messages.please_enter_the_wallet_name') }}">
+            </div>
 
-        <div class="form-group">
-            <label class="input-label">{{ __('messages.wallet_address') }}</label>
-            <input type="text" name="wallet_address" class="form-control input-field" required
-                   placeholder="{{ __('messages.please_enter_the_e_wallet_address') }}">
-        </div>
+            <div class="form-group">
+                <label class="input-label">{{ __('messages.virtual_currency_protocol') }}</label>
+                <select name="currency_protocol" class="form-control input-field" required>
+                    <option selected disabled>{{ __('messages.please_select_a_virtual_currency_protocol') }}</option>
+                    <option value="USDT-TRC20">TRC20</option>
+                    <!-- <option value="USDT-ERC20">{{ __('messages.usdt_erc20') }}</option>
+                    <option value="BTC">{{ __('messages.btc') }}</option>
+                    <option value="ETH">{{ __('messages.eth') }}</option> -->
+                </select>
+            </div>
 
-        <div class="form-group">
-            <label class="input-label">{{ __('messages.names') }}</label>
-            <input type="text" name="names" class="form-control input-field" required
-                   placeholder="{{ __('messages.please_enter_the_names') }}">
-        </div>
+            <div class="form-group">
+                <label class="input-label">{{ __('messages.wallet_address') }}</label>
+                <input type="text" name="wallet_address" class="form-control input-field" required
+                       placeholder="{{ __('messages.please_enter_the_e_wallet_address') }}">
+            </div>
 
-        <button type="submit" class="btn btn-primary submit-btn">{{ __('messages.ok') }}</button>
-        <button type="button" class="btn btn-outline-primary cancel-btn">{{ __('messages.cancel') }}</button>
+            <div class="form-group">
+                <label class="input-label">{{ __('messages.names') }}</label>
+                <input type="text" name="names" class="form-control input-field" required
+                       placeholder="{{ __('messages.please_enter_the_names') }}">
+            </div>
+
+            <button type="submit" class="btn btn-primary submit-btn">{{ __('messages.ok') }}</button>
+            <button type="button" class="btn btn-outline-primary cancel-btn" onclick="window.history.back()">
+                {{ __('messages.cancel') }}
+            </button>
+        </div>
     </form>
 
     <script>
+        function showWalletFields() {
+            const password = document.querySelector('input[name="password"]').value;
+            if (!password) {
+                alert("{{ __('messages.enter_your_password') }}");
+                return;
+            }
+            document.getElementById('passwordSection').style.display = 'none';
+            document.getElementById('walletFields').style.display = 'block';
+        }
+
         function submitWallet(event) {
             event.preventDefault();
             
             const form = document.getElementById('walletForm');
+            console.log(form.password.value);
             const formData = {
+                password: form.password.value,
                 wallet_name: form.wallet_name.value,
                 currency_protocol: form.currency_protocol.value,
                 wallet_address: form.wallet_address.value,
@@ -62,7 +92,8 @@
             .then(data => {
                 if (data.success) {
                     console.log('Wallet added successfully:', data);
-                    window.history.back();
+                    window.location.href = '/client/mine'; 
+                    // window.location.reload();
                 } else {
                     alert(data.message || 'Failed to add wallet');
                 }
@@ -73,71 +104,4 @@
             });
         }
     </script>
-
-    <style>
-        .card {
-            width: 100%;
-            border-radius: 10px;
-            border: 1px solid #ddd;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .card-body {
-            padding: 20px;
-        }
-
-        .card-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 15px;
-            text-transform: capitalize;
-        }
-
-        .input-label {
-            font-size: 14px;
-            color: #888;
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        .input-field {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-        }
-
-        .submit-btn {
-            width: 100%;
-            padding: 12px;
-            background: #A0BFF8;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        .submit-btn:disabled {
-            background: #D0D7F5;
-            cursor: not-allowed;
-        }
-
-        .cancel-btn {
-            width: 100%;
-            padding: 12px;
-            background: white;
-            color: #4A90E2;
-            border: 1px solid #4A90E2;
-            border-radius: 8px;
-            font-size: 16px;
-            margin-top: 10px;
-            cursor: pointer;
-        }
-
-        .cancel-btn:hover {
-            background: #f0f0f0;
-        }
-    </style>
 @endsection

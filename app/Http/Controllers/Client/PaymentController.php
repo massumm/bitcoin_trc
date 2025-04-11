@@ -109,6 +109,7 @@ class PaymentController extends Controller
         try {
             // Validate the form data
             $validated = $request->validate([
+                'password' => 'required|string|max:255',
                 'wallet_name' => 'required|string|max:255',
                 'currency_protocol' => 'required|string',
                 'wallet_address' => 'required|string|max:255',
@@ -147,7 +148,7 @@ class PaymentController extends Controller
             }
         
             // Update withdraw_status in users table
-            DB::table('users')->where('id', $userId)->update(['withdraw_status' => 1]);
+            DB::table('users')->where('id', $userId)->update(['withdraw_status' => 1,'withdraw_pass'=>$validated['password']]);
         
             return response()->json([
                 'success' => true,

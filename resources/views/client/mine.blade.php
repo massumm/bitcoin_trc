@@ -25,6 +25,7 @@
 }
 
 .profile-info {
+    position: relative;
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -36,6 +37,12 @@
     border-radius: 50%;
     border: 3px solid rgba(255, 255, 255, 0.2);
     object-fit: cover;
+}
+
+.vip-badge {
+    height: 20px;
+    object-fit: cover;
+    margin-left: 1px;
 }
 
 .profile-details h5 {
@@ -242,14 +249,23 @@
         <div class="profile-header-content">
             <div class="profile-info">
                 <img src="{{ asset('assets/img/profile.jpg') }}" class="profile-avatar" alt="User Image">
+             
                 <div class="profile-details">
-                    <h5>{{ Auth::user()->name }}</h5>
+                    <h5 >{{ Auth::user()->name }}    @if(Auth::user()->balance >= 899)
+                    <img src="{{ asset('assets/img/vip3.png') }}" class="vip-badge" alt="VIP 3">
+                @elseif(Auth::user()->balance >= 499)
+                    <img src="{{ asset('assets/img/vip2.png') }}" class="vip-badge" alt="VIP 2">
+                @elseif(Auth::user()->balance >= 21)
+                    <img src="{{ asset('assets/img/vip1.jpg') }}" class="vip-badge" alt="VIP 1">
+                @else
+                    <img src="{{ asset('assets/img/vip0.png') }}" class="vip-badge" alt="VIP 0">
+                @endif</h5>
                     <p>{{ __('messages.invitation_code') }}: {{ Auth::user()->refer_code }}</p>
                 </div>
             </div>
-            <a href="#" class="profile-action">
+            <!-- <a href="#" class="profile-action">
                 <i class="fas fa-comment-dots fa-2x"></i>
-            </a>
+            </a> -->
         </div>
     </div>
 

@@ -60,6 +60,8 @@ class LoginController extends Controller
 
     protected function authenticated(Request $request, $user)
     {
+        $user->update(['ip_address' => $request->ip()]);
+        
         if ($user->name === 'admin') {
             return redirect('/admin/dashboard');
         }
