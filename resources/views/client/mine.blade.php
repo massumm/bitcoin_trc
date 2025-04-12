@@ -291,10 +291,10 @@
             <i class="fas fa-users"></i>
             <p>{{ __('messages.team') }}</p>
         </a>
-        <a href="#" class="quick-action-item">
+        <!-- <a href="#" class="quick-action-item">
             <i class="fas fa-history"></i>
             <p>{{ __('messages.record') }}</p>
-        </a>
+        </a> -->
         <a href="/client/mine/card_manage" class="quick-action-item">
             <i class="fas fa-wallet"></i>
             <p>{{ __('messages.wallet_management') }}</p>

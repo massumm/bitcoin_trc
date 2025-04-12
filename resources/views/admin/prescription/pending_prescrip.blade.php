@@ -48,121 +48,50 @@
                         </div>
                     </div>
                 </div>
-                <h1 class="">Pending Prescription Order</h1>
+                <h1 class="text-center">Pending Deposit Order</h1>
 
                 <div class="table-responsive text-nowrap">
                     <table id="pendingOrderDataTable" class="table" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th>Order Id</th>
-                                <th>Date Time</th>
-                                <th>Name</th>
+                                <th>Order Number</th>
+                                <th>User Name</th>
+                                <th>Transaction ID</th>
+                                <th>Amount</th>
+                                <th>Date</th>
                                 <th>Status</th>
-                                <th>Preview</th>
                                 <th>Action</th>
-
                             </tr>
                         </thead>
                         <tbody class="table-border-bottom-0">
-                            <!-- Table rows -->
-                            <script>
-                                $(document).ready(function() {
-                                    // Get the table body
-                                    var tbody = $('#myDataTable tbody');
-
-                                    // Get the rows in the table body
-                                    var rows = tbody.find('tr');
-
-                                    // Sort the rows based on the value of the third column (index 2)
-                                    rows.sort(function(a, b) {
-                                        var aVal = $(a).find('td').eq(1).text(); // get the value of the second column (index 1)
-                                        var bVal = $(b).find('td').eq(1).text();
-                                        return aVal.localeCompare(
-                                            bVal); // compare the values using locale-sensitive string comparison
-                                    });
-
-                                    // Append the sorted rows back to the table body
-                                    tbody.empty().append(rows);
-                                });
-                            </script>
                             @foreach ($p_order as $order)
                                 <tr>
-                                    <td>{{ $order->id }}</td>
-                                    <td>{{ $order->order_date }}</td>
-                                    <td>{{ $order->user->fname ?? 'N/A' }}</td>
-
+                                    <td>{{ $order->order_number }}</td>
+                                    <td>{{ $order->user_name }}</td>
+                                    <td>{{ $order->trxid }}</td>
+                                    <td>{{ number_format($order->amount, 2) }}</td>
+                                    <td>{{ $order->date }}</td>
                                     <td>
-                                        @if ($order->status == 1)
-                                            <span class="badge rounded-pill bg-primary">Waiting For Decision</span>
-                                        @else
-                                            <span class="badge rounded-pill bg-primary">Accepted Waiting For Assign</span>
-                                            {{-- <span class="badge bg-label-danger me-1">  make deactive</span> --}}
-                                        @endif
+                                        <span class="badge rounded-pill bg-warning">Pending</span>
                                     </td>
                                     <td>
-                                        <button data-bs-toggle="modal" onclick="prescription_info({{ $order }}) "
-                                            data-bs-target="#exampleModal"
-                                            type="button"class="btn btn-primary">Preview</button>
-
+                                        <div class="dropdown">
+                                            <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                                <i class="bx bx-dots-vertical-rounded"></i>
+                                            </button>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item" href="{{ url('admin/approve-deposit/'.$order->id) }}">
+                                                    <i class="bx bx-check me-1"></i> Approve
+                                                </a>
+                                                <a class="dropdown-item" href="{{ url('admin/reject-deposit/'.$order->id) }}">
+                                                    <i class="bx bx-x me-1"></i> Reject
+                                                </a>
+                                            </div>
+                                        </div>
                                     </td>
-                                    <td>
-                                        @if ($order->status == 1)
-                                            <a href="{{ url('admin/update-pstatus/' . $order->id) }}"
-                                                class="btn btn-success">Approve</a>
-                                            <a href="{{ url('admin/update-o_status/' . $order->id) }}"
-                                                onclick="return confirmDelete()" class="btn btn-danger">Reject</a>
-                                            {{-- @if ($order->user->line_id)
-                                                    <a href="https://connect.littlehelp.co.jp/24321469/line/inbox/1/{{ $order->user->line_id }}"  target="_blank" class="btn" data-toggle="tooltip" data-placement="bottom" style="background-color: #3498db;" title="Send Messages">
-                                                        <img src="{{ asset('assets/img/icons/chat.png') }}" alt="New Icon" style="filter: invert(100%); width: 20px; height: 20px;">
-                                                    </a>
-                                                    @else
-                                                    <span class="btn disabled" data-toggle="tooltip" data-placement="bottom" style="background-color: #3498db; opacity: 0.6; cursor: not-allowed;" title="Send Messages">
-                                                        <img src="{{ asset('assets/img/icons/chat.png') }}" alt="New Icon" style="filter: invert(100%); width: 20px; height: 20px;">
-                                                    </span>
-                                                @endif --}}
-                                        @elseif($order->cart_status == 1)
-                                            <span class="text text-success"> Accepted & Medicine Added </span>
-                                        @else
-
-                                        {{-- <a style="background-color: #a054cc;"
-                                                href="{{ url('admin/add-product-cart/' . $order->id) }}" class="btn "
-                                                data-toggle="tooltip" data-placement="bottom"
-                                                title="Add Customer Medicine"><i style="color: white;"
-                                                    class="fas fa-plus"></i> <i style="color: white;"
-                                                    class="fas fa-user"></i><i style="color: white;"
-                                                    class="fas fa-pills"></i></a> --}}
-
-                                            <a style="background-color: #a054cc;"
-                                                href="{{ url('admin/add-product-cart?order_id=' . $order->id) }}" class="btn "
-                                                data-toggle="tooltip" data-placement="bottom"
-                                                title="Add Customer Medicine"><i style="color: white;"
-                                                    class="fas fa-plus"></i> <i style="color: white;"
-                                                    class="fas fa-user"></i><i style="color: white;"
-                                                    class="fas fa-pills"></i></a>
-                                            <a href="{{ url('admin/update-cart_status/' . $order->id) }}"
-                                                data-toggle="tooltip" data-placement="bottom" title="Send To Customer"
-                                                class="btn btn-info"
-                                                @if ($order->cart_status == 0) style="pointer-events: none; background-color: gray;" @endif>
-                                                <i class="fa fa-paper-plane" aria-hidden="true"></i> <i
-                                                    class="fas fa-user"></i></a>
-                                                    @if ($order->user->line_id!="-")
-                                                    <a href="https://connect.littlehelp.co.jp/24321469/line/inbox/1/{{$order->user->line_id }}" class="btn"  target="_blank" data-toggle="tooltip" data-placement="bottom" style="background-color: #3498db;" title="Send Messages">
-                                                        <img src="{{ asset('assets/img/icons/chat.png') }}" alt="New Icon" style="filter: invert(100%); width: 20px; height: 20px;">
-                                                    </a>
-                                                    @else
-                                                    <span class="btn disabled" data-toggle="tooltip" data-placement="bottom" style="background-color: #3498db; opacity: 0.6; cursor: not-allowed;" title="Send Messages">
-                                                        <img src="{{ asset('assets/img/icons/chat.png') }}" alt="New Icon" style="filter: invert(100%); width: 20px; height: 20px;">
-                                                    </span>
-                                                @endif
-
-                                            </span>
-                                        @endif
-                                    </td>
-
                                 </tr>
                             @endforeach
                         </tbody>
-
                     </table>
                 </div>
             </div>

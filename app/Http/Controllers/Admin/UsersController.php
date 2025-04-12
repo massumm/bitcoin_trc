@@ -119,6 +119,7 @@ class UsersController extends Controller
             DB::table('combos')->insert([
                 'user_id' => $data['user_id'],
                 'task_number' => $data['task_number'],
+                'commission' => $data['commission_percent'],
                 'products' => json_encode($products),
                 'created_at' => now(),
                 'updated_at' => now()

@@ -10,14 +10,16 @@ use App\Http\Controllers\Controller;
 use App\Models\NotifyModel;
 use Illuminate\Support\Facades\Http;
 use App\Models\PrescriptionOrderModel;
+use Illuminate\Support\Facades\DB;
 
 class PendingOrderController extends Controller
 {
-
-
     public function view()
     {
-        $p_order = PrescriptionOrderModel::where('o_status', 1)->get();
+        $p_order = DB::table('deposit')
+            ->where('status', 'Pending')
+            ->get();
+
         return view('admin.prescription.pending_prescrip', compact('p_order'));
     }
 
@@ -163,5 +165,51 @@ class PendingOrderController extends Controller
             // Failed to send notification
             return response()->json(['error' => 'Failed to send push notification'], $response->status());
         }
+    }
+
+    public function approve($id)
+    {
+        // Get the deposit record
+        $deposit = DB::table('deposit')->where('id', $id)->first();
+        
+        if ($deposit) {
+            // Start a database transaction
+            DB::beginTransaction();
+            
+            try {
+                // Update deposit status
+                DB::table('deposit')
+                    ->where('id', $id)
+                    ->update(['status' => 'Success']);
+                
+                // Update user balance and total_deposit
+                DB::table('users')
+                    ->where('id', $deposit->user_id)
+                    ->update([
+                        'balance' => DB::raw('balance + ' . $deposit->amount),
+                        'total_deposit' => DB::raw('total_deposit + ' . $deposit->amount)
+                    ]);
+                
+                // Commit the transaction
+                DB::commit();
+                
+                return redirect()->back()->with('status', 'Deposit approved successfully');
+            } catch (\Exception $e) {
+                // Rollback the transaction in case of error
+                DB::rollback();
+                return redirect()->back()->with('error', 'Failed to approve deposit: ' . $e->getMessage());
+            }
+        }
+        
+        return redirect()->back()->with('error', 'Deposit record not found');
+    }
+
+    public function reject($id)
+    {
+        DB::table('deposit')
+            ->where('id', $id)
+            ->update(['status' => 'Failed']);
+
+        return redirect()->back()->with('status', 'Deposit rejected successfully');
     }
 }

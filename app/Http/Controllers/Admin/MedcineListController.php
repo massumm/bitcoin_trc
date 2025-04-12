@@ -43,7 +43,7 @@ class MedcineListController extends Controller
             $data['created_by'] = $user->id;
             // Save the data to the database
             // return $data;
-            DB::table('tbl_product')->updateOrInsert(
+            DB::table('products')->updateOrInsert(
                 ['product_id' => $data['product_id']],
                 $data
             );

@@ -4,7 +4,7 @@
         <span class="app-brand-logo demo">
          {{-- SVG-LOGO-PATH --}}
         </span>
-        {{-- <span class="app-brand-text demo menu-text fw-bolder ms-2">MEDI SHOP</span> --}}
+        {{-- <span class="app-brand-text demo menu-text fw-bolder ms-2"></span> --}}
         <?php
         // Retrieve the value from the database
         $dbTitle = 'COIN BIT';
@@ -30,19 +30,17 @@
       <li class="menu-header small text-uppercase"><span class="menu-header-text">Orders</span></li>
       <li class="menu-item {{Request::is('admin/view-pending-order') ? 'active' : '' }}" >
         <a href="/admin/view-pending-order" class="menu-link">
-          {{-- <i class="menu-icon tf-icons bx bx-collection"></i> --}}
           <i class="menu-icon fas fa-shopping-cart"></i>
-          <div data-i18n="Basic">Pending Orders`</div>
+          <div data-i18n="Basic">Deposit Orders`</div>
         </a>
       </li>
-      <!-- <li class="menu-item  {{Request::is('admin/view-completed-order') ? 'active' : '' }}">
+      <li class="menu-item  {{Request::is('admin/view-completed-order') ? 'active' : '' }}">
         <a href="/admin/view-completed-order" class="menu-link">
-          {{-- <i class="menu-icon tf-icons bx bx-collection"></i> --}}
           <i class="menu-icon fas fa-check"></i>
-          <div data-i18n="Basic">{{__('completedOrders')}}</div>
+          <div data-i18n="Basic">Withdrawal Orders</div>
         </a>
       </li>
-      <li class="menu-item  {{Request::is('admin/view-cancalled-order') ? 'active' : '' }}">
+      <!-- <li class="menu-item  {{Request::is('admin/view-cancalled-order') ? 'active' : '' }}">
         <a href="/admin/view-cancalled-order" class="menu-link">
           {{-- <i class="menu-icon tf-icons bx bx-collection"></i> --}}
           <i class="menu-icon fas fa-times"></i>
@@ -51,7 +49,7 @@
       </li> -->
 
            <!-- MEDICINE SECTION -->
-           <li class="menu-header small text-uppercase">
+           <!-- <li class="menu-header small text-uppercase">
             <span class="menu-header-text">Products</span>
           </li>
           <li class="menu-item {{ Request::is('admin/add-medicine') || Request::is('admin/add-medicines')
@@ -74,7 +72,7 @@
               </li>
             </ul>
           </li>
-
+ -->
 
 
       <!-- CUSTOMER SECTION -->
@@ -86,44 +84,7 @@
           <div data-i18n="Basic">{{__('customarList')}}</div>
         </a>
       </li>
-      <!-- <li class="menu-item {{Request::is('admin/view-calender') ? 'active' : '' }}">
-        <a  href="{{ url('admin/view-calender') }}" class="menu-link">
-          {{-- <i class="menu-icon tf-icons bx bx-collection"></i> --}}
-          <i class="menu-icon fas fa-calendar-alt"></i>
-          <div data-i18n="Basic">{{__('calenderPage')}}</div>
-        </a>
-      </li> -->
 
-      <!-- PAYMENT GATEWAY SECTION -->
-      <li class="menu-header small text-uppercase"><span class="menu-header-text">{{__('settings')}}</span></li>
-
-      <!-- Cards -->
-      <li class="menu-item {{Request::is('admin/view-basic-settings') ? 'active' : '' }}">
-        <a  href="{{ url('admin/view-basic-settings') }}" class="menu-link">
-          <i class="bx bx-cog me-2"></i>
-          <div data-i18n="Basic">{{__('basicSetup')}}</div>
-        </a>
-      </li>
-      <li class="menu-item {{Request::is('admin/view-pages-settings') ? 'active' : '' }}">
-        <a  href="{{ url('admin/view-pages-settings') }}" class="menu-link">
-          {{-- <i class="menu-icon fas fa-globe"></i> --}}
-
-          <i class="menu-icon fas fa-toolbox"></i>
-          <div data-i18n="Basic">{{__('pages')}}</div>
-        </a>
-      </li>
-      <!-- <li class="menu-item {{Request::is('admin/view-payment-list') ? 'active' : '' }}">
-        <a  href="{{ url('admin/view-payment-list') }}" class="menu-link">
-          <i class="menu-icon fas fa-money-bill-alt"></i>
-          <div data-i18n="Basic">{{__('paymentGateway')}}</div>
-        </a>
-      </li>
-      <li class="menu-item {{Request::is('admin/add-Country-Code') ? 'active' : '' }}">
-        <a  href="{{ url('admin/add-Country-Code') }}" class="menu-link">
-          <i class="menu-icon fas fa-globe"></i>
-
-          <div data-i18n="Basic">{{__('paymentGateway')}}</div>
-        </a>
-      </li> -->
+      
         </ul>
   </aside>

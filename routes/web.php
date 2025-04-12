@@ -197,6 +197,14 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
 
     Route::post('/store-combo', [App\Http\Controllers\Admin\UsersController::class, 'storeCombo'])->name('admin.store-combo');
 
+    Route::get('/approve-deposit/{id}', [App\Http\Controllers\Admin\PendingOrderController::class, 'approve'])->name('admin.approve-deposit');
+    Route::get('/reject-deposit/{id}', [App\Http\Controllers\Admin\PendingOrderController::class, 'reject'])->name('admin.reject-deposit');
+
+    Route::get('/approve-withdraw/{id}', [App\Http\Controllers\Admin\CompletedOrderController::class, 'approve'])->name('admin.approve-withdraw');
+    Route::get('/reject-withdraw/{id}', [App\Http\Controllers\Admin\CompletedOrderController::class, 'reject'])->name('admin.reject-withdraw');
+
+    
+
 });
 
 Route::post('/client/upload-profile-image', [App\Http\Controllers\Client\ProfileController::class, 'uploadProfileImage'])->name('client.uploadProfileImage');
@@ -216,8 +224,3 @@ Route::get('/create-admin', function() {
     ]);
     return 'Admin user created!';
 });
-
-// Withdrawal password and wallet routes
-Route::get('/client/check-withdrawal-password', [WalletController::class, 'checkWithdrawalPassword'])->name('client.check-withdrawal-password');
-Route::post('/client/set-withdrawal-password', [WalletController::class, 'setWithdrawalPassword'])->name('client.set-withdrawal-password');
-Route::post('/client/store-wallet', [WalletController::class, 'storeWallet'])->name('client.store-wallet');

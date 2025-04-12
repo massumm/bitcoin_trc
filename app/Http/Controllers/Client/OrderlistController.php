@@ -25,20 +25,29 @@ class OrderlistController extends Controller
         if ($combo) {
             // If combo exists, decode the products JSON into an array
             $products = json_decode($combo->products, true);
+            $commissionPercentage = 0;
+            if ($projectId == 1) {
+                $commissionPercentage = 12;
+            } elseif ($projectId == 2) {
+                $commissionPercentage = 16;
+            } elseif ($projectId == 3) {
+                $commissionPercentage = 20;
+            }
         } else {
             // If no combo exists, fetch 5 random products from the database
             $products = DB::table('products')->inRandomOrder()->limit(1)->get();
+            $commissionPercentage = 0;
+            if ($projectId == 1) {
+                $commissionPercentage = 4;
+            } elseif ($projectId == 2) {
+                $commissionPercentage = 8;
+            } elseif ($projectId == 3) {
+                $commissionPercentage = 12;
+            }
         }
     
         // Set commission percentage based on the project ID
-        $commissionPercentage = 0;
-        if ($projectId == 1) {
-            $commissionPercentage = 4;
-        } elseif ($projectId == 2) {
-            $commissionPercentage = 8;
-        } elseif ($projectId == 3) {
-            $commissionPercentage = 12;
-        }
+     
     
         // Calculate the total amount (sum of price * quantity)
         if($combo){

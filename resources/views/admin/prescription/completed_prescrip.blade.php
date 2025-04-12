@@ -48,62 +48,52 @@
                         </div>
                     </div>
                 </div>
-                <h1 class="">Completed Prescription Order</h1>
+                <h1 class="">Pending Withdrawals</h1>
 
                 <div class="table-responsive text-nowrap">
                     <table id="pendingOrderDataTable" class="table" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th>Order Id</th>
-                                <th>Date Time</th>
-                                <th>Name</th>
+                                <th>ID</th>
+                                <th>User Name</th>
+                                <th>Address</th>
+                                <th>Method</th>
+                                <th>Amount</th>
+                                <th>Commission</th>
+                                <th>Total</th>
                                 <th>Status</th>
-                                <th>Preview</th>
-
+                                <th>Date</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody class="table-border-bottom-0">
-                            <!-- Table rows -->
-                            <script>
-                                $(document).ready(function() {
-                                    // Get the table body
-                                    var tbody = $('#myDataTable tbody');
-
-                                    // Get the rows in the table body
-                                    var rows = tbody.find('tr');
-
-                                    // Sort the rows based on the value of the third column (index 2)
-                                    rows.sort(function(a, b) {
-                                        var aVal = $(a).find('td').eq(1).text(); // get the value of the second column (index 1)
-                                        var bVal = $(b).find('td').eq(1).text();
-                                        return aVal.localeCompare(
-                                            bVal); // compare the values using locale-sensitive string comparison
-                                    });
-
-                                    // Append the sorted rows back to the table body
-                                    tbody.empty().append(rows);
-                                });
-                            </script>
                             @foreach ($p_order as $order)
                                 <tr>
                                     <td>{{ $order->id }}</td>
-                                    <td>{{ $order->order_date }}</td>
-                                    <td>{{ $order->user->fname ?? 'N/A' }}</td>
-
+                                    <td>{{ $order->user_name }}</td>
+                                    <td>{{ $order->address }}</td>
+                                    <td>{{ $order->method }}</td>
+                                    <td>{{ $order->amount }}</td>
                                     <td>
-                                        <span class="badge rounded-pill bg-success">Order Completed</span>
+                                        <input type="number" 
+                                               class="form-control commission-input" 
+                                               data-order-id="{{ $order->id }}"
+                                               value="0" 
+                                               min="0"
+                                               onchange="calculateTotal(this)">
                                     </td>
+                                    <td class="total-amount">{{ $order->amount }}</td>
                                     <td>
-                                        <button data-bs-toggle="modal" onclick="prescription_info({{ $order }}) "
-                                            data-bs-target="#exampleModal"
-                                            type="button"class="btn btn-primary">Preview</button>
-
+                                        <span class="badge bg-warning">{{ $order->status }}</span>
                                     </td>
-
+                                    <td>{{ $order->date }}</td>
+                                    <td>
+                                        <a href="{{ route('admin.approve-withdrawal', $order->id) }}" class="btn btn-success btn-sm">Approve</a>
+                                        <a href="{{ route('admin.reject-withdrawal', $order->id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to reject this withdrawal?')">Reject</a>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
-
                     </table>
                 </div>
             </div>
@@ -224,6 +214,14 @@
         color: green;
     }
 
+    .commission-input {
+        width: 100px;
+        display: inline-block;
+    }
+    .total-amount {
+        font-weight: bold;
+    }
+
     </style>
 
     <!-- Modal -->
@@ -307,26 +305,27 @@
                                 <div class="sub-container">
                                     <div class="values" id="idSubtotal">0¥</div>
                                     <div class="label">Sub-total:</div>
-
+                                </div>
+                                <div class="sub-container">
+                                    <div class="values">
+                                        <input type="number" id="commission" class="form-control" value="0" min="0" onchange="calculateTotal()">
+                                    </div>
+                                    <div class="label">Commission:</div>
                                 </div>
                                 <div class="Ins-container">
                                     <div class="values" id="idIns">0¥</div>
                                     <div class="label">(-) Insurance:</div>
-
                                 </div>
                                 <div class="sub-container">
                                     <div class="values" id="idTax">0¥</div>
                                     <div class="label">Tax:</div>
-
                                 </div>
                                 <div class="line"></div>
                                 <div class="sub-container">
                                     <div class="values" id="idTotal">0¥</div>
                                     <div class="label">Total:</div>
-
                                 </div>
                                 <div class="spacer"></div>
-                                <!-- <button onclick="confirm()" class="confirm-btn">Confirm</button> -->
                             </div>
 
 
@@ -437,13 +436,22 @@
 
 
 
-        //  $(document).ready(function() {
-        //     $('#pendingOrderDataTable').DataTable({
-        //         order: [0, 'dec'] // Sort by the first column (index 0) in descending order
-        //     });
-        // });
+         $(document).ready(function() {
+            $('#pendingOrderDataTable').DataTable({
+                order: [0, 'dec'] // Sort by the first column (index 0) in descending order
+            });
+        });
         function confirmDelete() {
             return confirm('Are you sure you want to reject this order?');
+        }
+
+        function calculateTotal(input) {
+            const orderId = input.dataset.orderId;
+            const amount = parseFloat(input.closest('tr').querySelector('td:nth-child(5)').textContent);
+            const commission = parseFloat(input.value) || 0;
+            const total = amount + commission;
+            
+            input.closest('tr').querySelector('.total-amount').textContent = total.toFixed(2);
         }
 
         function prescription_info(order) {
@@ -465,7 +473,9 @@
             document.getElementById("idSubtotal").innerText = order.subtotal + "¥";
             document.getElementById("idIns").innerText = order.insurance_total + "¥";
             document.getElementById("idTax").innerText = order.tax + "¥";
-            document.getElementById("idTotal").innerText = order.total + "¥";
+            
+            // Calculate initial total
+            calculateTotal();
 
             imgList.forEach(function(imgSrc) {
                 var imgLink = document.createElement('a');
@@ -599,13 +609,11 @@ var order_id = order.id;
                 document.getElementById("group-image").style.display = "none";
 
             }
-
             else if (order.cart_status == 1) {
                 document.getElementById("cart-section").style.display = "block";
                 document.getElementById("group-image").style.display = "none";
 
             }
-
             else {
                 document.getElementById("cart-section").style.display = "none";
                 document.getElementById("group-image").style.display = "block";
@@ -659,6 +667,15 @@ var order_id = order.id;
             height: 100%;
 
 
+        }
+
+        .form-control {
+            width: 80px;
+            display: inline-block;
+            margin-left: 5px;
+        }
+        .values input {
+            text-align: right;
         }
     </style>
 @endsection

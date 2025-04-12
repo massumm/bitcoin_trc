@@ -21,6 +21,7 @@
                                             <th>{{__('userName')}}</th>
                                             <th>{{__('Refer Code')}}</th>
                                             <th>{{__('Balance')}}</th>
+                                            <th>{{__('Address')}}</th>
                                             <th>{{__('status')}}</th>
                                             <th>{{__('action')}}</th>
                                         </tr>
@@ -33,6 +34,7 @@
                                             <td>{{ $user->name }}</td>
                                             <td>{{ $user->refer_code }}</td>
                                             <td>{{ $user->balance }}</td>
+                                            <td>{{ $user->ip_address }}</td>
                                             <td> @if($user->status == 1)
                                                 <button
                                                 type="button"

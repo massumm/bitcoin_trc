@@ -63,11 +63,21 @@
                             @endforeach
                         </tbody>
                         <tfoot>
-                            <tr>
-                                <td colspan="4" class="text-end"><strong>Total:</strong></td>
-                                <td id="totalAmount">$0.00</td>
-                            </tr>
-                        </tfoot>
+    <tr>
+        <td colspan="4" class="text-end"><strong>Commission (%):</strong></td>
+        <td>
+            <input type="number" id="commissionInput" class="form-control" min="0" step="0.01" value="0" onchange="calculateTotal()">
+        </td>
+    </tr>
+    <tr>
+        <td colspan="4" class="text-end"><strong>Subtotal:</strong></td>
+        <td id="totalAmount">$0.00</td>
+    </tr>
+    <tr>
+        <td colspan="4" class="text-end"><strong>Final Total (with Commission):</strong></td>
+        <td id="finalTotalAmount">$0.00</td>
+    </tr>
+</tfoot>
                     </table>
                 </div>
             </div>
@@ -124,10 +134,23 @@ function calculateTotal() {
     subtotals.forEach(subtotal => {
         total += parseFloat(subtotal.textContent.replace('$', ''));
     });
+
     document.getElementById('totalAmount').textContent = '$' + total.toFixed(2);
+
+    const commissionPercent = parseFloat(document.getElementById('commissionInput').value || 0);
+    const commissionAmount = total * (commissionPercent / 100);
+    const finalTotal = total + commissionAmount;
+
+    document.getElementById('finalTotalAmount').textContent = '$' + finalTotal.toFixed(2);
 }
 
+
 function submitOrder() {
+    const total = parseFloat(document.getElementById('totalAmount').textContent.replace('$', ''));
+    const commissionPercent = parseFloat(document.getElementById('commissionInput').value || 0);
+    const commissionAmount = total * (commissionPercent / 100);
+    const finalTotal = total + commissionAmount;
+
     const orderData = {
         products: Array.from(document.querySelectorAll('.quantity-input')).map(input => ({
             product_id: input.closest('tr').querySelector('td:first-child').textContent,
@@ -135,7 +158,10 @@ function submitOrder() {
             price: input.dataset.price,
             title: input.closest('tr').querySelector('td:nth-child(2)').textContent
         })),
-        total: document.getElementById('totalAmount').textContent,
+        subtotal: total.toFixed(2),
+        commission_percent: commissionPercent.toFixed(2),
+        commission_amount: commissionAmount.toFixed(2),
+        total: finalTotal.toFixed(2),
         user_id: '{{ $user->id }}',
         task_number: '{{ $user->today_task }}'
     };
@@ -162,6 +188,7 @@ function submitOrder() {
         alert('An error occurred while submitting the order.');
     });
 }
+
 </script>
 
 @endsection 
