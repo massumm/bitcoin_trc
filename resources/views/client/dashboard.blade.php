@@ -4,43 +4,45 @@
 <style>
 /* Common Styles */
 .dashboard-container {
-    padding: 1.5rem;
+    padding: 1rem;
     background: #f8f9fa;
+    height: calc(100vh - 62px); /* Subtract header height */
+    overflow: hidden;
 }
 
 /* Balance Card */
 .balance-card {
     background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
-    border-radius: 16px;
-    padding: 2rem;
+    border-radius: 12px;
+    padding: 1rem;
     color: white;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
 }
 
 .balance-card h2 {
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: 500;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.25rem;
     opacity: 0.9;
 }
 
 .balance-card .balance-amount {
-    font-size: 2.5rem;
+    font-size: 1.8rem;
     font-weight: 600;
     margin-bottom: 0;
 }
 
 /* Menu Cards */
 .menu-section {
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 }
 
 .menu-card {
     background: white;
-    border-radius: 12px;
-    padding: 1.25rem;
-    height: 120px;
+    border-radius: 8px;
+    padding: 0.75rem;
+    height: 90px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -51,87 +53,78 @@
 }
 
 .menu-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     border-color: #3B82F6;
 }
 
 .menu-card i {
-    font-size: 1.75rem;
-    margin-bottom: 0.75rem;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
     color: #3B82F6;
-    transition: all 0.3s ease;
-}
-
-.menu-card:hover i {
-    transform: scale(1.1);
 }
 
 .menu-card p {
     margin: 0;
     color: #1F2937;
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     font-weight: 500;
 }
 
 /* Platform Cards */
 .platform-section {
-    margin-top: 2rem;
+    margin-top: 1rem;
 }
 
 .section-title {
     color: #1F2937;
-    font-size: 1.25rem;
+    font-size: 1rem;
     font-weight: 600;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     display: flex;
     align-items: center;
 }
 
 .section-title i {
-    margin-right: 0.75rem;
+    margin-right: 0.5rem;
     color: #3B82F6;
 }
 
 .platform-card {
-    height: 240px;
-    border-radius: 12px;
+    height: 160px;
+    border-radius: 8px;
     overflow: hidden;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.5rem;
     transition: all 0.3s ease;
     border: none;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .platform-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
 
 .platform-card .card-img-top {
-    height: 170px;
+    height: 100px;
     object-fit: cover;
-    transition: all 0.3s ease;
-}
-
-.platform-card:hover .card-img-top {
-    transform: scale(1.05);
 }
 
 .platform-card .card-body {
-    height: 70px;
+    height: 60px;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 1rem;
+    padding: 0.5rem;
     background: white;
 }
 
 .platform-card .card-text {
     margin: 0;
-    font-size: 1rem;
+    font-size: 0.85rem;
     color: #1F2937;
     font-weight: 500;
+    text-align: center;
 }
 
 .platform-card-link {
@@ -139,31 +132,30 @@
     display: block;
 }
 
+/* Row Spacing */
+.row {
+    --bs-gutter-y: 0.75rem;
+    --bs-gutter-x: 0.75rem;
+}
+
 /* Responsive Adjustments */
 @media (max-width: 768px) {
     .dashboard-container {
-        padding: 1rem;
-    }
-    
-    .balance-card {
-        padding: 1.5rem;
-    }
-    
-    .balance-card .balance-amount {
-        font-size: 2rem;
+        height: 100vh;
+        overflow-y: auto;
     }
     
     .menu-card {
-        height: 100px;
-        padding: 1rem;
+        height: 80px;
+        padding: 0.5rem;
     }
     
     .platform-card {
-        height: 200px;
+        height: 160px;
     }
     
     .platform-card .card-img-top {
-        height: 140px;
+        height: 100px;
     }
 }
 </style>
@@ -220,7 +212,7 @@
             Platform Introduction
         </h4>
         <div class="row g-3">
-            <div class="col-12 col-md-6">
+            <div class="col-6 col-md-3">
                 <a href="{{ route('platform.profiles') }}" class="platform-card-link">
                     <div class="card platform-card">
                         <img src="{{ asset('assets/img/office_desk.jpg') }}" class="card-img-top" alt="Profile">
@@ -230,7 +222,7 @@
                     </div>
                 </a>
             </div>
-            <div class="col-12 col-md-6">
+            <div class="col-6 col-md-3">
                 <a href="{{ route('platform.rules') }}" class="platform-card-link">
                     <div class="card platform-card">
                         <img src="{{ asset('assets/img/highway.jpeg') }}" class="card-img-top" alt="Rules">
@@ -240,7 +232,7 @@
                     </div>
                 </a>
             </div>
-            <div class="col-12 col-md-6">
+            <div class="col-6 col-md-3">
                 <a href="{{ route('platform.cooperation') }}" class="platform-card-link">
                     <div class="card platform-card">
                         <img src="{{ asset('assets/img/handshake.jpg') }}" class="card-img-top" alt="Win-Win">
@@ -250,7 +242,7 @@
                     </div>
                 </a>
             </div>
-            <div class="col-12 col-md-6">
+            <div class="col-6 col-md-3">
                 <a href="{{ route('platform.instruction') }}" class="platform-card-link">
                     <div class="card platform-card">
                         <img src="{{ asset('assets/img/instruction.jpeg') }}" class="card-img-top" alt="Instructions">

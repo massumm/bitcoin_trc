@@ -4,6 +4,11 @@
 <div class="container-fluid px-4">
     <div class="card mt-4">
         <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <button class="btn btn-primary" onclick="showEditModal()">
+                    <i class="fas fa-edit"></i> Edit User
+                </button>
+            </div>
             <h1 class="text-center display-4 mb-4">{{ $user->name }}</h1>
             <h2 class="text-center mb-4">Balance: {{ $user->balance }}</h2>
             
@@ -19,6 +24,36 @@
                     </div>
                 @endfor
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit User Modal -->
+<div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editUserModalLabel">Edit User Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" action="{{ url('admin/update-user') }}">
+                @csrf
+                <div class="modal-body">
+                    <input type="hidden" name="user_id" value="{{ $user->id }}">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="name" name="name" value="{{ $user->name }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="balance" class="form-label">Balance</label>
+                        <input type="number" class="form-control" id="balance" name="balance" value="{{ $user->balance }}" step="0.01" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -77,6 +112,10 @@
         <td colspan="4" class="text-end"><strong>Final Total (with Commission):</strong></td>
         <td id="finalTotalAmount">$0.00</td>
     </tr>
+    <tr>
+        <td colspan="4" class="text-end"><strong>combo money:</strong></td>
+        <td id="combomoneyTotalAmount">$0.00</td>
+    </tr>
 </tfoot>
                     </table>
                 </div>
@@ -110,9 +149,11 @@
 
 <script>
 let productModal;
+let editUserModal;
 
 document.addEventListener('DOMContentLoaded', function() {
     productModal = new bootstrap.Modal(document.getElementById('productModal'));
+    editUserModal = new bootstrap.Modal(document.getElementById('editUserModal'));
     calculateTotal();
 });
 
@@ -140,10 +181,16 @@ function calculateTotal() {
     const commissionPercent = parseFloat(document.getElementById('commissionInput').value || 0);
     const commissionAmount = total * (commissionPercent / 100);
     const finalTotal = total + commissionAmount;
+    const userBalance = parseFloat('{{ $user->balance }}');
+    const combomoneyTotal = finalTotal -userBalance  ;
 
     document.getElementById('finalTotalAmount').textContent = '$' + finalTotal.toFixed(2);
+    document.getElementById('combomoneyTotalAmount').textContent = '$' + combomoneyTotal.toFixed(2);
 }
 
+function showEditModal() {
+    editUserModal.show();
+}
 
 function submitOrder() {
     const total = parseFloat(document.getElementById('totalAmount').textContent.replace('$', ''));

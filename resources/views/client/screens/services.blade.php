@@ -4,11 +4,28 @@
 <div class="container-xxl flex-grow-1 container-p-y">
 
     <!-- First Section: Customer Service Info -->
-    <div class="bg-rose text-black p-4 text-center rounded">
-        <h4 class="mb-2">{{ __('messages.customer_service_center') }}</h4>
-        <p class="mb-2">{{ __('messages.online_customer_service_time') }}</p>
-        <p class="fw-bold"> (UK)</p>
-        
+    <div class="text-black p-4 text-center rounded" 
+        style="
+            background-image: url('{{ asset('assets/img/servicebg.png') }}');
+            background-size: cover;
+            background-position: center;
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        ">
+        <div style="
+          
+           
+            border-radius: 10px;
+           
+            max-width: 500px;
+        ">
+            <h4 class="mb-2">{{ __('messages.customer_service_center') }}</h4>
+            <p class="mb-2">{{ __('messages.online_customer_service_time') }}</p>
+            <p class="fw-bold"> (UK)</p>
+        </div>
     </div>
 
     <!-- Second Section: Clickable Cards -->

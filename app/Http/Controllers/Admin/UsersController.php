@@ -30,6 +30,21 @@ class UsersController extends Controller
         }
 
      }
+     public function updateUser(Request $request)
+{
+    try {
+        $user = User2::findOrFail($request->user_id);
+        
+        $user->update([
+            'name' => $request->name,
+            'balance' => $request->balance
+        ]);
+
+        return redirect()->back()->with('success', 'User updated successfully');
+    } catch (\Exception $e) {
+        return redirect()->back()->with('error', 'Failed to update user: ' . $e->getMessage());
+    }
+}
      public function sts_update($user_id){
               //return 'This is Dashboard';
         $UsersList =  UserModel::find($user_id);

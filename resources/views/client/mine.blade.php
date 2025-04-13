@@ -74,7 +74,7 @@
     background: white;
     border-radius: 12px;
     padding: 1.5rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.5rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
@@ -143,14 +143,15 @@
 .quick-actions {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
+    align-content: center;
+    gap: 1.75rem;
     margin-bottom: 1.5rem;
 }
 
 .quick-action-item {
     background: white;
     border-radius: 12px;
-    padding: 1.25rem 1rem;
+    padding: 1rem 0.5rem;
     text-align: center;
     text-decoration: none;
     transition: all 0.3s ease;
@@ -158,13 +159,13 @@
 }
 
 .quick-action-item:hover {
-    transform: translateY(-4px);
+    transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     border-color: #3B82F6;
 }
 
 .quick-action-item i {
-    font-size: 1.5rem;
+    font-size: 2rem;
     color: #3B82F6;
     margin-bottom: 0.75rem;
 }
@@ -172,7 +173,7 @@
 .quick-action-item p {
     margin: 0;
     color: #4B5563;
-    font-size: 0.9rem;
+    font-size: 1rem;
     font-weight: 500;
 }
 
@@ -230,7 +231,20 @@
     }
     
     .quick-actions {
-        grid-template-columns: repeat(2, 1fr);
+        gap: 1.75rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .quick-action-item {
+        padding: 1rem;
+    }
+    
+    .quick-action-item i {
+        font-size: 1.5rem;
+    }
+    
+    .quick-action-item p {
+        font-size: 0.9rem;
     }
     
     .action-buttons {

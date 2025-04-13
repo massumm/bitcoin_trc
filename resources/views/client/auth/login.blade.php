@@ -171,6 +171,28 @@
                     </div>
                   </div>
                   <div class="mb-3">
+                    <label for="captcha" class="form-label">{{__('messages.captcha')}}</label>
+                    <div class="d-flex align-items-center gap-2">
+                      <input
+                        type="text"
+                        id="captcha"
+                        class="form-control @error('captcha') is-invalid @enderror"
+                        name="captcha"
+                        placeholder="{{__('messages.enterTheCode')}}"
+                        style="max-width: 150px;"
+                        required
+                      >
+                      <div class="captcha-container" style="background: #fff; border-radius: 4px; padding: 5px;">
+                        <canvas id="captchaCanvas" width="150" height="70" style="display: block;"></canvas>
+                      </div>
+                      @error('captcha')
+                        <span class="invalid-feedback" role="alert">
+                          <strong>{{ $message }}</strong>
+                        </span>
+                      @enderror
+                    </div>
+                  </div>
+                  <div class="mb-3">
                     <div class="form-check">
                       <input class="form-check-input" type="checkbox" id="remember-me" />
                       <label class="form-check-label" for="remember-me">{{__('messages.rememberMe')}}</label>
@@ -235,6 +257,74 @@
     function changeLanguage(lang) {
         window.location.href = "{{ url('language') }}/" + lang;
     }
+
+    let captchaValue = '';
+
+    function generateCaptcha() {
+        const canvas = document.getElementById('captchaCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Clear canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Generate 4 random integers
+        captchaValue = '';
+        for (let i = 0; i < 4; i++) {
+            captchaValue += Math.floor(Math.random() * 10).toString();
+        }
+
+        // Set background
+        ctx.fillStyle = '#f8f9fa';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Add noise (lines)
+        ctx.strokeStyle = '#0000ff';
+        for (let i = 0; i < 20; i++) {
+            ctx.beginPath();
+            ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
+            ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
+            ctx.stroke();
+        }
+
+        // Draw distorted text
+        ctx.font = 'bold 36px Arial';
+        ctx.fillStyle = '#0000ff';
+        let x = 25;
+        for (let i = 0; i < captchaValue.length; i++) {
+            const char = captchaValue[i];
+            const rotation = (Math.random() - 0.5) * 0.4;
+            ctx.save();
+            ctx.translate(x, 45);
+            ctx.rotate(rotation);
+            ctx.fillText(char, 0, 0);
+            ctx.restore();
+            x += 30;
+        }
+
+        // Add more noise (dots)
+        for (let i = 0; i < 100; i++) {
+            ctx.fillRect(
+                Math.random() * canvas.width,
+                Math.random() * canvas.height,
+                2,
+                2
+            );
+        }
+    }
+
+    // Generate initial captcha
+    window.addEventListener('load', generateCaptcha);
+
+    // Form validation
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const captchaInput = document.getElementById('captcha').value.trim();
+        if (captchaInput !== captchaValue) {
+            e.preventDefault();
+            alert('Invalid verification code! Please try again.');
+            generateCaptcha();
+            document.getElementById('captcha').value = '';
+        }
+    });
     </script>
 
   </body>

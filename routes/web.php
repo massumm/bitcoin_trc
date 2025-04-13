@@ -203,7 +203,7 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/approve-withdraw/{id}', [App\Http\Controllers\Admin\CompletedOrderController::class, 'approve'])->name('admin.approve-withdraw');
     Route::get('/reject-withdraw/{id}', [App\Http\Controllers\Admin\CompletedOrderController::class, 'reject'])->name('admin.reject-withdraw');
 
-    
+    Route::post('/update-user', [App\Http\Controllers\Admin\UsersController::class, 'updateUser']);
 
 });
 

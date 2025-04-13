@@ -294,7 +294,17 @@ Let us work hard to achieve win-win cooperation and gain huge benefits!',
 ,'enter_your_password'=>'please enter your password',
 'submit'=>'submit',
 'names'=>'name',
-'virtual_currency_protocol'=>'virtual_currency_protocol'
+'virtual_currency_protocol'=>'virtual_currency_protocol',
+'enter_the_code'=>'enter the code',
+'captcha'=>'captcha',
+'frequently_asked_questions'=>'The following are frequently asked questions',
+'about_grabbing_orders_and_freezing_orders'=>'About Grabbing Orders and Freezing Orders',
+'about_recharge'=>'About Recharge',
+'about_withdrawal'=>'About Withdrawal',
+'about_recharge_content'=>'You can top up your account in the "My" - "My Wallet" interface. Click the "Recharge" button, fill in the name of the assignee and the amount to be transferred, and click "Transfer" to transfer. After transferring to the account provided by the platform, please be sure to submit a screenshot of the successful transfer, and then click "Submit". To ensure that your recharge is received quickly, the system will randomly match the amount you wish to recharge. Be sure to double check the USDT account or bank account you entered for the deposit before topping up. The platform will change the USDT wallet account or bank account from time to time, so if you have any questions,',
+'about_withdrawal_content'=>'If you want to apply for withdrawal, you must complete at least 25 orders before you can apply, please bind your withdrawal information in the application before withdrawing. You can withdraw funds from the "My" - "My Wallet" interface during platform working hours. Click the "Withdraw" button, enter the amount you want to withdraw and the withdrawal password, the withdrawal will be transferred to your USDT wallet or bank within 24:00 after you apply for withdrawal. ',
+'about_grabbing_orders_and_freezing_orders_content'=>'After the account balance reaches the minimum 20USD, you can grab the order, and each person can grab up to 25 orders per day! Click "Order" - "Automatic Order" below, and wait for the system to grab the order. If the order is successful, you need to complete the task order as soon as possible, so as not to delay the completion of subsequent tasks.',
+
 
 ];
 

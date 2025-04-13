@@ -142,8 +142,8 @@
     }
     
     .nav-tabs .nav-link {
-        padding: 0.5rem 1rem;
-        font-size: 0.9rem;
+        padding: 0.3rem 0.5rem;
+        font-size:  1.0rem;
     }
     
     .menu-image-container {
@@ -229,7 +229,7 @@
                         {{ __('messages.commissions') }}: 8%
                     </p>
                 </div>
-            </div>
+            </div>  
         </a>
 
         <a href="{{ url('/client/projectdetails?id=3&name=Aliexpress') }}" class="menu-card menu-item" data-category="vip3">
