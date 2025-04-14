@@ -47,12 +47,12 @@ class UsersController extends Controller
 }
      public function sts_update($user_id){
               //return 'This is Dashboard';
-        $UsersList =  UserModel::find($user_id);
+        $UsersList =  User2::find($user_id);
         $data = request()->all();
-        if($UsersList->status==0){
-            $UsersList->status = 1;
+        if($UsersList->status=="0"){
+            $UsersList->status = "1";
         }else{
-            $UsersList->status = 0; 
+            $UsersList->status = "0"; 
         }
      
 
@@ -88,6 +88,7 @@ class UsersController extends Controller
             'refer_code' => $refer_code,
             'refer_by' => null,  // Admin created users don't have a referrer
             'refer_earn' => 0.00,
+            'demostatus' => 1,
             'created_at' => now(),
             'updated_at' => now()
         ]);
@@ -111,7 +112,7 @@ class UsersController extends Controller
             $data = $request->json()->all();
             
             // Delete existing combos for this user
-            DB::table('combos')->where('user_id', $data['user_id'])->delete();
+           // DB::table('combos')->where('user_id', $data['user_id'])->delete();
             
             // Prepare products array with all required fields
             $products = array_map(function($product) {

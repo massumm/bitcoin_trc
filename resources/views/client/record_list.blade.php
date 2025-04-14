@@ -299,6 +299,7 @@
             }))
         };
 
+        
         // Show loading state
         button.disabled = true;
         button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> {{ __('messages.submitting') }}...';
@@ -321,9 +322,10 @@
                 toast.innerHTML = '<i class="fas fa-check-circle me-2"></i>{{ __('messages.order_submitted_successfully') }}';
                 document.body.appendChild(toast);
                 setTimeout(() => toast.remove(), 3000);
-                
+                location.reload();
+
                 // Reload orders
-                loadOrders('incomplete');
+                //loadOrders('incomplete');
             } else {
                 throw new Error(data.message || '{{ __('messages.failed_to_submit_order') }}');
             }
@@ -355,7 +357,7 @@
             menuList.innerHTML = `
                 <div class="text-center py-5">
                     <i class="fas fa-spinner fa-spin fa-2x text-primary"></i>
-                    <p class="mt-2">{{ __('messages.loading_orders') }}...</p>
+                    <p class="mt-2">{{ __('messages.http://127.0.0.1:8000/uploads/medicins/img130.jpg') }}...</p>
                 </div>
             `;
 

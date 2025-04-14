@@ -224,3 +224,5 @@ Route::get('/create-admin', function() {
     ]);
     return 'Admin user created!';
 });
+
+Route::post('/client/close-order', [App\Http\Controllers\Client\OrderlistController::class, 'closeOrder'])->name('client.close-order');

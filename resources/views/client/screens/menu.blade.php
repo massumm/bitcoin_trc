@@ -215,7 +215,9 @@
 
         <a href="{{ url('/client/projectdetails?id=2&name=Alibaba') }}" class="menu-card menu-item" data-category="vip2">
             <div class="menu-card-body">
+            <img src="{{ asset('assets/img/vip1.jpg') }}" class="vip-badge" alt="VIP 1" style="position: absolute; top: 10px; left: 10px; width: 30px; height: 30px; z-index: 1;">
                 <div class="menu-image-container">
+                    
                     <img src="{{ asset('assets/img/alibaba.png') }}" alt="Alibaba" class="menu-image">
                 </div>
                 <div class="menu-content">

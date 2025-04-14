@@ -35,7 +35,7 @@
                                             <td>{{ $user->refer_code }}</td>
                                             <td>{{ $user->balance }}</td>
                                             <td>{{ $user->ip_address }}</td>
-                                            <td> @if($user->status == 1)
+                                            <td> @if($user->status > 0)
                                                 <button
                                                 type="button"
                                                 class="btn btn-outline-success dropdown-toggle"

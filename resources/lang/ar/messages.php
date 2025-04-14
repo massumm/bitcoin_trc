@@ -246,6 +246,7 @@ return [
     'share' => 'Share',
     'share_link_copied_to_clipboard' => 'Share Link Copied to Clipboard',
     'wallet_management' => 'Wallet Management',
+    'balance_low'=>'your balance is low please recharge'
     
     
     

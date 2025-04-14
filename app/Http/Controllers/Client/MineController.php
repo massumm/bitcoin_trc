@@ -59,7 +59,7 @@ class MineController extends Controller
                 return [
                     'name' => $user->name,
                     'balance' => $user->balance,
-                    'total_deposit' => \DB::table('deposit')->where('user_id', $user->id)->sum('amount'),
+                    'total_deposit' =>$user->total_deposit,
                     'joined_date' => $user->created_at
                 ];
             }),
@@ -67,7 +67,7 @@ class MineController extends Controller
                 return [
                     'name' => $user->name,
                     'balance' => $user->balance,
-                    'total_deposit' => \DB::table('deposit')->where('user_id', $user->id)->sum('amount'),
+                    'total_deposit' =>$user->total_deposit,
                     'joined_date' => $user->created_at
                 ];
             }),
@@ -75,7 +75,7 @@ class MineController extends Controller
                 return [
                     'name' => $user->name,
                     'balance' => $user->balance,
-                    'total_deposit' => \DB::table('deposit')->where('user_id', $user->id)->sum('amount'),
+                    'total_deposit' =>$user->total_deposit,
                     'joined_date' => $user->created_at
                 ];
             })

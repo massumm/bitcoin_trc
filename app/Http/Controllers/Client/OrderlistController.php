@@ -14,14 +14,14 @@ class OrderlistController extends Controller
         $projectId = $request->query('projectId');
         // Check if ordering is allowed
         $orderAllowed = true; // Replace with your condition
-        $taskNumber = Auth::user()->today_task + 1;
-    
+        $taskNumber = Auth::user()->today_task ;
+        if (Auth::user()->demostatus = 0) {
         // Get the combo for the current task number and user
         $combo = DB::table('combos')
             ->where('task_number', $taskNumber)
             ->where('user_id', Auth::id()) // Ensure it's assigned to the correct user
             ->first();
-    
+        
         if ($combo) {
             // If combo exists, decode the products JSON into an array
             $products = json_decode($combo->products, true);
@@ -59,7 +59,34 @@ class OrderlistController extends Controller
                 return $product->price * $product->quantity;
             });
         }
-    
+        }else{
+            $combo = DB::table('demo_combos')
+            ->where('task_number', $taskNumber)
+            ->first();
+            if ($combo) {
+            $products = json_decode($combo->products, true);
+            $commissionPercentage = $combo->commission;
+            $totalAmount = collect($products)->sum(function ($product) {
+                return $product['price'] * $product['quantity'];
+            });
+
+        }else{
+            $products = DB::table('products')->inRandomOrder()->limit(1)->get();
+            $commissionPercentage = 0;
+            if ($projectId == 1) {
+                $commissionPercentage = 4;
+            } elseif ($projectId == 2) {
+                $commissionPercentage = 8;
+            } elseif ($projectId == 3) {
+                $commissionPercentage = 12;
+            }
+            $totalAmount = $products->sum(function ($product) {
+                return $product->price * $product->quantity;
+            });
+        }
+
+
+        }
         // Calculate the commission
         $commission = ($totalAmount * $commissionPercentage) / 100;
     
@@ -177,16 +204,17 @@ class OrderlistController extends Controller
             DB::table('users')
                 ->where('id', $user->id)
                 ->update([
-                    'status' => "1", // Set status to active
-                    'today_task' => DB::raw('today_task + 1'),
+                    'status' => 1,
+                    'today_task' => DB::raw('CASE WHEN today_task + 1 >= 25 THEN 0 ELSE today_task + 1 END'),
                     'min_earn' => DB::raw('min_earn + ' . $request->commission),
                     'balance' => DB::raw('balance + ' . $request->commission)
                 ]);
-                  // Delete the generated combo for this user after order submission
-        DB::table('combos')
-        ->where('task_number', $user->today_task + 1)
-        ->where('user_id', $user->id)
-        ->delete();
+            
+            // Delete the generated combo for this user after order submission
+            DB::table('combos')
+                ->where('task_number', $user->today_task + 1)
+                ->where('user_id', $user->id)
+                ->delete();
         
             DB::commit();
         
@@ -247,6 +275,89 @@ class OrderlistController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to fetch orders'
+            ], 500);
+        }
+    }
+
+    public function closeOrder(Request $request)
+    {
+        try {
+            $validator = \Validator::make($request->all(), [
+                'order_number' => 'required|string',
+                'total_amount' => 'required|numeric|min:0',
+                'commission' => 'required|numeric|min:0',
+                'expected_income' => 'required|numeric|min:0',
+                'order_items' => 'required|array|min:1',
+                'order_items.*.product_id' => 'required|string',
+                'order_items.*.name' => 'required|string',
+                'order_items.*.price' => 'required|numeric|min:0',
+                'order_items.*.quantity' => 'required|integer|min:1',
+                'order_items.*.image' => 'required|string'
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $user = auth()->user();
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'User not authenticated'
+                ], 401);
+            }
+
+            DB::beginTransaction();
+
+            try {
+                $orderId = DB::table('orders')->insertGetId([
+                    'order_number' => $request->order_number,
+                    'user_id' => $user->id,
+                    'total_amount' => $request->total_amount,
+                    'commission' => $request->commission,
+                    'expected_income' => $request->expected_income,
+                    'status' => 'pending',
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
+        
+                // Insert order items
+                foreach ($request->order_items as $item) {
+                    DB::table('order_items')->insert([
+                        'order_id' => $orderId,
+                        'product_id' => $item['product_id'],
+                        'quantity' => $item['quantity'],
+                        'image' => $item['image'],
+                        'price' => $item['price'],
+                        'name' => $item['name']
+                    ]);
+                }
+
+                // Update user status and task count
+                DB::table('users')
+                ->where('id', $user->id)
+                ->update(['status' => "2"]);
+
+                DB::commit();
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Order created successfully',
+                    'order_id' => $orderId
+                ]);
+            } catch (\Exception $e) {
+                DB::rollBack();
+                throw $e;
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to create order',
+                'error' => $e->getMessage()
             ], 500);
         }
     }

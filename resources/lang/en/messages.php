@@ -176,7 +176,7 @@ return [
     'the_platform_will_change_the_recharge_method_from_time_to_time' => 'The Platform Will Change the Recharge Method from Time to Time',   
     'each_user_should_check_the_latest_recharge_method_before_recharging_to_avoid_failures' => 'Each User Should Check the Latest Recharge Method Before Recharging to Avoid Failures',
     'about_withdrawal' => 'About Withdrawal',
-    'the_minimum_withdrawal_amount_of_mall' => 'The Minimum Withdrawal Amount of COINBIT is',
+    'the_minimum_withdrawal_amount_of_mall' => 'The Minimum Withdrawal Amount of Mall is',
     'is' => 'is',
     'and_the_minimum_deposit_is' => 'and the minimum deposit is',
     'withdrawals_are_processed_within' => 'Withdrawals are processed within',   
@@ -246,19 +246,19 @@ return [
     'share' => 'Share',
     'share_link_copied_to_clipboard' => 'Share Link Copied to Clipboard',
     'wallet_management' => 'Wallet Management',
-    'platform_profiles_content' => '        COINBIT is an intelligent cloud global order matching center with a sense of mission, which plays an important role in major e-commerce platforms around the world. Currently, COINBIT maintains close strategic partnership with Amazon, Alibaba, AliExpress, souq, jumia, maxfashion and Daraz. Cooperation,
+    'platform_profiles_content' => '        Mall is an intelligent cloud global order matching center with a sense of mission, which plays an important role in major e-commerce platforms around the world. Currently, Mall maintains close strategic partnership with Amazon, Alibaba, AliExpress, souq, jumia, maxfashion and Daraz. Cooperation,
 
-    Blocking traffic through online vacuuming, updating layered product information through digital product reconstruction, enabling scenarios and enhancing competitiveness. COINBIT uses an intelligent cloud algorithm engine to accurately match buyers and users with established merchants and automatically match transactions, allowing many established merchants to stand out in the fierce business competition. COINBIT is not a single cloud shopping platform.
+    Blocking traffic through online vacuuming, updating layered product information through digital product reconstruction, enabling scenarios and enhancing competitiveness. Mall uses an intelligent cloud algorithm engine to accurately match buyers and users with established merchants and automatically match transactions, allowing many established merchants to stand out in the fierce business competition. Mall is not a single cloud shopping platform.
 
-    Its greatest value lies in allowing consumers to earn commissions through free sharing while shopping norCOINBITy. Merchants will have a promoter at the same time they pick up the order. With its leading 5G intelligent cloud matching technology, COINBIT has helped countless merchants and consumers.
+    Its greatest value lies in allowing consumers to earn commissions through free sharing while shopping norMally. Merchants will have a promoter at the same time they pick up the order. With its leading 5G intelligent cloud matching technology, Mall has helped countless merchants and consumers.
 ',
     'platform_profiles' => 'Platform Profiles',
-    'platform_cooperation_content' => 'At COINBIT, we carry out win-win cooperation for all users around the world, increase the interaction between users and merchants, help users make money, and help merchants make profits. We retain company results. We abide by the rules and are committed to building a well-known cooperative e-commerce company. Through its own technology to guide the development of e-commerce industry, we are committed to becoming the creator of industry standards. This is our constant pursuit and corporate vision. We also thank all COINBIT partners and users for their support and valuable time.
+    'platform_cooperation_content' => 'At Mall, we carry out win-win cooperation for all users around the world, increase the interaction between users and merchants, help users make money, and help merchants make profits. We retain company results. We abide by the rules and are committed to building a well-known cooperative e-commerce company. Through its own technology to guide the development of e-commerce industry, we are committed to becoming the creator of industry standards. This is our constant pursuit and corporate vision. We also thank all Mall partners and users for their support and valuable time.
 
 Let us work hard to achieve win-win cooperation and gain huge benefits!',
     'platform_cooperation' => 'Platform Cooperation',
 
-    'platform_instruction_content' => 'COINBIT is an intelligent cloud global order matching center with a sense of mission, which plays an important role in major e-commerce platforms around the world. Currently, COINBIT maintains close strategic partnership with Amazon, Alibaba, AliExpress, souq, jumia, maxfashion and Daraz. Cooperation,',
+    'platform_instruction_content' => 'Mall is an intelligent cloud global order matching center with a sense of mission, which plays an important role in major e-commerce platforms around the world. Currently, Mall maintains close strategic partnership with Amazon, Alibaba, AliExpress, souq, jumia, maxfashion and Daraz. Cooperation,',
     'platform_instruction' => 'Instructions for use',
     'instruction_header_title1'=>'Some questions about deposits:',
     'insctruction_1_1'=>'          1.Users need to obtain a new payment address each time they make a deposit. Repeated deposits to the same payment address are not allowed. Otherwise, the deposit may not automatically reach the account, recharge may fail, and other problems may occur.
@@ -304,7 +304,12 @@ Let us work hard to achieve win-win cooperation and gain huge benefits!',
 'about_recharge_content'=>'You can top up your account in the "My" - "My Wallet" interface. Click the "Recharge" button, fill in the name of the assignee and the amount to be transferred, and click "Transfer" to transfer. After transferring to the account provided by the platform, please be sure to submit a screenshot of the successful transfer, and then click "Submit". To ensure that your recharge is received quickly, the system will randomly match the amount you wish to recharge. Be sure to double check the USDT account or bank account you entered for the deposit before topping up. The platform will change the USDT wallet account or bank account from time to time, so if you have any questions,',
 'about_withdrawal_content'=>'If you want to apply for withdrawal, you must complete at least 25 orders before you can apply, please bind your withdrawal information in the application before withdrawing. You can withdraw funds from the "My" - "My Wallet" interface during platform working hours. Click the "Withdraw" button, enter the amount you want to withdraw and the withdrawal password, the withdrawal will be transferred to your USDT wallet or bank within 24:00 after you apply for withdrawal. ',
 'about_grabbing_orders_and_freezing_orders_content'=>'After the account balance reaches the minimum 20USD, you can grab the order, and each person can grab up to 25 orders per day! Click "Order" - "Automatic Order" below, and wait for the system to grab the order. If the order is successful, you need to complete the task order as soon as possible, so as not to delay the completion of subsequent tasks.',
+'no_deposit_records_found'=>'no deposit records found',
+'about_rules'=>'MALL is an intelligent cloud global order matching center with a sense of mission, which plays an important role in major e-commerce platforms around the world. Currently, MALL maintains close strategic partnership with Amazon, Alibaba, AliExpress, souq, jumia, maxfashion and Daraz. Cooperation,
 
+Blocking traffic through online vacuuming, updating layered product information through digital product reconstruction, enabling scenarios and enhancing competitiveness. MALL uses an intelligent cloud algorithm engine to accurately match buyers and users with established merchants and automatically match transactions, allowing many established merchants to stand out in the fierce business competition. MALL is not a single cloud shopping platform.
+
+Its greatest value lies in allowing consumers to earn commissions through free sharing while shopping normally. Merchants will have a promoter at the same time they pick up the order. With its leading 5G intelligent cloud matching technology, MALL has helped countless merchants and consumers.'
 
 ];
 

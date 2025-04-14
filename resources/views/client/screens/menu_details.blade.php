@@ -370,7 +370,7 @@
                         </div>
                         <div class="product-list">
                             ${data.products.map(product => `
-                                <div class="product-item">
+                                <div class="product-item" data-product='${JSON.stringify(product)}'>
                                    <img src="{{ asset('${product.image}') }}" class="product-image" alt="${product.title}">
                                     <div class="product-details">
                                         <h3 class="product-title">${product.title}</h3>
@@ -399,14 +399,14 @@
                                 <span>Expected income</span>
                                 <span style="color: #E67E22;">${parseFloat(data.total_amount) + parseFloat(data.commission)} USDT</span>
                             </div>
-                         <button class="submit-order-btn"
-    data-order='${orderNumber}'
-    data-total='${data.total_amount}'
-    data-commission='${data.commission}'
-    data-products='${JSON.stringify(data.products).replace(/'/g, "\\'").replace(/"/g, '&quot;')}'
-    onclick="handleOrder(this)">
-    {{ __('messages.submit_order') }}
-</button>
+                            <button class="submit-order-btn"
+                                data-order='${orderNumber}'
+                                data-total='${data.total_amount}'
+                                data-commission='${data.commission}'
+                                data-products='${JSON.stringify(data.products).replace(/'/g, "\\'").replace(/"/g, '&quot;')}'
+                                onclick="handleOrder(this)">
+                                {{ __('messages.submit_order') }}
+                            </button>
                         </div>
                     </div>
                 `;
@@ -427,6 +427,9 @@
     if (status === 2) {
         showErrorMessage("{{ __('messages.please_complete_the_order_before_grabbing_another_one') }}");
         return;
+    }
+    if(userBalance==0){
+        showErrorMessage("{{ __('messages.balance_low') }}");
     }
         // Define balance ranges for each project
         let allowedToOrder = false;
@@ -519,9 +522,66 @@
             }, 300); // Wait for fade-out transition
         }, 2000);
     }
-
-    function closeOrderPopup() {
+    function successfullcloseOrderPopup() {
         const container = document.getElementById("productContainer");
+        container.innerHTML = '';
+    }
+    function closeOrderPopup() {
+        console.log('closeOrderPopup');
+        const container = document.getElementById("productContainer");
+        const orderNumber = container.querySelector('.order-number')?.textContent?.replace('Order Nos: ', '');
+        
+        if (orderNumber) {
+            console.log('orderNumber'+orderNumber);
+            // Get all order details
+            const orderDetails = {
+                order_number: orderNumber,
+                total_amount: parseFloat(container.querySelector('.order-summary:nth-child(2) span:last-child')?.textContent?.replace(' USDT', '')),
+                commission: parseFloat(container.querySelector('.order-summary:nth-child(3) span:last-child')?.textContent?.replace(' USDT', '')),
+                expected_income: parseFloat(container.querySelector('.order-summary:nth-child(4) span:last-child')?.textContent?.replace(' USDT', '')),
+                order_items: Array.from(container.querySelectorAll('.product-item')).map(item => {
+                    const productData = JSON.parse(item.getAttribute('data-product') || '{}');
+                    const imageSrc = item.querySelector('.product-image')?.src || '';
+                    // Extract relative path from the full URL
+                    const relativePath = imageSrc.split('/uploads/')[1] || '';
+                    return {
+                        product_id: String(productData.id || ''),
+                        name: item.querySelector('.product-title')?.textContent || '',
+                        price: parseFloat(item.querySelector('.product-price')?.textContent?.replace(' USDT', '') || 0),
+                        quantity: parseInt(item.querySelector('.product-quantity')?.textContent?.replace('x', '') || 0),
+                        image: relativePath ? 'uploads/' + relativePath : ''
+                    };
+                })
+            };
+            
+            console.log('Order details:', orderDetails);
+            
+            // Get CSRF token
+            const token = document.querySelector('meta[name="csrf-token"]')?.content;
+            
+            // Call the close-order endpoint
+            fetch('/client/close-order', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': token
+                },
+                body: JSON.stringify(orderDetails)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (!data.success) {
+                    console.error('Failed to update order status:', data.message);
+                }
+                location.reload();
+                console.log('data'+JSON.stringify(data));
+            })
+            .catch(error => {
+                console.error('Error updating order status:', error);
+            });
+        }
+        
+        // Clear the container
         container.innerHTML = '';
     }
     function handleOrder(button) {
@@ -535,15 +595,28 @@
     submitOrder(orderNumber, totalAmount, commission, products);
 }
      function submitOrder(orderNumber, totalAmount, commission, products) {   
-        
         // First, let's validate that we have all required data
         if (!products || !Array.isArray(products)) {
             console.error('Products data is invalid:', products);
             showErrorMessage('Invalid products data');
             return;
         }
+        
 
         // Format the data properly
+        // const formattedProducts = products.map(product => {
+        //     const imageSrc = product.image || '';
+        //     // Extract relative path from the full URL
+        //     const relativePath = imageSrc.split('/uploads/')[1] || '';
+        //     return {
+        //         id: String(product.id),
+        //         product_id: String(product.id),
+        //         quantity: product.quantity,
+        //         name: product.title,
+        //         image: relativePath ? 'uploads/' + relativePath : '',
+        //         price: parseFloat(product.price || 0)
+        //     };
+        // });
         const formattedProducts = products.map(product => ({
             id: product.id,
             product_id: product.id,
@@ -552,7 +625,6 @@
             image: product.image,
             price: parseFloat(product.price || 0)
         }));
-
         const orderData = {
             order_number: orderNumber,
             total_amount: parseFloat(totalAmount || 0),
@@ -562,12 +634,12 @@
         };
 
         // Debug log
-        console.log('{{ __('messages.submitting_order_with_data') }}:', orderData);
+        console.log('Submitting order with data:', orderData);
 
         // Get CSRF token
         const token = document.querySelector('meta[name="csrf-token"]')?.content;
         if (!token) {
-            showErrorMessage('{{ __('messages.csrf_token_not_found') }}');
+            showErrorMessage('CSRF token not found');
             return;
         }
 
@@ -583,16 +655,9 @@
         .then(async response => {
             const data = await response.json();
             if (!response.ok) {
-                if(response.status === 403 && data.need_balance)
-                {
+                if(response.status === 403 && data.need_balance) {
                     showErrorMessage(data.message);
-                    return Promise.reject(new Error('{{ __('messages.insufficient_balance') }}'));
-                }
-                if (response.status === 403 && data.need_balance) {
-                    // Handle insufficient balance case
-                    showErrorMessage(data.message);
-                    // Optionally redirect to top-up page or show top-up modal
-                    return Promise.reject(new Error('{{ __('messages.insufficient_balance') }}'));
+                    return Promise.reject(new Error('Insufficient balance'));
                 }
                 throw new Error(data.message || `HTTP error! status: ${response.status}`);
             }
@@ -600,23 +665,24 @@
         })
         .then(data => {
             if (data.success) {
-                showSuccessMessage('{{ __('messages.order_submitted_successfully') }}');
-                closeOrderPopup();
-                // Optionally refresh the page or update UI
+                showSuccessMessage('Order submitted successfully');
+                successfullcloseOrderPopup();
                 setTimeout(() => {
                     window.location.reload();
                 }, 1500);
             } else {
-                throw new Error(data.message || '{{ __('messages.failed_to_submit_order') }}');
+                successfullcloseOrderPopup();
+                throw new Error(data.message || 'Failed to submit order');
             }
         })
         .catch(error => {
             console.error('Error:', error);
+            successfullcloseOrderPopup();
             if (error.message === 'insufficient_balance') {
-                // Already handled by the 403 case
+                
                 return;
             }
-            showErrorMessage('{{ __('messages.failed_to_submit_order_please_try_again') }}');
+            showErrorMessage('Failed to submit order. Please try again.');
         });
     }
 

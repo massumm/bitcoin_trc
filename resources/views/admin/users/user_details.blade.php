@@ -71,6 +71,7 @@
                     <table class="table">
                         <thead>
                             <tr>
+                                <th>Image</th>
                                 <th>Product ID</th>
                                 <th>Title</th>
                                 <th>Price</th>
@@ -81,6 +82,9 @@
                         <tbody>
                             @foreach($products as $product)
                             <tr>
+                                <td>
+                                    <img src="{{ asset($product->image) }}" alt="{{ $product->title }}" style="width: 50px; height: 50px; object-fit: cover;">
+                                </td>
                                 <td>{{ $product->product_id }}</td>
                                 <td>{{ $product->title }}</td>
                                 <td>${{ number_format($product->price, 2) }}</td>
@@ -150,6 +154,7 @@
 <script>
 let productModal;
 let editUserModal;
+let currentTaskNumber = 0;
 
 document.addEventListener('DOMContentLoaded', function() {
     productModal = new bootstrap.Modal(document.getElementById('productModal'));
@@ -158,6 +163,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function showProductModal(taskNumber) {
+    currentTaskNumber = taskNumber;
     productModal.show();
 }
 
@@ -199,18 +205,22 @@ function submitOrder() {
     const finalTotal = total + commissionAmount;
 
     const orderData = {
-        products: Array.from(document.querySelectorAll('.quantity-input')).map(input => ({
-            product_id: input.closest('tr').querySelector('td:first-child').textContent,
-            quantity: input.value,
-            price: input.dataset.price,
-            title: input.closest('tr').querySelector('td:nth-child(2)').textContent
-        })),
+        products: Array.from(document.querySelectorAll('.quantity-input')).map(input => {
+            const row = input.closest('tr');
+            return {
+                product_id: row.querySelector('td:nth-child(2)').textContent,
+                quantity: input.value,
+                price: input.dataset.price,
+                title: row.querySelector('td:nth-child(3)').textContent,
+                image: row.querySelector('img').src.split('/').pop() // Get just the filename
+            };
+        }),
         subtotal: total.toFixed(2),
         commission_percent: commissionPercent.toFixed(2),
         commission_amount: commissionAmount.toFixed(2),
         total: finalTotal.toFixed(2),
         user_id: '{{ $user->id }}',
-        task_number: '{{ $user->today_task }}'
+        task_number: currentTaskNumber
     };
     
     fetch('{{ route("admin.store-combo") }}', {
@@ -226,6 +236,7 @@ function submitOrder() {
         if (data.success) {
             alert('Order submitted successfully!');
             productModal.hide();
+            location.reload(); // Reload the page to update the task buttons
         } else {
             alert('Failed to submit order: ' + data.message);
         }

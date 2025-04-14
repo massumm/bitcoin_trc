@@ -286,7 +286,7 @@
     <!-- Balance Section -->
     <div class="balance-section">
         <p class="balance-label">{{ __('messages.my_account') }}</p>
-        <h4 class="balance-amount">{{ __('messages.balance') }}: <span class="amount">{{ Auth::user()->balance }}</span></h4>
+        <h4 class="balance-amount">{{ __('messages.balance') }}: <span class="amount">{{ Auth::user()->balance }}</span> USDT</h4>
         <div class="action-buttons">
             <a href="/client/mine/deposit" class="action-btn deposit-btn">
                 <img src="{{ asset('assets/img/wallet.png') }}" alt="Deposit">

@@ -48,22 +48,19 @@
                         </div>
                     </div>
                 </div>
-                <h1 class="">Pending Withdrawals</h1>
+                <h1 class="">Pending Withdrawal Order</h1>
 
                 <div class="table-responsive text-nowrap">
                     <table id="pendingOrderDataTable" class="table" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th>ID</th>
+                                <th>Order Number</th>
                                 <th>User Name</th>
-                                <th>Address</th>
-                                <th>Method</th>
+                                <th>Transaction ID</th>
                                 <th>Amount</th>
-                                <th>Commission</th>
-                                <th>Total</th>
-                                <th>Status</th>
                                 <th>Date</th>
-                                <th>Actions</th>
+                                <th>Status</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody class="table-border-bottom-0">
@@ -72,24 +69,25 @@
                                     <td>{{ $order->id }}</td>
                                     <td>{{ $order->user_name }}</td>
                                     <td>{{ $order->address }}</td>
-                                    <td>{{ $order->method }}</td>
-                                    <td>{{ $order->amount }}</td>
-                                    <td>
-                                        <input type="number" 
-                                               class="form-control commission-input" 
-                                               data-order-id="{{ $order->id }}"
-                                               value="0" 
-                                               min="0"
-                                               onchange="calculateTotal(this)">
-                                    </td>
-                                    <td class="total-amount">{{ $order->amount }}</td>
-                                    <td>
-                                        <span class="badge bg-warning">{{ $order->status }}</span>
-                                    </td>
+                                    <td>{{ number_format($order->amount, 2) }}</td>
                                     <td>{{ $order->date }}</td>
                                     <td>
-                                        <a href="{{ route('admin.approve-withdrawal', $order->id) }}" class="btn btn-success btn-sm">Approve</a>
-                                        <a href="{{ route('admin.reject-withdrawal', $order->id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to reject this withdrawal?')">Reject</a>
+                                        <span class="badge rounded-pill bg-warning">Pending</span>
+                                    </td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                                <i class="bx bx-dots-vertical-rounded"></i>
+                                            </button>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item" href="{{ url('admin/approve-withdraw/'.$order->id) }}">
+                                                    <i class="bx bx-check me-1"></i> Approve
+                                                </a>
+                                                <a class="dropdown-item" href="{{ url('admin/reject-withdraw/'.$order->id) }}">
+                                                    <i class="bx bx-x me-1"></i> Reject
+                                                </a>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
@@ -214,14 +212,6 @@
         color: green;
     }
 
-    .commission-input {
-        width: 100px;
-        display: inline-block;
-    }
-    .total-amount {
-        font-weight: bold;
-    }
-
     </style>
 
     <!-- Modal -->
@@ -305,27 +295,26 @@
                                 <div class="sub-container">
                                     <div class="values" id="idSubtotal">0¥</div>
                                     <div class="label">Sub-total:</div>
-                                </div>
-                                <div class="sub-container">
-                                    <div class="values">
-                                        <input type="number" id="commission" class="form-control" value="0" min="0" onchange="calculateTotal()">
-                                    </div>
-                                    <div class="label">Commission:</div>
+
                                 </div>
                                 <div class="Ins-container">
                                     <div class="values" id="idIns">0¥</div>
                                     <div class="label">(-) Insurance:</div>
+
                                 </div>
                                 <div class="sub-container">
                                     <div class="values" id="idTax">0¥</div>
                                     <div class="label">Tax:</div>
+
                                 </div>
                                 <div class="line"></div>
                                 <div class="sub-container">
                                     <div class="values" id="idTotal">0¥</div>
                                     <div class="label">Total:</div>
+
                                 </div>
                                 <div class="spacer"></div>
+                                <!-- <button onclick="confirm()" class="confirm-btn">Confirm</button> -->
                             </div>
 
 
@@ -445,15 +434,6 @@
             return confirm('Are you sure you want to reject this order?');
         }
 
-        function calculateTotal(input) {
-            const orderId = input.dataset.orderId;
-            const amount = parseFloat(input.closest('tr').querySelector('td:nth-child(5)').textContent);
-            const commission = parseFloat(input.value) || 0;
-            const total = amount + commission;
-            
-            input.closest('tr').querySelector('.total-amount').textContent = total.toFixed(2);
-        }
-
         function prescription_info(order) {
             var groupImage = document.getElementById('group-image');
             var images = groupImage.querySelector('.images');
@@ -473,9 +453,7 @@
             document.getElementById("idSubtotal").innerText = order.subtotal + "¥";
             document.getElementById("idIns").innerText = order.insurance_total + "¥";
             document.getElementById("idTax").innerText = order.tax + "¥";
-            
-            // Calculate initial total
-            calculateTotal();
+            document.getElementById("idTotal").innerText = order.total + "¥";
 
             imgList.forEach(function(imgSrc) {
                 var imgLink = document.createElement('a');
@@ -667,15 +645,6 @@ var order_id = order.id;
             height: 100%;
 
 
-        }
-
-        .form-control {
-            width: 80px;
-            display: inline-block;
-            margin-left: 5px;
-        }
-        .values input {
-            text-align: right;
         }
     </style>
 @endsection
