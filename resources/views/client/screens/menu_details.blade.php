@@ -51,7 +51,7 @@
         margin: auto;
         text-align: center;
         position: relative;
-        top: 40px;
+       
     }
 
     .info-card .row {
@@ -69,7 +69,7 @@
         padding: 12px;
         border-radius: 25px;
         font-weight: bold;
-        margin: 40px auto 20px auto;
+        margin: 10px auto 20px auto;
     }
 
     /* Hint box */
@@ -585,46 +585,29 @@
         container.innerHTML = '';
     }
     function handleOrder(button) {
-    const orderNumber = button.getAttribute("data-order");
-    const totalAmount = button.getAttribute("data-total");
-    const commission = button.getAttribute("data-commission");
-    const products = JSON.parse(button.getAttribute("data-products")); 
+        const orderNumber = button.getAttribute("data-order");
+        const totalAmount = button.getAttribute("data-total");
+        const commission = button.getAttribute("data-commission");
+        const products = JSON.parse(button.getAttribute("data-products").replace(/&quot;/g, '"')); 
+        
+        submitOrder(orderNumber, totalAmount, commission, products);
+    }
     
-  
-
-    submitOrder(orderNumber, totalAmount, commission, products);
-}
-     function submitOrder(orderNumber, totalAmount, commission, products) {   
-        // First, let's validate that we have all required data
+    function submitOrder(orderNumber, totalAmount, commission, products) {   
         if (!products || !Array.isArray(products)) {
             console.error('Products data is invalid:', products);
             showErrorMessage('Invalid products data');
             return;
         }
         
-
-        // Format the data properly
-        // const formattedProducts = products.map(product => {
-        //     const imageSrc = product.image || '';
-        //     // Extract relative path from the full URL
-        //     const relativePath = imageSrc.split('/uploads/')[1] || '';
-        //     return {
-        //         id: String(product.id),
-        //         product_id: String(product.id),
-        //         quantity: product.quantity,
-        //         name: product.title,
-        //         image: relativePath ? 'uploads/' + relativePath : '',
-        //         price: parseFloat(product.price || 0)
-        //     };
-        // });
         const formattedProducts = products.map(product => ({
-            id: product.id,
-            product_id: product.id,
-            quantity: product.quantity,
-            name: product.title,
-            image: product.image,
+            product_id: String(product.id || ''),
+            quantity: parseInt(product.quantity || 6),
+            name: product.title || '',
+            image: product.image || '',
             price: parseFloat(product.price || 0)
         }));
+
         const orderData = {
             order_number: orderNumber,
             total_amount: parseFloat(totalAmount || 0),
@@ -632,7 +615,7 @@
             expected_income: parseFloat(totalAmount || 0) + parseFloat(commission || 0),
             order_items: formattedProducts
         };
-
+        
         // Debug log
         console.log('Submitting order with data:', orderData);
 
@@ -657,7 +640,7 @@
             if (!response.ok) {
                 if(response.status === 403 && data.need_balance) {
                     showErrorMessage(data.message);
-                    return Promise.reject(new Error('Insufficient balance'));
+                    return;
                 }
                 throw new Error(data.message || `HTTP error! status: ${response.status}`);
             }
@@ -672,7 +655,7 @@
                 }, 1500);
             } else {
                 successfullcloseOrderPopup();
-                throw new Error(data.message || 'Failed to submit order');
+          
             }
         })
         .catch(error => {

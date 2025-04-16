@@ -119,7 +119,7 @@ class UsersController extends Controller
                 return [
                     'id' => rand(1000, 9999), // Generate a random ID
                     'product_id' => $product['product_id'],
-                    'image' => 'default.jpg', // Default image
+                    'image' => 'uploads/medicins/'.$product['image'], // Default image
                     'title' => $product['title'],
                     'stock_status' => 'in_stock',
                     'price' => $product['price'],

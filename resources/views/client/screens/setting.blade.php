@@ -126,7 +126,7 @@
         <button class="close-btn" onclick="closeLanguageModal()">&times;</button>
     </div>
     <div class="language-list">
-        <div class="language-item" onclick="changeLanguage('en')">{{ __('messages.english') }}</div>
+        <!-- <div class="language-item" onclick="changeLanguage('en')">{{ __('messages.english') }}</div>
         <div class="language-item" onclick="changeLanguage('es')">{{ __('messages.spanish') }}</div>
         <div class="language-item" onclick="changeLanguage('ar')">{{ __('messages.arabic') }}</div>
         <div class="language-item" onclick="changeLanguage('us')">{{ __('messages.english') }}</div>
@@ -142,7 +142,26 @@
         <div class="language-item" onclick="changeLanguage('dk')">{{ __('messages.danish') }}</div>
         <div class="language-item" onclick="changeLanguage('pl')">{{ __('messages.polish') }}</div>
         <div class="language-item" onclick="changeLanguage('se')">{{ __('messages.swedish') }}</div>
-        <div class="language-item" onclick="changeLanguage('no')">{{ __('messages.norwegian') }}</div>
+        <div class="language-item" onclick="changeLanguage('no')">{{ __('messages.norwegian') }}</div> -->
+   
+        <div class="language-item" onclick="changeLanguage('en')">english</div>
+        <div class="language-item" onclick="changeLanguage('es')">spanish</div>
+        <div class="language-item" onclick="changeLanguage('ar')">arabic</div>
+        <div class="language-item" onclick="changeLanguage('us')">us</div>
+        <div class="language-item" onclick="changeLanguage('uk')">uk</div>
+        <div class="language-item" onclick="changeLanguage('de')">german'</div>
+        <div class="language-item" onclick="changeLanguage('ae')">arabic</div>
+        <div class="language-item" onclick="changeLanguage('cz')">czech</div>
+        <div class="language-item" onclick="changeLanguage('fr')">french</div>
+        <div class="language-item" onclick="changeLanguage('pt')">portuguese</div>
+        <div class="language-item" onclick="changeLanguage('it')">italian</div>
+        <div class="language-item" onclick="changeLanguage('tr')">turkish</div>
+        <div class="language-item" onclick="changeLanguage('ro')">romanian</div>
+        <div class="language-item" onclick="changeLanguage('dk')">danish</div>
+        <div class="language-item" onclick="changeLanguage('pl')">polish</div>
+        <div class="language-item" onclick="changeLanguage('se')">swedish</div>
+        <div class="language-item" onclick="changeLanguage('no')">norwegian</div>
+   
     </div>
 </div>
 
@@ -156,7 +175,16 @@
     }
 
     function changeLanguage(lang) {
-        window.location.href = "{{ url('language') }}/" + lang;
+        fetch("{{ url('language') }}/" + lang)
+            .then(response => {
+                if (response.ok) {
+                    window.location.reload();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
     }
 </script>
+
 @endsection

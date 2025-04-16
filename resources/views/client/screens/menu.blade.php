@@ -66,6 +66,7 @@
     margin-bottom: 1rem;
     text-decoration: none;
     display: block;
+    position: relative;
 }
 
 .menu-card:hover {
@@ -74,10 +75,22 @@
     border-color: #3B82F6;
 }
 
+.vip-badge {
+    position: absolute !important;
+    top: 10px !important;
+    left: 10px !important;
+    width: 30px !important;
+    height: 30px !important;
+    z-index: 2 !important;
+
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 .menu-card-body {
     padding: 1.25rem;
     display: flex;
     align-items: center;
+    position: relative;
 }
 
 .menu-image-container {
@@ -141,6 +154,13 @@
         padding: 1rem;
     }
     
+    .vip-badge {
+        width: 50px !important;
+        height: 25px !important;
+        top: 8px !important;
+        left: 8px !important;
+    }
+    
     .nav-tabs .nav-link {
         padding: 0.3rem 0.5rem;
         font-size:  1.0rem;
@@ -195,6 +215,7 @@
     <!-- Menu Items -->
     <div id="menuList">
         <a href="{{ url('/client/projectdetails?id=1&name=Amazon') }}" class="menu-card menu-item" data-category="vip1">
+            <img src="{{ asset('assets/img/vip1.jpg') }}" class="vip-badge" alt="VIP 1">
             <div class="menu-card-body">
                 <div class="menu-image-container">
                     <img src="{{ asset('assets/img/amazon.jpg') }}" alt="Amazon" class="menu-image">
@@ -214,10 +235,9 @@
         </a>
 
         <a href="{{ url('/client/projectdetails?id=2&name=Alibaba') }}" class="menu-card menu-item" data-category="vip2">
+            <img src="{{ asset('assets/img/vip2.png') }}" class="vip-badge" alt="VIP 2">
             <div class="menu-card-body">
-            <img src="{{ asset('assets/img/vip1.jpg') }}" class="vip-badge" alt="VIP 1" style="position: absolute; top: 10px; left: 10px; width: 30px; height: 30px; z-index: 1;">
                 <div class="menu-image-container">
-                    
                     <img src="{{ asset('assets/img/alibaba.png') }}" alt="Alibaba" class="menu-image">
                 </div>
                 <div class="menu-content">
@@ -235,6 +255,7 @@
         </a>
 
         <a href="{{ url('/client/projectdetails?id=3&name=Aliexpress') }}" class="menu-card menu-item" data-category="vip3">
+            <img src="{{ asset('assets/img/vip3.png') }}" class="vip-badge" alt="VIP 3">
             <div class="menu-card-body">
                 <div class="menu-image-container">
                     <img src="{{ asset('assets/img/aliexpress.jpeg') }}" alt="Aliexpress" class="menu-image">

@@ -290,16 +290,15 @@
             total_amount: parseFloat(button.getAttribute('data-total')),
             commission: parseFloat(button.getAttribute('data-commission')),
             expected_income: parseFloat(button.getAttribute('data-expected_income')),
-            order_items: JSON.parse(button.getAttribute('data-products')).map(product => ({
-                product_id: product.id,
-                quantity: product.quantity,
-                image: product.image,
-                price: product.price,
-                name: product.name
+            order_items: JSON.parse(button.getAttribute('data-products').replace(/'/g, '"')).map(product => ({
+                product_id: String(product.id || ''),
+                quantity: parseInt(product.quantity || 6),
+                name: product.name || '',
+                image: product.image || '',
+                price: parseFloat(product.price || 0)
             }))
         };
 
-        
         // Show loading state
         button.disabled = true;
         button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> {{ __('messages.submitting') }}...';
@@ -312,9 +311,21 @@
             },
             body: JSON.stringify(orderData)
         })
-        .then(response => response.json())
+        .then(async response => {
+            const data = await response.json();
+            if (!response.ok) {
+                if (response.status === 403 && data.need_balance) {
+                    showErrorMessage(data.message);
+                    button.disabled = false;
+                    button.innerHTML = '{{ __('messages.submit_order') }}';
+                    return;
+                }
+                throw new Error(data.message || `HTTP error! status: ${response.status}`);
+            }
+            return data;
+        })
         .then(data => {
-            if (data.success) {
+            if (data && data.success) {
                 // Show success message
                 const toast = document.createElement('div');
                 toast.className = 'alert alert-success position-fixed top-0 end-0 m-3';
@@ -323,27 +334,25 @@
                 document.body.appendChild(toast);
                 setTimeout(() => toast.remove(), 3000);
                 location.reload();
-
-                // Reload orders
-                //loadOrders('incomplete');
-            } else {
-                throw new Error(data.message || '{{ __('messages.failed_to_submit_order') }}');
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            // Show error message
-            const toast = document.createElement('div');
-            toast.className = 'alert alert-danger position-fixed top-0 end-0 m-3';
-            toast.style.zIndex = '1050';
-            toast.innerHTML = '<i class="fas fa-exclamation-circle me-2"></i>' + error.message;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
+            showErrorMessage(error.message);
             
             // Reset button
             button.disabled = false;
             button.innerHTML = '{{ __('messages.submit_order') }}';
         });
+    }
+
+    function showErrorMessage(message) {
+        const toast = document.createElement('div');
+        toast.className = 'alert alert-danger position-fixed top-0 end-0 m-3';
+        toast.style.zIndex = '1050';
+        toast.innerHTML = '<i class="fas fa-exclamation-circle me-2"></i>' + message;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
     }
 
     document.addEventListener("DOMContentLoaded", function() {

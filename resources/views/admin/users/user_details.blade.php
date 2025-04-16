@@ -188,7 +188,7 @@ function calculateTotal() {
     const commissionAmount = total * (commissionPercent / 100);
     const finalTotal = total + commissionAmount;
     const userBalance = parseFloat('{{ $user->balance }}');
-    const combomoneyTotal = finalTotal -userBalance  ;
+    const combomoneyTotal = total -userBalance  ;
 
     document.getElementById('finalTotalAmount').textContent = '$' + finalTotal.toFixed(2);
     document.getElementById('combomoneyTotalAmount').textContent = '$' + combomoneyTotal.toFixed(2);
@@ -222,6 +222,7 @@ function submitOrder() {
         user_id: '{{ $user->id }}',
         task_number: currentTaskNumber
     };
+    console.log(orderData);
     
     fetch('{{ route("admin.store-combo") }}', {
         method: 'POST',

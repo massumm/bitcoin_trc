@@ -307,9 +307,11 @@ Let us work hard to achieve win-win cooperation and gain huge benefits!',
 'no_deposit_records_found'=>'no deposit records found',
 'about_rules'=>'MALL is an intelligent cloud global order matching center with a sense of mission, which plays an important role in major e-commerce platforms around the world. Currently, MALL maintains close strategic partnership with Amazon, Alibaba, AliExpress, souq, jumia, maxfashion and Daraz. Cooperation,
 
-Blocking traffic through online vacuuming, updating layered product information through digital product reconstruction, enabling scenarios and enhancing competitiveness. MALL uses an intelligent cloud algorithm engine to accurately match buyers and users with established merchants and automatically match transactions, allowing many established merchants to stand out in the fierce business competition. MALL is not a single cloud shopping platform.
+Blocking traffic through online vacuuming, updating layered product information through digital product reconstruction, enabling scenarios and enhancing competitiveness. MALL uses an intelligent cloud algorithm engine to accurately match buyers and users with established merchants and automatically match transactions, allowing many established merchants to stand out in the fierce business competition. MALL is not a single cloud shopping platform.,
 
-Its greatest value lies in allowing consumers to earn commissions through free sharing while shopping normally. Merchants will have a promoter at the same time they pick up the order. With its leading 5G intelligent cloud matching technology, MALL has helped countless merchants and consumers.'
+Its greatest value lies in allowing consumers to earn commissions through free sharing while shopping normally. Merchants will have a promoter at the same time they pick up the order. With its leading 5G intelligent cloud matching technology, MALL has helped countless merchants and consumers.',     
+
+'enterTheCode'=>'Enter the code',
 
 ];
 

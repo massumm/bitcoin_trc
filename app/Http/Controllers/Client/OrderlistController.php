@@ -14,8 +14,8 @@ class OrderlistController extends Controller
         $projectId = $request->query('projectId');
         // Check if ordering is allowed
         $orderAllowed = true; // Replace with your condition
-        $taskNumber = Auth::user()->today_task ;
-        if (Auth::user()->demostatus = 0) {
+        $taskNumber = Auth::user()->today_task+1 ;
+        if (Auth::user()->demostatus != 1) {
         // Get the combo for the current task number and user
         $combo = DB::table('combos')
             ->where('task_number', $taskNumber)
@@ -94,8 +94,8 @@ class OrderlistController extends Controller
         if ($orderAllowed) {
             return response()->json([
                 'products' => $products,
-                'total_amount' => $totalAmount,
-                'commission' => $commission
+                'total_amount' => number_format($totalAmount, 2, '.', ''),
+                'commission' => number_format($commission, 2, '.', '')
             ]);
         }
     
@@ -112,7 +112,7 @@ class OrderlistController extends Controller
                 'total_amount' => 'required|numeric|min:0',
                 'commission' => 'required|numeric|min:0',
                 'order_items' => 'required|array|min:1',
-                'order_items.*.product_id' => 'required|exists:products,id',
+                'order_items.*.product_id' => 'required|string',
                 'order_items.*.quantity' => 'required|integer|min:1',
                 'order_items.*.price' => 'required|numeric|min:0',
                 'order_items.*.name' => 'required|string',
@@ -204,7 +204,7 @@ class OrderlistController extends Controller
             DB::table('users')
                 ->where('id', $user->id)
                 ->update([
-                    'status' => 1,
+                    'status' => "1",
                     'today_task' => DB::raw('CASE WHEN today_task + 1 >= 25 THEN 0 ELSE today_task + 1 END'),
                     'min_earn' => DB::raw('min_earn + ' . $request->commission),
                     'balance' => DB::raw('balance + ' . $request->commission)

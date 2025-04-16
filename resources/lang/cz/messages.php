@@ -176,7 +176,7 @@ return [
     'the_platform_will_change_the_recharge_method_from_time_to_time' => 'The Platform Will Change the Recharge Method from Time to Time',   
     'each_user_should_check_the_latest_recharge_method_before_recharging_to_avoid_failures' => 'Each User Should Check the Latest Recharge Method Before Recharging to Avoid Failures',
     'about_withdrawal' => 'About Withdrawal',
-    'the_minimum_withdrawal_amount_of_mall' => 'The Minimum Withdrawal Amount of MALL is',
+    'the_minimum_withdrawal_amount_of_mall' => 'The Minimum Withdrawal Amount of Mall is',
     'is' => 'is',
     'and_the_minimum_deposit_is' => 'and the minimum deposit is',
     'withdrawals_are_processed_within' => 'Withdrawals are processed within',   
@@ -246,10 +246,72 @@ return [
     'share' => 'Share',
     'share_link_copied_to_clipboard' => 'Share Link Copied to Clipboard',
     'wallet_management' => 'Wallet Management',
-    
-    
-    
+    'platform_profiles_content' => '        Mall is an intelligent cloud global order matching center with a sense of mission, which plays an important role in major e-commerce platforms around the world. Currently, Mall maintains close strategic partnership with Amazon, Alibaba, AliExpress, souq, jumia, maxfashion and Daraz. Cooperation,
 
+    Blocking traffic through online vacuuming, updating layered product information through digital product reconstruction, enabling scenarios and enhancing competitiveness. Mall uses an intelligent cloud algorithm engine to accurately match buyers and users with established merchants and automatically match transactions, allowing many established merchants to stand out in the fierce business competition. Mall is not a single cloud shopping platform.
+
+    Its greatest value lies in allowing consumers to earn commissions through free sharing while shopping norMally. Merchants will have a promoter at the same time they pick up the order. With its leading 5G intelligent cloud matching technology, Mall has helped countless merchants and consumers.
+',
+    'platform_profiles' => 'Platform Profiles',
+    'platform_cooperation_content' => 'At Mall, we carry out win-win cooperation for all users around the world, increase the interaction between users and merchants, help users make money, and help merchants make profits. We retain company results. We abide by the rules and are committed to building a well-known cooperative e-commerce company. Through its own technology to guide the development of e-commerce industry, we are committed to becoming the creator of industry standards. This is our constant pursuit and corporate vision. We also thank all Mall partners and users for their support and valuable time.
+
+Let us work hard to achieve win-win cooperation and gain huge benefits!',
+    'platform_cooperation' => 'Platform Cooperation',
+
+    'platform_instruction_content' => 'Mall is an intelligent cloud global order matching center with a sense of mission, which plays an important role in major e-commerce platforms around the world. Currently, Mall maintains close strategic partnership with Amazon, Alibaba, AliExpress, souq, jumia, maxfashion and Daraz. Cooperation,',
+    'platform_instruction' => 'Instructions for use',
+    'instruction_header_title1'=>'Some questions about deposits:',
+    'insctruction_1_1'=>'          1.Users need to obtain a new payment address each time they make a deposit. Repeated deposits to the same payment address are not allowed. Otherwise, the deposit may not automatically reach the account, recharge may fail, and other problems may occur.
+',
+    'insctruction_1_2'=>'          2.The deposit will automatically arrive in your account within 15 minutes. Please wait patiently. If the deposit does not arrive within this time limit, you can send the deposit voucher to contact customer service for verification.
+',
+    'insctruction_1_3'=>'               3.There is no unified arrival time for cryptocurrency transfers. Depending on the region and the cryptocurrency wallet used, there may be different transfer delays, and some wallets may delay more than 72 hours. Please wait patiently for the transfer to be successful, and contact customer service for verification after the TXID is generated.
+',
+    'insctruction_1_4'=>'               4.The payment methods such as USDT-TRC20, USDT-ERC20, BTC, and TRX-TUSD, and BUSD are not available. Please do not use these cryptocurrencies to check the balance and use of funds!
+',
+    'instructin_header_title2'=>'Some questions about withdraws:',
+      'insctruction_2_1'=>'       1.Withdrawals will arrive at the users bound wallet address within 24 hours. According to statistics, the average withdrawal time for coin bit users is 30 minutes. The specific time depends on the current number of working users and the delay of cryptocurrency transfer. 
+   ',
+      'insctruction_2_2'=>'           2.In order to ensure the safety of users funds, the coin bit recommends that new users bind the correct withdrawal information as soon as possible according to the prompts after joining the coin bit. (If the user does not know how to bind the correct information, the coin bit adopts membership invitation system, and you can contact the superior user who invited you to join for guidance) 
+  ',
+      'insctruction_2_3'=>'      3.In order to avoid possible security issues, such as account theft, criminals use the users account to change the withdrawal information. The coin bit stipulates that the correct withdrawal information cannot be easily changed, so it is recommended that users confirm the wallet they need to use when they have multiple wallets and do not change it easily.    ',
+      'instructin_header_title3'=>' Some questions about work orders：',
+  'insctruction_3_1'=>'  1.Depending on the account funds, users can enter different working channels. Different channels have different commissions. Users can decide based on their own financial ability. 
+ ',
+  'insctruction_3_1_2'=>' As shown in the figure, the account funds exceed the fund range of the Amazon channel: 20USDT-499USDT. Therefore, the system will prompt the user to go to the Alibaba channel to purchase new task orders. Similarly, if the account funds exceed 899USDT, the user can go to the VIP3 channel to purchase task orders!     
+  ',
+  'insctruction_3_2'=>'2.This prompt is that the user has unfinished work orders and therefore cannot obtain new task orders. 
+  ',
+  'insctruction_3_2_2'=>'  Users can find their unfinished work orders in the record. After completing the order, they can return to the order grabbing page to obtain a new task order! 
+ ',
+  'insctruction_3_3'=>' 3.After clicking on the service, click on the online customer service to get the customer service contact information. This is the only way to get the coin bit customer service link! 
+ ',
+  'insctruction_3_4'=>'  4.Recently, many criminals have pretended to be the customer service of the coin bit to commit fraud, causing users to lose money. The coin bit once again emphasizes that anyone who requires users to trade privately is a liar. The only way to recharge is to obtain the payment address through the coin bit to make a deposit! Please do not believe anyone who asks users to trade privately in the name of the coin bit staff! Once the funds are transferred out, they cannot be recovered!!! ',
+'unpaid_order'=>'You have an order that has not been paid',
+'contact_customer_service'=>' Contact Customer Service ',
+'click_to_copy_address_help'=>'  Click to copy the address to transfer USDT. If it does not arrive automatically, click to contact customer service for processing. ',
+'after_successful_payment'=>' After successful payment, you need to click the paid button, and Contact with Customer Care Service'
+,'enter_your_password'=>'please enter your password',
+'submit'=>'submit',
+'names'=>'name',
+'virtual_currency_protocol'=>'virtual_currency_protocol',
+'enter_the_code'=>'enter the code',
+'captcha'=>'captcha',
+'frequently_asked_questions'=>'The following are frequently asked questions',
+'about_grabbing_orders_and_freezing_orders'=>'About Grabbing Orders and Freezing Orders',
+'about_recharge'=>'About Recharge',
+'about_withdrawal'=>'About Withdrawal',
+'about_recharge_content'=>'You can top up your account in the "My" - "My Wallet" interface. Click the "Recharge" button, fill in the name of the assignee and the amount to be transferred, and click "Transfer" to transfer. After transferring to the account provided by the platform, please be sure to submit a screenshot of the successful transfer, and then click "Submit". To ensure that your recharge is received quickly, the system will randomly match the amount you wish to recharge. Be sure to double check the USDT account or bank account you entered for the deposit before topping up. The platform will change the USDT wallet account or bank account from time to time, so if you have any questions,',
+'about_withdrawal_content'=>'If you want to apply for withdrawal, you must complete at least 25 orders before you can apply, please bind your withdrawal information in the application before withdrawing. You can withdraw funds from the "My" - "My Wallet" interface during platform working hours. Click the "Withdraw" button, enter the amount you want to withdraw and the withdrawal password, the withdrawal will be transferred to your USDT wallet or bank within 24:00 after you apply for withdrawal. ',
+'about_grabbing_orders_and_freezing_orders_content'=>'After the account balance reaches the minimum 20USD, you can grab the order, and each person can grab up to 25 orders per day! Click "Order" - "Automatic Order" below, and wait for the system to grab the order. If the order is successful, you need to complete the task order as soon as possible, so as not to delay the completion of subsequent tasks.',
+'no_deposit_records_found'=>'no deposit records found',
+'about_rules'=>'MALL is an intelligent cloud global order matching center with a sense of mission, which plays an important role in major e-commerce platforms around the world. Currently, MALL maintains close strategic partnership with Amazon, Alibaba, AliExpress, souq, jumia, maxfashion and Daraz. Cooperation,
+
+Blocking traffic through online vacuuming, updating layered product information through digital product reconstruction, enabling scenarios and enhancing competitiveness. MALL uses an intelligent cloud algorithm engine to accurately match buyers and users with established merchants and automatically match transactions, allowing many established merchants to stand out in the fierce business competition. MALL is not a single cloud shopping platform.,
+
+Its greatest value lies in allowing consumers to earn commissions through free sharing while shopping normally. Merchants will have a promoter at the same time they pick up the order. With its leading 5G intelligent cloud matching technology, MALL has helped countless merchants and consumers.',     
+
+'enterTheCode'=>'Enter the code',
 
 ];
 
