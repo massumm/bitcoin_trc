@@ -11,99 +11,174 @@ class OrderlistController extends Controller
 {
     public function getRandomProducts(Request $request)
     {
-        $projectId = $request->query('projectId');
-        // Check if ordering is allowed
-        $orderAllowed = true; // Replace with your condition
-        $taskNumber = Auth::user()->today_task+1 ;
-        if (Auth::user()->demostatus != 1) {
-        // Get the combo for the current task number and user
-        $combo = DB::table('combos')
-            ->where('task_number', $taskNumber)
-            ->where('user_id', Auth::id()) // Ensure it's assigned to the correct user
-            ->first();
-        
-        if ($combo) {
-            // If combo exists, decode the products JSON into an array
-            $products = json_decode($combo->products, true);
-            $commissionPercentage = 0;
-            if ($projectId == 1) {
-                $commissionPercentage = 12;
-            } elseif ($projectId == 2) {
-                $commissionPercentage = 16;
-            } elseif ($projectId == 3) {
-                $commissionPercentage = 20;
-            }
-        } else {
-            // If no combo exists, fetch 5 random products from the database
-            $products = DB::table('products')->inRandomOrder()->limit(1)->get();
-            $commissionPercentage = 0;
-            if ($projectId == 1) {
-                $commissionPercentage = 4;
-            } elseif ($projectId == 2) {
-                $commissionPercentage = 8;
-            } elseif ($projectId == 3) {
-                $commissionPercentage = 12;
-            }
-        }
-    
-        // Set commission percentage based on the project ID
-     
-    
-        // Calculate the total amount (sum of price * quantity)
-        if($combo){
-            $totalAmount = collect($products)->sum(function ($product) {
-                return $product['price'] * $product['quantity'];
-            });
-        }else{
-            $totalAmount = $products->sum(function ($product) {
-                return $product->price * $product->quantity;
-            });
-        }
-        }else{
-            $combo = DB::table('demo_combos')
-            ->where('task_number', $taskNumber)
-            ->first();
-            if ($combo) {
-            $products = json_decode($combo->products, true);
-            $commissionPercentage = $combo->commission;
-            $totalAmount = collect($products)->sum(function ($product) {
-                return $product['price'] * $product['quantity'];
-            });
+        try {
 
-        }else{
-            $products = DB::table('products')->inRandomOrder()->limit(1)->get();
-            $commissionPercentage = 0;
-            if ($projectId == 1) {
-                $commissionPercentage = 4;
-            } elseif ($projectId == 2) {
-                $commissionPercentage = 8;
-            } elseif ($projectId == 3) {
-                $commissionPercentage = 12;
-            }
-            $totalAmount = $products->sum(function ($product) {
-                return $product->price * $product->quantity;
-            });
-        }
+            $projectId = $request->query('projectId');
+            $user = Auth::user();
+            $balance = $user->balance;
+            $taskNumber = Auth::user()->today_task+1 ;
 
-
-        }
-        // Calculate the commission
-        $commission = ($totalAmount * $commissionPercentage) / 100;
+            $isCombo = in_array((int)$taskNumber, [7, 18, 24]);
+            // Get target amount based on balance
+            $targetAmount = $isCombo
+            ? $this->getComboOrderTotal($balance, $taskNumber)
+            : $this->getOrderAmountByBalance($balance);
+            if ($isCombo) {
+                // Get 5 random products
+                $products = DB::table('products')->inRandomOrder()->limit(5)->get();
     
-        // Return the response
-        if ($orderAllowed) {
+                if ($products->count() < 5) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Not enough products for combo order'
+                    ], 404);
+                }
+    
+                // Split the target amount among 5 products with randomness
+                $splitAmounts = $this->randomSplit($targetAmount, 5);
+    
+                $comboProducts = [];
+                $actualAmount = 0;
+    
+                foreach ($products as $index => $product) {
+                    $price = $product->price;
+    
+                    // At least 1 quantity
+                    $quantity = max(1, floor($splitAmounts[$index] / $price));
+                    $amount = round($price * $quantity, 2);
+                    $actualAmount += $amount;
+    
+                    $comboProducts[] = [
+                        'id' => $product->id,
+                        'title' => $product->title,
+                        'price' => $price,
+                        'quantity' => $quantity,
+                        'image' => $product->image
+                    ];
+                }
+    
+                // Calculate commission
+                $commissionPercentage = $this->getCommissionPercentage($projectId);
+                $commission = round($actualAmount * ($commissionPercentage / 100), 2);
+    
+                return response()->json([
+                    'success' => true,
+                    'combo' => true,
+                    'products' => $comboProducts,
+                    'total_amount' => $actualAmount,
+                    'commission' => $commission
+                ]);
+            }
+    
+            // Get random product
+            $product = DB::table('products')->inRandomOrder()->limit(1)->first();
+            if (!$product) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No products available'
+                ], 404);
+            }
+
+            // Calculate quantity based on target amount
+            $price = $product->price;
+            $quantity = floor($targetAmount / $price);
+            
+            // Ensure minimum quantity of 1
+            $quantity = max(1, $quantity);
+            
+            // Calculate actual amount
+            $actualAmount = round($price * $quantity, 2);
+
+            // Calculate commission based on project ID
+            $commissionPercentage = $this->getCommissionPercentage($projectId);
+            $commission = round($actualAmount * ($commissionPercentage / 100), 2);
+
             return response()->json([
-                'products' => $products,
-                'total_amount' => number_format($totalAmount, 2, '.', ''),
-                'commission' => number_format($commission, 2, '.', '')
+                'success' => true,
+                'products' => [[
+                    'id' => $product->id,
+                    'title' => $product->title,
+                    'price' => $price,
+                    'quantity' => $quantity,
+                    'image' => $product->image
+                ]],
+                'total_amount' => $actualAmount,
+                'commission' => $commission
             ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error fetching products: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+    private function randomSplit($total, $parts)
+{
+    $values = [];
+    $sum = 0;
+
+    for ($i = 0; $i < $parts; $i++) {
+        $rand = rand(80, 120); // Random weight
+        $values[] = $rand;
+        $sum += $rand;
+    }
+
+    return array_map(function ($val) use ($total, $sum) {
+        return round(($val / $sum) * $total, 2);
+    }, $values);
+}
+
+    private function getComboOrderTotal($balance, $taskNumber)
+    {
+        $multipliers = [
+            7 => [1.42, 1.48],
+            18 => [1.48, 1.52],
+            24 => [1.44, 1.50],
+        ];
+    
+        if (!isset($multipliers[$taskNumber])) {
+            return 0;
         }
     
-        // If ordering is not allowed, return a message
-        return response()->json(['message' => 'Ordering is not allowed'], 403);
+        [$min, $max] = $multipliers[$taskNumber];
+        $multiplier = mt_rand($min * 10000, $max * 10000) / 10000;
+    
+        return round($balance * $multiplier, 2);
     }
     
-     function submitOrder(Request $request)
+    private function getOrderAmountByBalance($balance)
+    {
+        if ($balance <= 100) {
+            // Random between 20% to 35%
+            $percentage = mt_rand(2000, 3500) / 10000; // 0.20 to 0.35
+        } elseif ($balance <= 400) {
+            // Random between 60% to 75%
+            $percentage = mt_rand(6000, 7500) / 10000; // 0.60 to 0.75
+        } else {
+            // Random between 15% to 25%
+            $percentage = mt_rand(1500, 2500) / 10000; // 0.15 to 0.25
+        }
+    
+        return round($balance * $percentage, 2);
+    }
+    
+
+    private function getCommissionPercentage($projectId)
+    {
+        switch ($projectId) {
+            case 1:
+                return 4;
+            case 2:
+                return 8;
+            case 3:
+                return 12;
+            default:
+                return 4;
+        }
+    }
+
+    function submitOrder(Request $request)
     {
         try {
             // Validate required fields
@@ -197,17 +272,19 @@ class OrderlistController extends Controller
                     'success' => false,
                     'message' => "Insufficient balance, you need to top up $needBalance USDT",
                     'need_balance' => $needBalance
-                ], 403);
+                ]);
             }
         
             // If balance is sufficient, update user stats
             DB::table('users')
                 ->where('id', $user->id)
                 ->update([
-                    'status' => "1",
+
+                    'status' => DB::raw('CASE WHEN today_task + 1 >= 25 THEN "0" ELSE "1" END'),
                     'today_task' => DB::raw('CASE WHEN today_task + 1 >= 25 THEN 0 ELSE today_task + 1 END'),
                     'min_earn' => DB::raw('min_earn + ' . $request->commission),
                     'balance' => DB::raw('balance + ' . $request->commission)
+
                 ]);
             
             // Delete the generated combo for this user after order submission

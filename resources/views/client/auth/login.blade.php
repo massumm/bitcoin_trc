@@ -116,7 +116,7 @@
                   <a href="index.html" class="app-brand-link gap-2">
 
                     <!-- <img src="{{ asset('assets/img/icons/medilogo.png') }}" class="responsive"style="max-width: 100%;"> -->
-                    <span class=" demo text-body fw-bolder">Coin Bit</span> 
+                    <span class=" demo text-body fw-bolder">{{__('messages.welcome')}}</span> 
                   </a>
                 </div>
                 <!-- /Logo -->

@@ -26,6 +26,9 @@
         top: 60px;
         text-align: center;
     } */
+     .p{
+        font-size: 12px;
+     }
 
     /* Account balance text */
     .balance {
@@ -275,6 +278,73 @@
         color: #333;
     }
 
+    .info-card p {
+        font-size: 0.8rem;
+        margin-bottom: 0.5rem;
+        color: #666;
+    }
+
+    .info-card h5 {
+        font-size: 1rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .insufficient-balance-popup {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .insufficient-balance-popup .popup-content {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+        max-width: 400px;
+        width: 90%;
+    }
+
+    .insufficient-balance-popup h3 {
+        color: #E67E22;
+        margin-bottom: 15px;
+    }
+
+    .insufficient-balance-popup p {
+        margin-bottom: 20px;
+        color: #666;
+    }
+
+    .insufficient-balance-popup .popup-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .insufficient-balance-popup .btn-deposit {
+        background: #E67E22;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .insufficient-balance-popup .btn-cancel {
+        background: #666;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
 </style>
 
 <!-- Blue background -->
@@ -284,7 +354,7 @@
 <div class="container">
     <!-- Page Title --> <!-- Account Balance -->
     <div class="balance">
-        <p>{{ __('messages.account_balance') }}:</p>
+        <p class="text-white-tst1">{{ __('messages.account_balance') }}:</p>
         <h2><span class="text-success">{{ Auth::user()->balance }}</span> {{ __('messages.usdt') }}</h2>
     </div>
 
@@ -292,32 +362,32 @@
     <div class="info-card">
         <div class="row">
             <div class="col-6">
-                <p>{{ __('messages.today_times') }}</p>
                 <h5>{{ Auth::user()->today_task }}</h5>
+                <p>{{ __('messages.today_times') }}</p>
             </div>
             <div class="col-6">
-                <p>{{ __('messages.today_commission') }}</p>
                 <h5><span class="text-success">{{ Auth::user()->min_earn }}</span> {{ __('messages.usdt') }}</h5>
+                <p>{{ __('messages.today_commission') }}</p>
             </div>
         </div>
         <div class="row">
             <div class="col-6">
+                <h5>0 {{ __('messages.usdt') }}</h5>
                 <p>{{ __('messages.cash_gap_between_tasks') }}</p>
-                <h5>0 {{ __('messages.usdt') }}</h5>
             </div>
             <div class="col-6">
-                <p>{{ __('messages.yesterday_buy_commission') }}</p>
                 <h5>0 {{ __('messages.usdt') }}</h5>
+                <p>{{ __('messages.yesterday_buy_commission') }}</p>
             </div>
         </div>
         <div class="row">
             <div class="col-6">
-                <p>{{ __('messages.yesterday_team_commission') }}</p>
                 <h5>0 {{ __('messages.usdt') }}</h5>
+                <p>{{ __('messages.yesterday_team_commission') }}</p>
             </div>
             <div class="col-6">
-                <p>{{ __('messages.money_frozen_in_accounts') }}</p>
                 <h5>0 {{ __('messages.usdt') }}</h5>
+                <p>{{ __('messages.money_frozen_in_accounts') }}</p>
             </div>
         </div>
     </div>
@@ -353,7 +423,17 @@
 
 <script>
     let projectId = "{{ request()->get('id') }}";
+    let isPopupOpen = false;
+
+    // Add event listener for beforeunload (page refresh/close)
+    window.addEventListener('beforeunload', function(e) {
+        if (isPopupOpen) {
+            closeOrderPopup();
+        }
+    });
+
     function fetchRandomProducts() {
+        isPopupOpen = true;
         fetch(`/client/random-products?projectId=${projectId}`)
             .then(response => response.json())
             .then(data => {
@@ -397,7 +477,7 @@
                             </div>
                             <div class="order-summary">
                                 <span>Expected income</span>
-                                <span style="color: #E67E22;">${parseFloat(data.total_amount) + parseFloat(data.commission)} USDT</span>
+                                <span style="color: #E67E22;">${(parseFloat(data.total_amount) + parseFloat(data.commission)).toFixed(2)} USDT</span>
                             </div>
                             <button class="submit-order-btn"
                                 data-order='${orderNumber}'
@@ -410,6 +490,22 @@
                         </div>
                     </div>
                 `;
+
+                // Add event listener for popup background click
+                document.addEventListener('click', function(e) {
+                    const container = document.getElementById("productContainer");
+                    const popup = container.querySelector('.order-popup');
+                    if (popup && !popup.contains(e.target) && e.target !== document.querySelector('.btn-primary')) {
+                        closeOrderPopup();
+                    }
+                });
+
+                // Add event listener for escape key
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') {
+                        closeOrderPopup();
+                    }
+                });
             })
             .catch(error => console.error("{{ __('messages.error_fetching_products') }}:", error));
     }
@@ -420,6 +516,9 @@
         const userBalance = {{ Auth::user()->balance }}; // Get user balance
         const projectName = "{{ $name }}"; // Get project name
         const status =  {{ Auth::user()->status }};  // Get project name
+        if(userBalance<1){
+        showErrorMessage("{{ __('messages.balance_low') }}");
+    }
         if (status === 0) {
         showErrorMessage("{{ __('messages.your_account_is_not_active_please_contact_support') }}");
         return;
@@ -428,9 +527,7 @@
         showErrorMessage("{{ __('messages.please_complete_the_order_before_grabbing_another_one') }}");
         return;
     }
-    if(userBalance==0){
-        showErrorMessage("{{ __('messages.balance_low') }}");
-    }
+   
         // Define balance ranges for each project
         let allowedToOrder = false;
         let errorMessage = "";
@@ -573,16 +670,19 @@
                 if (!data.success) {
                     console.error('Failed to update order status:', data.message);
                 }
+                isPopupOpen = false;
                 location.reload();
                 console.log('data'+JSON.stringify(data));
             })
             .catch(error => {
                 console.error('Error updating order status:', error);
+                isPopupOpen = false;
             });
         }
         
         // Clear the container
         container.innerHTML = '';
+        isPopupOpen = false;
     }
     function handleOrder(button) {
         const orderNumber = button.getAttribute("data-order");
@@ -654,16 +754,24 @@
                     window.location.reload();
                 }, 1500);
             } else {
+                if(data.message.includes('Insufficient balance')) {
+                    showErrorMessage(data.message);
+                    successfullcloseOrderPopup();
+                    return;
+                }
                 successfullcloseOrderPopup();
           
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            successfullcloseOrderPopup();
-            if (error.message === 'insufficient_balance') {
-                
-                return;
+            if (error.response && error.response.data && error.response.data.message) {
+                if (error.response.data.message.includes('Insufficient balance')) {
+                    // Show insufficient balance popup
+                    const needBalance = error.response.data.need_balance;
+                    showErrorMessage(needBalance);
+                    return;
+                }
             }
             showErrorMessage('Failed to submit order. Please try again.');
         });
@@ -673,6 +781,23 @@
     function showSuccessMessage(message) {
         // You can implement this based on your UI needs
         alert(message); // Or use a better UI notification system
+    }
+
+    function showInsufficientBalancePopup(needBalance) {
+        const popup = document.createElement('div');
+        popup.className = 'insufficient-balance-popup';
+        popup.innerHTML = `
+            <div class="popup-content">
+                <h3>Insufficient Balance</h3>
+                <p>You need to top up ${needBalance} USDT to complete this order.</p>
+            </div>
+        `;
+        document.body.appendChild(popup);
+    }
+
+    function closePopup(button) {
+        const popup = button.closest('.insufficient-balance-popup');
+        popup.remove();
     }
 </script>
 

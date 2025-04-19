@@ -49,7 +49,7 @@ class Client_RegisterController extends Controller
         $refer_code = rand(10000, 99999);
 
         // Create user
-        User2::create([
+        $user = User2::create([
             'name' => $request->name,
             'password' => Hash::make($request->password),
             'refer_code' => $refer_code,
@@ -59,6 +59,10 @@ class Client_RegisterController extends Controller
             'status' => '1',
         ]);
 
-        return redirect()->back()->with('success', 'Registration successful!');
+        // Log in the user
+        Auth::login($user);
+
+        // Redirect to home with success message
+        return redirect('/admin/dashboard')->with('success', 'Registration successful! Welcome to your dashboard.');
     }
 }

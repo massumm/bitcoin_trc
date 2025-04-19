@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Session;
 
 class User2 extends Authenticatable
 {
@@ -38,5 +39,23 @@ class User2 extends Authenticatable
         'ref_dep_com'
     ];
 
-   
+    /**
+     * Get the session ID for the user.
+     *
+     * @return string|null
+     */
+    public function getSessionId()
+    {
+        return Session::getId();
+    }
+
+    /**
+     * Get the current session ID.
+     *
+     * @return string|null
+     */
+    public static function getCurrentSessionId()
+    {
+        return Session::getId();
+    }
 }

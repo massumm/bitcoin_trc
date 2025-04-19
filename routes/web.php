@@ -226,3 +226,5 @@ Route::get('/create-admin', function() {
 });
 
 Route::post('/client/close-order', [App\Http\Controllers\Client\OrderlistController::class, 'closeOrder'])->name('client.close-order');
+
+Route::post('/check-username', [App\Http\Controllers\AuthController::class, 'checkUsername'])->name('check.username');

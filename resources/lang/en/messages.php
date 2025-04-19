@@ -161,7 +161,7 @@ return [
     'name' => 'Name',   
     'password' => 'Password',
     'rememberMe' => 'Remember Me',
-    'signIn' => 'Sign In',
+    'signIn' => 'Login',
     'signUp' => 'Sign Up',
     'dontHaveAnAccount' => 'Don\'t Have an Account?',
     'enterYourName' => 'Enter Your Name',
@@ -312,6 +312,8 @@ Blocking traffic through online vacuuming, updating layered product information 
 Its greatest value lies in allowing consumers to earn commissions through free sharing while shopping normally. Merchants will have a promoter at the same time they pick up the order. With its leading 5G intelligent cloud matching technology, MALL has helped countless merchants and consumers.',     
 
 'enterTheCode'=>'Enter the code',
+'usernameAlreadyExists'=>'Username already exists. Please choose another username.',
+'welcome'=>'Hello, Welcome',
 
 ];
 

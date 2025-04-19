@@ -71,7 +71,7 @@
                   <a href="index.html" class="app-brand-link gap-2">
 
                     <!-- <img src="{{ asset('assets/img/icons/medilogo.png') }}" class="responsive"style="max-width: 100%;"> -->
-                    <span class=" demo text-body fw-bolder">Coin Bit</span> 
+                    <span class=" demo text-body fw-bolder">{{__('messages.welcome')}}</span> 
                   </a>
                 </div>
                 @if(session('success'))
@@ -86,12 +86,15 @@
                     </div>
                     
                 @endif
-                <form action="{{ url('register_client') }}" method="POST">
+                <form action="{{ url('register_client') }}" method="POST" id="registerForm">
                     @csrf
              
                   <div class="mb-3">
                       <label for="name" class="form-label">{{ __('messages.enterYourName') }}</label>
                     <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
+                    <div id="nameError" class="invalid-feedback" style="display: none;">
+                        <strong>Username already exists</strong>
+                    </div>
                     @error('name')
                       <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
@@ -285,6 +288,104 @@
 
     // Generate initial captcha
     window.addEventListener('load', generateCaptcha);
+
+    let usernameExists = false;
+    let isCheckingUsername = false;
+
+    document.getElementById('name').addEventListener('blur', function() {
+        const name = this.value;
+        if (name) {
+            isCheckingUsername = true;
+            fetch('/check-username', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ name: name })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const nameError = document.getElementById('nameError');
+                if (data.exists) {
+                    this.classList.add('is-invalid');
+                    nameError.style.display = 'block';
+                    usernameExists = true;
+                } else {
+                    this.classList.remove('is-invalid');
+                    nameError.style.display = 'none';
+                    usernameExists = false;
+                }
+            })
+            .catch(error => {
+                console.error('Error checking username:', error);
+            })
+            .finally(() => {
+                isCheckingUsername = false;
+            });
+        }
+    });
+
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+        e.preventDefault(); // Always prevent default first
+        
+        if (isCheckingUsername) {
+            alert('Please wait while we check the username...');
+            return;
+        }
+
+        const name = document.getElementById('name').value;
+        if (!name) {
+            this.submit();
+            return;
+        }
+
+        fetch('/check-username', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ name: name })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.exists) {
+                document.getElementById('name').classList.add('is-invalid');
+                document.getElementById('nameError').style.display = 'block';
+                usernameExists = true;
+                alert('{{ __('messages.usernameAlreadyExists') }}');
+            } else {
+                usernameExists = false;
+                // Submit the form using the original form element
+                this.submit();
+            }
+        })
+        .catch(error => {
+            console.error('Error checking username:', error);
+            alert('An error occurred while checking the username. Please try again.');
+        });
+    });
+
+    // Handle success message and redirect
+    @if(session('success'))
+        alert('{{ session('success') }}');
+        window.location.href = '{{ route('client.home') }}';
+    @endif
+
+    @if(session('error'))
+        alert('{{ session('error') }}');
+    @endif
     </script>
 
   </body>
