@@ -334,6 +334,10 @@
                 document.body.appendChild(toast);
                 setTimeout(() => toast.remove(), 3000);
                 location.reload();
+            }else{
+                showErrorMessage(data.message);
+                button.disabled = false;
+                button.innerHTML = '{{ __('messages.submit_order') }}';
             }
         })
         .catch(error => {

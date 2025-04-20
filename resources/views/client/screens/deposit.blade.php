@@ -300,6 +300,8 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+
+   
     const depositAmount = document.getElementById('depositAmount');
     const estimatedPayment = document.getElementById('estimatedPayment');
     const depositBtn = document.getElementById('depositNow');

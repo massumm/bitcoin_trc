@@ -61,6 +61,13 @@
 
 <div class="container">
     <div class="main-content">
+        <!-- Back Button -->
+        <div class="mb-3">
+            <button onclick="goBack()" class="btn btn-link" style="text-decoration: none; color: #666;">
+                <i class="fas fa-arrow-left"></i> {{ __('messages.back') }}
+            </button>
+        </div>
+
         <!-- Amount Display -->
         <div class="text-center mb-4">
             <h1 class="display-4" id="displayAmount">100.00<span style="font-size: 16px; margin-left: 4px;">USDT</span></h1>
@@ -131,14 +138,27 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     document.getElementById('orderNumber').textContent = orderNumber;
   
-    fetchDepositAddress(orderNumber);
+    // Check if we have saved deposit information
+    const savedQRCode = localStorage.getItem('qrCode');
+    const savedWalletAddress = localStorage.getItem('walletAddress');
+    
+    if (savedQRCode && savedWalletAddress) {
+        // Restore saved information
+        document.getElementById('qrCode').src = savedQRCode;
+        document.getElementById('qrCode').style.display = 'block';
+        document.getElementById('loadingQR').style.display = 'none';
+        document.getElementById('walletAddress').textContent = savedWalletAddress;
+    } else {
+        // Fetch new deposit address
+        fetchDepositAddress(orderNumber);
+    }
+
     startTimer();
 });
 
 function fetchDepositAddress(orderNumber) {
     const urlParams = new URLSearchParams(window.location.search);
     const amount = urlParams.get('amount') || '100.00';
-   
 
     fetch('/client/get-deposit-address', {
         method: 'POST',
@@ -154,19 +174,25 @@ function fetchDepositAddress(orderNumber) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
+            let qrCode, walletAddress;
+            
             if (data.hasPendingDeposit) {
-                // Handle existing pending deposit
-                document.getElementById('qrCode').src = data.qrCode;
-                document.getElementById('qrCode').style.display = 'block';
-                document.getElementById('loadingQR').style.display = 'none';
-                document.getElementById('walletAddress').textContent = data.pendingDeposit.address;
+                qrCode = data.qrCode;
+                walletAddress = data.pendingDeposit.address;
             } else {
-                // Handle new deposit
-                document.getElementById('qrCode').src = data.qrCode;
-                document.getElementById('qrCode').style.display = 'block';
-                document.getElementById('loadingQR').style.display = 'none';
-                document.getElementById('walletAddress').textContent = data.address;
+                qrCode = data.qrCode;
+                walletAddress = data.address;
             }
+
+            // Save to localStorage
+            localStorage.setItem('qrCode', qrCode);
+            localStorage.setItem('walletAddress', walletAddress);
+
+            // Update UI
+            document.getElementById('qrCode').src = qrCode;
+            document.getElementById('qrCode').style.display = 'block';
+            document.getElementById('loadingQR').style.display = 'none';
+            document.getElementById('walletAddress').textContent = walletAddress;
         } else {
             throw new Error(data.message);
         }
@@ -193,7 +219,10 @@ function copyAddress() {
 
 function cancelDeposit() {
     if (confirm('{{ __('messages.are_you_sure_you_want_to_cancel_this_deposit') }}')) {
+        // Clear all saved data
         localStorage.removeItem('orderNumber');
+        localStorage.removeItem('qrCode');
+        localStorage.removeItem('walletAddress');
         history.back();
     }
 }
@@ -217,5 +246,26 @@ function startTimer() {
         document.getElementById('timer').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
     }, 1000);
 }
+
+function goBack() {
+    // Clear all saved data
+    localStorage.removeItem('orderNumber');
+    localStorage.removeItem('qrCode');
+    localStorage.removeItem('walletAddress');
+    
+    // Go back and reload the previous page
+    window.location.href = document.referrer || '/';
+}
+
+// Also handle browser back button
+window.onpopstate = function(event) {
+    // Clear all saved data
+    localStorage.removeItem('orderNumber');
+    localStorage.removeItem('qrCode');
+    localStorage.removeItem('walletAddress');
+    
+    // Reload the previous page
+    window.location.href = document.referrer || '/';
+};
 </script>
 @endsection

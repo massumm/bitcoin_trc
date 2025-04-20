@@ -62,6 +62,7 @@
 <script>
 document.getElementById("backButton").addEventListener("click", function() {
     if (window.history.length > 1) {
+        window.location.href = document.referrer || '/';
         window.history.back();
 
     } else {

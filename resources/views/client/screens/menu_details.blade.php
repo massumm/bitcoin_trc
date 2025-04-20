@@ -469,7 +469,7 @@
                             </div>
                             <div class="order-summary">
                                 <span>Order amount</span>
-                                <span>${data.total_amount} USDT</span>
+                                <span>${parseFloat(data.total_amount).toFixed(2)} USDT</span>
                             </div>
                             <div class="order-summary">
                                 <span>Commissions</span>

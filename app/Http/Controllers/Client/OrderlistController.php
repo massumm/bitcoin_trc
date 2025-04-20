@@ -58,7 +58,7 @@ class OrderlistController extends Controller
                 }
     
                 // Calculate commission
-                $commissionPercentage = $this->getCommissionPercentage($projectId);
+                $commissionPercentage = $this->getcomboCommissionPercentage($projectId);
                 $commission = round($actualAmount * ($commissionPercentage / 100), 2);
     
                 return response()->json([
@@ -175,6 +175,20 @@ class OrderlistController extends Controller
                 return 12;
             default:
                 return 4;
+        }
+    }
+
+    private function getcomboCommissionPercentage($projectId)
+    {
+        switch ($projectId) {
+            case 1:
+                return 17;
+            case 2:
+                return 15;
+            case 3:
+                return 18;
+            default:
+                return 15;
         }
     }
 
