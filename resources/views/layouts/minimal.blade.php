@@ -61,14 +61,13 @@
 
 <script>
 document.getElementById("backButton").addEventListener("click", function() {
-    if (window.history.length > 1) {
-        window.location.href = document.referrer || '/';
-        window.history.back();
-
+ if (typeof window.goBack === "function") {
+        window.goBack();
     } else {
-        window.location.href = "/";
+        window.history.back();
     }
 });
+
 </script>
 
 </body>

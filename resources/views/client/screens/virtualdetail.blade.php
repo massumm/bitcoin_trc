@@ -61,12 +61,7 @@
 
 <div class="container">
     <div class="main-content">
-        <!-- Back Button -->
-        <div class="mb-3">
-            <button onclick="goBack()" class="btn btn-link" style="text-decoration: none; color: #666;">
-                <i class="fas fa-arrow-left"></i> {{ __('messages.back') }}
-            </button>
-        </div>
+
 
         <!-- Amount Display -->
         <div class="text-center mb-4">
@@ -173,6 +168,7 @@ function fetchDepositAddress(orderNumber) {
     })
     .then(response => response.json())
     .then(data => {
+        
         if (data.success) {
             let qrCode, walletAddress;
             
@@ -185,7 +181,7 @@ function fetchDepositAddress(orderNumber) {
             }
 
             // Save to localStorage
-            localStorage.setItem('qrCode', qrCode);
+            localStorage.setItem('qrCode',qrCode);
             localStorage.setItem('walletAddress', walletAddress);
 
             // Update UI
@@ -199,6 +195,7 @@ function fetchDepositAddress(orderNumber) {
     })
     .catch(error => {
         console.error('Error:', error);
+        console.log("here the param")
         document.getElementById('loadingQR').innerHTML = 
             '<p class="text-danger">{{ __('messages.failed_to_load_deposit_address_please_try_again') }}</p>';
     });
@@ -252,10 +249,12 @@ function goBack() {
     localStorage.removeItem('orderNumber');
     localStorage.removeItem('qrCode');
     localStorage.removeItem('walletAddress');
-    
+     console.log("back")
     // Go back and reload the previous page
-    window.location.href = document.referrer || '/';
+    window.location.href = '/client/mine';
+    
 }
+window.goBack = goBack;
 
 // Also handle browser back button
 window.onpopstate = function(event) {
@@ -265,7 +264,7 @@ window.onpopstate = function(event) {
     localStorage.removeItem('walletAddress');
     
     // Reload the previous page
-    window.location.href = document.referrer || '/';
+    window.location.href = '/client/mine';
 };
 </script>
 @endsection

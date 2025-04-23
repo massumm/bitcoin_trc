@@ -22,7 +22,7 @@ class OrderlistController extends Controller
             // Get target amount based on balance
             $targetAmount = $isCombo
             ? $this->getComboOrderTotal($balance, $taskNumber)
-            : $this->getOrderAmountByBalance($balance);
+            : $this->getOrderAmountByBalance($balance, $taskNumber);
             if ($isCombo) {
                 // Get 5 random products
                 $products = DB::table('products')->inRandomOrder()->limit(5)->get();
@@ -131,11 +131,19 @@ class OrderlistController extends Controller
 
     private function getComboOrderTotal($balance, $taskNumber)
     {
+        if ($balance >= 50) {
         $multipliers = [
-            7 => [1.42, 1.48],
-            18 => [1.48, 1.52],
-            24 => [1.44, 1.50],
+            7 => [1.42, 1.48],      // ✅ correct
+            18 => [1.34, 1.38],     // ✅ adjusted
+            24 => [1.27, 1.30],     // ✅ adjusted
         ];
+    }else{
+        $multipliers = [
+        7 => [1.42, 1.48],
+        18 => [1.48, 1.52],
+        24 => [1.44, 1.50],
+        ];
+    }
     
         if (!isset($multipliers[$taskNumber])) {
             return 0;
@@ -147,20 +155,108 @@ class OrderlistController extends Controller
         return round($balance * $multiplier, 2);
     }
     
-    private function getOrderAmountByBalance($balance)
+    private function getOrderAmountByBalance($balance,$taskNumber)
     {
-        if ($balance <= 100) {
-            // Random between 20% to 35%
-            $percentage = mt_rand(2000, 3500) / 10000; // 0.20 to 0.35
-        } elseif ($balance <= 400) {
-            // Random between 60% to 75%
-            $percentage = mt_rand(6000, 7500) / 10000; // 0.60 to 0.75
+        // if ($balance <= 100) {
+        //     // Random between 20% to 35%
+        //     $percentage = mt_rand(2000, 3500) / 10000; // 0.20 to 0.35
+        // } elseif ($balance <= 400) {
+        //     // Random between 60% to 75%
+        //     $percentage = mt_rand(6000, 7500) / 10000; // 0.60 to 0.75
+        // } else {
+        //     // Random between 15% to 25%
+        //     $percentage = mt_rand(1500, 2500) / 10000; // 0.15 to 0.25
+        // }
+    
+        // return round($balance * $percentage, 2);
+        
+        // Define multiplier sets based on balance
+        if ($balance >= 50) {
+            $multipliers = [
+                1 => [0.18, 0.20],
+                2 => [0.55, 0.58],
+                3 => [0.34, 0.36],
+                4 => [0.33, 0.35],
+                5 => [0.44, 0.46],
+                6 => [0.23, 0.25],
+                8 => [0.50, 0.52],
+                9 => [0.50, 0.52],
+                10 => [0.63, 0.65],
+                11 => [0.54, 0.56],
+                12 => [0.55, 0.57],
+                13 => [0.52, 0.54],
+                14 => [0.47, 0.49],
+                15 => [0.28, 0.30],
+                16 => [0.34, 0.36],
+                17 => [0.10, 0.12],
+                19 => [0.46, 0.48],
+                20 => [0.54, 0.56],
+                21 => [0.38, 0.40],
+                22 => [0.45, 0.47],
+                23 => [0.44, 0.46],
+                25 => [0.44, 0.46]
+            ];
+        } else if ($balance >= 500) {
+            $multipliers = [
+                1 => [0.15, 0.16],
+                2 => [0.48, 0.52],
+                3 => [0.44, 0.50],
+                4 => [0.42, 0.48],
+                5 => [0.48, 0.52],
+                6 => [0.44, 0.50],
+                8 => [0.42, 0.48],
+                9 => [1.48, 1.52],
+                10 => [1.44, 1.50],
+                11 => [1.42, 1.48],
+                12 => [1.48, 1.52],
+                13 => [1.44, 1.50],
+                14 => [1.42, 1.48],
+                15 => [1.48, 1.52],
+                16 => [1.44, 1.50],
+                17 => [1.44, 1.50],
+                19 => [1.42, 1.48],
+                20 => [1.48, 1.52],
+                21 => [1.44, 1.50],
+                22 => [1.42, 1.48],
+                23 => [1.48, 1.52],
+                25 => [1.44, 1.50]
+            ];
         } else {
-            // Random between 15% to 25%
-            $percentage = mt_rand(1500, 2500) / 10000; // 0.15 to 0.25
+            // Default multipliers for other balance values
+            $multipliers = [
+                1 => [0.18, 0.20],
+                2 => [0.55, 0.58],
+                3 => [0.34, 0.36],
+                4 => [0.33, 0.35],
+                5 => [0.44, 0.46],
+                6 => [0.23, 0.25],
+                8 => [0.50, 0.52],
+                9 => [0.50, 0.52],
+                10 => [0.63, 0.65],
+                11 => [0.54, 0.56],
+                12 => [0.55, 0.57],
+                13 => [0.52, 0.54],
+                14 => [0.47, 0.49],
+                15 => [0.28, 0.30],
+                16 => [0.34, 0.36],
+                17 => [0.10, 0.12],
+                19 => [0.46, 0.48],
+                20 => [0.54, 0.56],
+                21 => [0.38, 0.40],
+                22 => [0.45, 0.47],
+                23 => [0.44, 0.46],
+                25 => [0.44, 0.46]
+            ];
         }
     
-        return round($balance * $percentage, 2);
+        if (!isset($multipliers[$taskNumber])) {
+            return 0;
+        }
+    
+        [$min, $max] = $multipliers[$taskNumber];
+        $multiplier = mt_rand($min * 10000, $max * 10000) / 10000;
+    
+        return round($balance * $multiplier, 2);
     }
     
 

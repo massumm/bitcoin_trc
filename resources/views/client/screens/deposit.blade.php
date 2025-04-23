@@ -301,7 +301,9 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
 
-   
+    if (!localStorage.getItem('lastCleanScreen')) {
+    localStorage.setItem('lastCleanScreen', window.location.href);
+}
     const depositAmount = document.getElementById('depositAmount');
     const estimatedPayment = document.getElementById('estimatedPayment');
     const depositBtn = document.getElementById('depositNow');
@@ -376,7 +378,9 @@ document.addEventListener('DOMContentLoaded', function() {
             depositBtn.setAttribute('disabled', 'disabled');
         }
     });
-
+if (!localStorage.getItem('lastCleanScreen')) {
+    localStorage.setItem('lastCleanScreen', window.location.href);
+}
     depositBtn.addEventListener('click', function() {
         const amount = depositAmount.value;
         if (amount && parseFloat(amount) >= 10) {
