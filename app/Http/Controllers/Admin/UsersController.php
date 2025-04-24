@@ -51,6 +51,7 @@ class UsersController extends Controller
         $data = request()->all();
         if($UsersList->status=="0"){
             $UsersList->status = "1";
+            $UsersList->today_task="0" ;
         }else{
             $UsersList->status = "0"; 
         }
