@@ -45,7 +45,7 @@ class OrderlistController extends Controller
             // Get target amount based on balance
             $targetAmount = $isCombo
             ? $this->getComboOrderTotal($balance, $taskNumber)
-            : $this->getOrderAmountByBalance($balance, $taskNumber);
+            : $this->getOrderAmountByBalance($balance, $taskNumber,$demostatus);
             \Log::info('target ammount: ' .$targetAmount);
             if ($isCombo) {
                 // Get 5 random products
@@ -211,9 +211,14 @@ class OrderlistController extends Controller
         return round($balance * $multiplier, 2);
     }
 
-    private function getOrderAmountByBalance($balance, $taskNumber)
+    private function getOrderAmountByBalance($balance, $taskNumber,$demostatus)
 {
-    $json = storage_path('app/task_multipliers.json');
+    if($demostatus !=1){
+        $json = storage_path('app/user_task_multipliers.json');
+    }else{
+        $json = storage_path('app/task_multipliers.json');
+    }
+
     $data = json_decode(file_get_contents($json), true);
 
     if ($balance <= 50) {
@@ -234,7 +239,6 @@ class OrderlistController extends Controller
 
     return round($balance * $multiplier, 2);
 }
-
 
 
 

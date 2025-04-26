@@ -176,12 +176,12 @@ class PaymentController extends Controller
                
             
             ]);
-            if(Auth::user()->todays_task != 25){
-                return response()->json([
-                    'success' => false,
-                    'message' => 'You have to complete 25 tasks to withdraw'
-                ], 400);
-            }
+            // if(Auth::user()->todays_task != 25){
+            //     return response()->json([
+            //         'success' => false,
+            //         'message' => 'You have to complete 25 tasks to withdraw'
+            //     ], 400);
+            // }
             if($validated['withdrawal_password'] != Auth::user()->withdraw_pass){
                 return response()->json([
                     'success' => false,
