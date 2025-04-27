@@ -13,6 +13,13 @@
                 <input type="password" name="password" class="form-control input-field" required
                        placeholder="{{ __('messages.enter_your_password') }}">
             </div>
+
+            <div class="form-group">
+                <label class="input-label">{{ __('messages.confirm_password') }}</label>
+                <input type="password" name="confirm_password" class="form-control input-field" required
+                       placeholder="{{ __('messages.retype_password') }}">
+            </div>
+
             <button type="button" class="btn btn-primary submit-btn" onclick="showWalletFields()">
                 {{ __('messages.submit') }}
             </button>
@@ -31,9 +38,6 @@
                 <select name="currency_protocol" class="form-control input-field" required>
                     <option selected disabled>{{ __('messages.please_select_a_virtual_currency_protocol') }}</option>
                     <option value="USDT-TRC20">TRC20</option>
-                    <!-- <option value="USDT-ERC20">{{ __('messages.usdt_erc20') }}</option>
-                    <option value="BTC">{{ __('messages.btc') }}</option>
-                    <option value="ETH">{{ __('messages.eth') }}</option> -->
                 </select>
             </div>
 
@@ -59,10 +63,18 @@
     <script>
         function showWalletFields() {
             const password = document.querySelector('input[name="password"]').value;
-            if (!password) {
+            const confirmPassword = document.querySelector('input[name="confirm_password"]').value;
+
+            if (!password || !confirmPassword) {
                 alert("{{ __('messages.enter_your_password') }}");
                 return;
             }
+
+            if (password !== confirmPassword) {
+                alert("{{ __('messages.passwords_do_not_match') }}");
+                return;
+            }
+
             document.getElementById('passwordSection').style.display = 'none';
             document.getElementById('walletFields').style.display = 'block';
         }
@@ -71,7 +83,7 @@
             event.preventDefault();
             
             const form = document.getElementById('walletForm');
-            console.log(form.password.value);
+
             const formData = {
                 password: form.password.value,
                 wallet_name: form.wallet_name.value,
@@ -93,7 +105,6 @@
                 if (data.success) {
                     console.log('Wallet added successfully:', data);
                     window.location.href = '/client/mine'; 
-                    // window.location.reload();
                 } else {
                     alert(data.message || 'Failed to add wallet');
                 }

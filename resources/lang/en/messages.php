@@ -314,6 +314,9 @@ Its greatest value lies in allowing consumers to earn commissions through free s
 'enterTheCode'=>'Enter the code',
 'usernameAlreadyExists'=>'Username already exists. Please choose another username.',
 'welcome'=>'Hello, Welcome',
+'confirm_password'=>'Confirm password',
+'retype_password'=> 'repeat password again',
+'maximum'=>'Maximum Ammount'
 
 ];
 

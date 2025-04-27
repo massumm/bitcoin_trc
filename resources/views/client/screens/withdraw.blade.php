@@ -1,16 +1,14 @@
 @extends('layouts.minimal2')
 
-@section('title', __('messages.withdraw'))  
+@section('title', __('messages.withdraw'))
 
 @section('content')
 
 <style>
     .withdraw-container {
         background: white;
-   
         border-radius: 12px;
         box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      
     }
     .wallet-section {
         display: flex;
@@ -38,6 +36,7 @@
     }
     .input-group {
         margin-top: 15px;
+        position: relative;
     }
     .input-label {
         font-size: 14px;
@@ -47,6 +46,7 @@
     .input-field {
         width: 100%;
         padding: 10px;
+        padding-right: 80px; /* space for maximum button */
         border: 1px solid #ddd;
         border-radius: 8px;
         font-size: 16px;
@@ -57,54 +57,32 @@
         text-align: right;
         margin-top: 3px;
     }
+    .max-button {
+        position: absolute;
+        right: 10px;
+        top: 35px;
+        background: none;
+        border: none;
+        color: #4A90E2;
+        font-weight: bold;
+        cursor: pointer;
+        font-size: 14px;
+    }
     .withdraw-btn {
         width: 100%;
         padding: 12px;
-        background: #a0bff8;
+        background: #d0d7f5; /* light color when disabled */
         color: white;
         border: none;
         border-radius: 8px;
         font-size: 16px;
         margin-top: 20px;
-        cursor: pointer;
-    }
-    .withdraw-btn:disabled {
-        background: #d0d7f5;
         cursor: not-allowed;
+        transition: background 0.3s;
     }
-    .add-wallet-container {
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        background: white;
-    }
-    .add-wallet-btn {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        background: #4A90E2;
-        color: white;
-        border: none;
-        font-size: 24px;
-        margin-bottom: 15px;
+    .withdraw-btn.active {
+        background: #4A90E2; /* bright blue when active */
         cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-decoration: none;
-    }
-    .add-wallet-text {
-        color: #666;
-        font-size: 16px;
-        text-decoration: none;
-    }
-    .add-wallet-link {
-        text-decoration: none;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
     }
 </style>
 
@@ -117,10 +95,7 @@
     </div>
 @else
 
-
-
-<!-- Wallet Details Form (Initially Hidden) -->
-<div class="withdraw-container" id="walletDetailsForm" style="display: block;">
+<div class="withdraw-container" id="walletDetailsForm">
     <!-- Wallet Selection -->
     <div class="wallet-section">
         <div class="wallet-icon">
@@ -134,6 +109,7 @@
     <div class="input-group">
         <label class="input-label">{{ __('messages.usdt') }}</label>
         <input type="number" class="input-field" id="amountInput" placeholder="{{ __('messages.enter_amount') }}">
+        <button type="button" class="max-button" id="maxAmountButton">{{ __('messages.maximum_amount') }}</button>
         <div class="max-amount">{{ __('messages.maximum_amount') }}</div>
     </div>
 
@@ -147,15 +123,51 @@
     <button class="withdraw-btn" id="withdrawButton" disabled>{{ __('messages.ok') }}</button>
 </div>
 @endif
+
 <script>
-    // Amount input validation
-    document.getElementById('amountInput').addEventListener('input', function() {
-        let button = document.getElementById('withdrawButton');
-        button.disabled = this.value.trim() === '';
-       
+    function showSuccessMessage(message) {
+    const toast = document.createElement('div');
+    toast.className = 'alert alert-success position-fixed start-50 top-50 translate-middle';
+    toast.style.zIndex = '1050';
+    toast.style.minWidth = '300px';
+    toast.style.maxWidth = '80%';
+    toast.style.width = 'auto';
+    toast.style.textAlign = 'center';
+  
+    toast.innerHTML = '<i class="fas fa-check-circle me-2"></i>' + message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
+
+    const amountInput = document.getElementById('amountInput');
+    const withdrawButton = document.getElementById('withdrawButton');
+    const maxAmountButton = document.getElementById('maxAmountButton');
+
+    amountInput.addEventListener('input', function() {
+        if (this.value.trim() !== '') {
+            withdrawButton.disabled = false;
+            withdrawButton.classList.add('active');
+        } else {
+            withdrawButton.disabled = true;
+            withdrawButton.classList.remove('active');
+        }
     });
-    document.getElementById('withdrawButton').addEventListener('click', function() {
-        let amount = document.getElementById('amountInput').value;
+
+    maxAmountButton.addEventListener('click', function() {
+        const maxBalance = Math.floor({{ Auth::user()->balance }}); // no decimals
+        amountInput.value = maxBalance;
+
+        if (maxBalance !== 0) {
+            withdrawButton.disabled = false;
+            withdrawButton.classList.add('active');
+        } else {
+            withdrawButton.disabled = true;
+            withdrawButton.classList.remove('active');
+        }
+    });
+
+    withdrawButton.addEventListener('click', function() {
+        let amount = amountInput.value;
         let withdrawalPassword = document.getElementById('withdrawalPassword').value;
 
         fetch('/client/mine/withdraw', {
@@ -165,14 +177,16 @@
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
             },
             body: JSON.stringify({ amount: amount, withdrawal_password: withdrawalPassword })
-                })
+        })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
                 console.log(data);
+                showSuccessMessage(data.message);
+                window.location.href = '/client/mine'; // or show a success message
             } else {
-                alert(data.message);
-            }       
+                alert(data.message || 'Failed to withdraw');
+            }
         })
         .catch(error => {
             console.error('Error:', error);

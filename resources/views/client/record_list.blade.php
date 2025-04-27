@@ -352,8 +352,13 @@
 
     function showErrorMessage(message) {
         const toast = document.createElement('div');
-        toast.className = 'alert alert-danger position-fixed top-0 end-0 m-3';
+        toast.className = 'alert alert-danger position-fixed start-50 top-50 translate-middle';
         toast.style.zIndex = '1050';
+        toast.style.minWidth = '300px';
+        toast.style.maxWidth = '80%';
+        toast.style.width = 'auto';
+  
+        toast.style.textAlign = 'center';
         toast.innerHTML = '<i class="fas fa-exclamation-circle me-2"></i>' + message;
         document.body.appendChild(toast);
         setTimeout(() => toast.remove(), 3000);

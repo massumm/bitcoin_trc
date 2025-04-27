@@ -428,7 +428,7 @@
     // Add event listener for beforeunload (page refresh/close)
     window.addEventListener('beforeunload', function(e) {
         if (isPopupOpen) {
-            closeOrderPopup();
+            //closeOrderPopup();
         }
     });
 
@@ -516,11 +516,17 @@
         const userBalance = {{ Auth::user()->balance }}; // Get user balance
         const projectName = "{{ $name }}"; // Get project name
         const status =  {{ Auth::user()->status }};  // Get project name
+        const task =  {{ Auth::user()->today_task }};  // Get project name
         if(userBalance<1){
         showErrorMessage("{{ __('messages.balance_low') }}");
     }
         if (status === 0) {
-        showErrorMessage("{{ __('messages.your_account_is_not_active_please_contact_support') }}");
+            if(task==25){
+                showErrorMessage("You have completed 25 tasks");
+            }else{
+                showErrorMessage("{{ __('messages.your_account_is_not_active_please_contact_support') }}");
+            }
+
         return;
     }
     if (status === 2) {
@@ -616,8 +622,8 @@
             errorOverlay.style.opacity = "0";
             setTimeout(function() {
                 errorOverlay.style.display = "none";
-            }, 300); // Wait for fade-out transition
-        }, 2000);
+            }, 400); // Wait for fade-out transition
+        }, 3000);
     }
     function successfullcloseOrderPopup() {
         const container = document.getElementById("productContainer");
@@ -748,7 +754,7 @@
         })
         .then(data => {
             if (data.success) {
-                showSuccessMessage('Order submitted successfully');
+                showErrorMessage('Order submitted successfully');
                 successfullcloseOrderPopup();
                 setTimeout(() => {
                     window.location.reload();
