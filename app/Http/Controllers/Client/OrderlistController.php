@@ -201,7 +201,7 @@ class OrderlistController extends Controller
                 17 => [1.20, 1.24],
                 18 => [1.34, 1.38],     // existing
                 19 => [1.28, 1.32],
-                20 => [1.26, 1.30],
+
                 22 => [1.29, 1.33],
                 23 => [1.26, 1.29],
                 24 => [1.27, 1.30]      // existing
@@ -217,7 +217,6 @@ class OrderlistController extends Controller
                 17 => [1.30, 1.34],
                 18 => [1.48, 1.52],     // existing
                 19 => [1.39, 1.43],
-                20 => [1.36, 1.40],
                 22 => [1.40, 1.44],
                 23 => [1.35, 1.38],
                 24 => [1.44, 1.50]      // existing
@@ -232,17 +231,13 @@ class OrderlistController extends Controller
             $multipliers = [
                 20 => [1.33, 1.34]
             ];
-        } elseif ($balance <= 43) {
+        } elseif ($balance <= 543) {
             $multipliers = [
                 20 => [1.40, 1.40]
             ];
-        } elseif ($balance <= 53) {
-            $multipliers = [
-                20 => [1.28, 1.29]
-            ];
         } else {
             $multipliers = [
-                20 => [1.20, 1.21]
+                20 => [1.40, 1.40]
             ];
         }
         
@@ -268,11 +263,7 @@ class OrderlistController extends Controller
 
         if ($balance <= 250) {
             $tier = 'fixed';
-        } elseif ($balance <= 500) {
-            $tier = 'medium';
-        } else {
-            $tier = 'high';
-        }
+        } 
     }else{
         $json = storage_path('app/task_multipliers.json');
         $data = json_decode(file_get_contents($json), true);

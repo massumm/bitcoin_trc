@@ -66,6 +66,11 @@
             <!-- Register -->
             <div class="card">
               <div class="card-body">
+                <!-- Back Button -->
+                <div class="mb-3">
+                    <a href="/" class="btn btn-link" style="text-decoration: none; color: #666; font-size: 22px;">
+                        <i class="fas fa-arrow-left"></i> 
+                </div>
                 <!-- Logo -->
                 <div class="app-brand justify-content-center">
                   <a href="index.html" class="app-brand-link gap-2">
