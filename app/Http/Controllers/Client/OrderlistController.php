@@ -109,6 +109,18 @@ class OrderlistController extends Controller
                     }else{
                         $commissionPercentage=20;
                     }
+                }elseif($demostatus==3){
+                    if($taskNumber==5){
+                        $commissionPercentage=20;
+                    }elseif($taskNumber==10){
+                        $commissionPercentage=25;
+                    }elseif($taskNumber==18){
+                        $commissionPercentage=40;
+                    }elseif($taskNumber==23){
+                        $commissionPercentage=80;
+                    }elseif($taskNumber==25){
+                        $commissionPercentage=80;
+                    }
                 }
                
                 $commission = round($actualAmount * ($commissionPercentage / 100), 2);
@@ -213,26 +225,52 @@ class OrderlistController extends Controller
             ];
         }
       }else{
-       if ($balance <= 543) {
-            $multipliers = [
-                7 => [1.60, 1.60],      // existing
-                17 => [1.55, 1.56],     // existing
-                24 => [1.55, 1.56],  
-                5 => [1.60, 1.60],      // existing
-                10 => [1.55, 1.56],     // existing
-                18 => [1.55, 1.56], 
-                23 => [1.55, 1.56],  
-                25 => [1.55, 1.56], 
-                20 => [1.40, 1.40]
-            ];
-        } else {
-            $multipliers = [
-                20 => [1.40, 1.40]
-            ];
-        }
-        
-      }
 
+        if($demostatus==0){
+            if($balance <= 40){
+                $multipliers = [
+                    20 => [
+                        1.37, 1.39]
+                ];
+            }elseif($balance <= 50){
+                $multipliers = [
+                    20 => [1.37, 1.39]
+                ];
+            }elseif($balance <= 60){
+                $multipliers = [
+                    20 => [1.37, 1.39]
+                ];
+            }else{
+                $multipliers = [20 => [1.37, 1.39]];
+            }
+        }elseif($demostatus==2){
+
+
+            if ($balance <= 543) {
+                $multipliers = [
+                    7 => [2.00, 2.05],    // accurate from your task 7 data
+                    17 => [1.60, 1.70],   // accurate from task 17
+                    24 => [1.35, 1.40]    // accurate from task 24
+                ];
+            }else{
+                $multipliers = [
+                    7 => [2.00, 2.05],    // accurate from your task 7 data
+                    17 => [1.60, 1.70],   // accurate from task 17
+                    24 => [1.35, 1.40]    // accurate from task 24
+                ];
+            }
+        
+
+        }elseif($demostatus==3){
+            $multipliers = [
+                5 => [7.00, 7.05],
+                10 => [2.68, 2.70],
+                18 => [2.02, 2.05],
+                23 => [1.80, 1.85],
+                25 => [2.02, 2.05],
+            ];
+        
+    }
   
     
         if (!isset($multipliers[$taskNumber])) {
@@ -244,6 +282,7 @@ class OrderlistController extends Controller
         \Log::info('under multi default:' .  $multiplier );
         return round($balance * $multiplier, 2);
     }
+}
 
     private function getOrderAmountByBalance($balance, $taskNumber,$demostatus)
     {
