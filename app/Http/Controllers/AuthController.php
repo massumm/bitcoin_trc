@@ -56,6 +56,7 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
             'referral_code' => $referralCode,
             'refer_by' => $request->refer_by,
+            'demostatus'=>0,
             'role' => 'user'
         ]);
 

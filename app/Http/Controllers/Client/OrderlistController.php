@@ -24,14 +24,14 @@ class OrderlistController extends Controller
             if ($demostatus == 0) {
                 $comboTaskNumbers = [20];
             } else if ($demostatus == 1) {
-                $comboTaskNumbers = [7, 18, 24];
+                $comboTaskNumbers = [7, 17, 24];
             } else if ($demostatus == 2) {
-                $comboTaskNumbers = [10, 22, 24];
+                $comboTaskNumbers = [7, 17, 24];
             } else if ($demostatus == 3) {
-                $comboTaskNumbers = [7, 10, 12, 20, 24];
+                $comboTaskNumbers = [5, 10, 18, 23, 25];
             } else {
                 // Default combo task numbers if demostatus is not set
-                $comboTaskNumbers = [7, 18, 24];
+                $comboTaskNumbers = [7, 17, 24];
             }
 
             // Debug information
@@ -89,7 +89,7 @@ class OrderlistController extends Controller
                 }
 
                 // For demostatus 0, adjust the last product to match target amount exactly
-                if($demostatus == 0 && $actualAmount != $targetAmount) {
+                if($demostatus != 1 && $actualAmount != $targetAmount) {
                     $difference = $targetAmount - $actualAmount;
                     $lastProduct = &$comboProducts[count($comboProducts) - 1];
                     $lastProduct['quantity'] = ceil(($lastProduct['price'] * $lastProduct['quantity'] + $difference) / $lastProduct['price']);
@@ -102,8 +102,12 @@ class OrderlistController extends Controller
                 }elseif($demostatus==0){
                     $commissionPercentage=17;
                 }elseif($demostatus==2){
-                    if($taskNumber==20){
-                        $commissionPercentage=17;
+                    if($taskNumber==7){
+                        $commissionPercentage=16;
+                    }elseif($taskNumber==17){
+                        $commissionPercentage=18;
+                    }else{
+                        $commissionPercentage=20;
                     }
                 }
                
@@ -140,14 +144,17 @@ class OrderlistController extends Controller
                 $maxPrice = $balance * 0.9;
                 $price = round(mt_rand($minPrice * 100, $maxPrice * 100) / 100, 2);
             }
-            $quantity = floor($targetAmount / $price);
-            
-            // Ensure minimum quantity of 1
-            $quantity = max(1, $quantity);
-            
-            // Calculate actual amount
-            $actualAmount = round($price * $quantity, 2);
 
+            if($demostatus != 1) {
+                // For demostatus 0, 2, 3 - ensure exact amount match
+                $quantity = max(1, ceil($targetAmount / $price));
+                $actualAmount = $targetAmount; // Use the exact target amount
+            } else {
+                // For demostatus 1 - use existing logic
+                $quantity = max(1, floor($targetAmount / $price));
+                $actualAmount = round($price * $quantity, 2);
+            }
+            
             // Calculate commission based on project ID
             $commissionPercentage = $this->getCommissionPercentage($projectId);
             $commission = round($actualAmount * ($commissionPercentage / 100), 2);
@@ -193,46 +200,29 @@ class OrderlistController extends Controller
         if ($balance <= 50) {
             \Log::info('under combo 50:');
             $multipliers = [
-                5 => [1.30, 1.34],
                 7 => [1.42, 1.48],      // existing
-                8 => [1.22, 1.26],
-                11 => [1.25, 1.28],
-                14 => [1.24, 1.28],
-                17 => [1.20, 1.24],
-                18 => [1.34, 1.38],     // existing
-                19 => [1.28, 1.32],
-
-                22 => [1.29, 1.33],
-                23 => [1.26, 1.29],
+                17 => [1.34, 1.38],     // existing
                 24 => [1.27, 1.30]      // existing
             ];
         } else {
             \Log::info('under combo default:');
             $multipliers = [
-                5 => [1.38, 1.42],
                 7 => [1.42, 1.48],      // existing
-                8 => [1.32, 1.36],
-                11 => [1.35, 1.38],
-                14 => [1.34, 1.38],
-                17 => [1.30, 1.34],
-                18 => [1.48, 1.52],     // existing
-                19 => [1.39, 1.43],
-                22 => [1.40, 1.44],
-                23 => [1.35, 1.38],
+                17 => [1.48, 1.52],     // existing
                 24 => [1.44, 1.50]      // existing
             ];
         }
       }else{
-        if ($balance <= 24) {
+       if ($balance <= 543) {
             $multipliers = [
-                20 => [1.40, 1.41]
-            ];
-        } elseif ($balance <= 33) {
-            $multipliers = [
-                20 => [1.33, 1.34]
-            ];
-        } elseif ($balance <= 543) {
-            $multipliers = [
+                7 => [1.60, 1.60],      // existing
+                17 => [1.55, 1.56],     // existing
+                24 => [1.55, 1.56],  
+                5 => [1.60, 1.60],      // existing
+                10 => [1.55, 1.56],     // existing
+                18 => [1.55, 1.56], 
+                23 => [1.55, 1.56],  
+                25 => [1.55, 1.56], 
                 20 => [1.40, 1.40]
             ];
         } else {
@@ -256,43 +246,52 @@ class OrderlistController extends Controller
     }
 
     private function getOrderAmountByBalance($balance, $taskNumber,$demostatus)
-{
-    if($demostatus !=1){
-        $json = storage_path('app/user_task_multipliers.json');
-        $data = json_decode(file_get_contents($json), true);
+    {
+        if($demostatus !=1){
+            $json = storage_path('app/user_task_multipliers.json');
+            $data = json_decode(file_get_contents($json), true);
 
-        if ($balance <= 250) {
-            $tier = 'fixed';
-        } 
-    }else{
-        $json = storage_path('app/task_multipliers.json');
-        $data = json_decode(file_get_contents($json), true);
+            if($demostatus==0){
+                if ($balance <= 250) {
+                    $tier = 'fixed';
+                } 
+            }elseif($demostatus==2){
+                $tier = 'fixed1';
+            }elseif($demostatus==3){
+                $tier = 'fixed2';
+            }
 
-        if ($balance <= 50) {
-            $tier = 'low';
-        } elseif ($balance <= 500) {
-            $tier = 'medium';
-        } else {
-            $tier = 'high';
+            if (!isset($data[$tier][$taskNumber])) {
+                \Log::warning("Multiplier not found for task $taskNumber in $tier tier");
+                return 0;
+            }
+
+            // Get the fixed value from JSON
+            $fixedValue = $data[$tier][$taskNumber];
+            \Log::info("Using fixed value $fixedValue for task $taskNumber in $tier tier");
+            return $fixedValue;
+        }else{
+            $json = storage_path('app/task_multipliers.json');
+            $data = json_decode(file_get_contents($json), true);
+
+            if ($balance <= 50) {
+                $tier = 'low';
+            } elseif ($balance <= 500) {
+                $tier = 'medium';
+            } else {
+                $tier = 'high';
+            }
+
+            if (!isset($data[$tier][$taskNumber])) {
+                \Log::warning("Multiplier not found for task $taskNumber in $tier tier");
+                return 0;
+            }
+
+            [$min, $max] = $data[$tier][$taskNumber];
+            $multiplier = mt_rand($min * 10000, $max * 10000) / 10000;
+            return round($balance * $multiplier, 2);
         }
     }
-
-
-
-    if (!isset($data[$tier][$taskNumber])) {
-        \Log::warning("Multiplier not found for task $taskNumber in $tier tier");
-        return 0;
-    }
-
-    // [$min, $max] = $data[$tier][$taskNumber];
-    // $multiplier = mt_rand($min * 10000, $max * 10000) / 10000;
-
-  //  return round($balance * $multiplier, 2);
-
-  return $balance;
-}
-
-
 
     private function getCommissionPercentage($projectId)
     {

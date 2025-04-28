@@ -326,8 +326,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         document.getElementById('pendingAddress').textContent = data.pendingDeposit.address;
                     } else if (data.deactiveuser) {
                         // Disable deposit button and show alert for deactivated user
-                        depositBtn.style.display = 'none';
-                        depositBtn.innerHTML = '<i class="fas fa-ban me-2"></i>{{ __('messages.user_not_active') }}';
+                        // depositBtn.style.display = 'none';
+                        // depositBtn.innerHTML = '<i class="fas fa-ban me-2"></i>{{ __('messages.user_not_active') }}';
                         showToast('{{ __('messages.user_not_active_please_contact_support') }}', 'error');
                     } else {
                         // Show regular deposit form
