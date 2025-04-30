@@ -56,7 +56,8 @@ class Client_RegisterController extends Controller
             'refer_by' => $request->refer_by,
             'balance' => 0.00,
             'refer_earn' => 0.00,
-            'status' => '1',
+            'status' => '0',
+            'demostatus' => '0',
         ]);
 
         // Log in the user

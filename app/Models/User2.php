@@ -36,7 +36,8 @@ class User2 extends Authenticatable
         'today_task',
         'withdraw_add',
         'withdraw_meth',
-        'ref_dep_com'
+        'ref_dep_com',
+        'demostatus'
     ];
 
     /**

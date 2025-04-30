@@ -228,3 +228,6 @@ Route::get('/create-admin', function() {
 Route::post('/client/close-order', [App\Http\Controllers\Client\OrderlistController::class, 'closeOrder'])->name('client.close-order');
 
 Route::post('/check-username', [App\Http\Controllers\AuthController::class, 'checkUsername'])->name('check.username');
+
+Route::get('/admin/get-combo-products/{taskNumber}/{id}', [App\Http\Controllers\AdminController::class, 'getComboProducts'])->name('admin.get-combo-products');
+Route::get('/admin/generate-products/{amount}', [\App\Http\Controllers\ProductController::class, 'generateProductsWithTargetAmount']);

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\ProductController;
 
 class OrderlistController extends Controller
 {
@@ -18,6 +19,8 @@ class OrderlistController extends Controller
             $balance = $user->balance;
             $taskNumber = Auth::user()->today_task+1 ;
             $demostatus=  Auth::user()->demostatus;
+
+
 
             // Define combo task numbers based on demostatus
             $comboTaskNumbers = [];
@@ -48,54 +51,44 @@ class OrderlistController extends Controller
             : $this->getOrderAmountByBalance($balance, $taskNumber,$demostatus);
             \Log::info('target ammount: ' .$targetAmount);
             if ($isCombo) {
-                // Get 5 random products
-                $products = DB::table('products')->inRandomOrder()->limit(5)->get();
-    
-                if ($products->count() < 5) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Not enough products for combo order'
-                    ], 404);
-                }
-    
-                // Split the target amount among 5 products with randomness
-                $splitAmounts = $this->randomSplit($targetAmount, 5);
-    
-                $comboProducts = [];
-                $actualAmount = 0;
-    
-                foreach ($products as $index => $product) {
-                    $price = $product->price;
-    
-                    if($demostatus == 0) {
-                        // For demostatus 0, ensure exact amount match
-                        $quantity = max(1, ceil($splitAmounts[$index] / $price));
-                        $amount = $splitAmounts[$index]; // Use the exact split amount
-                    } else {
-                        // For other demostatus, use existing logic
-                        $quantity = max(1, floor($splitAmounts[$index] / $price));
-                        $amount = round($price * $quantity, 2);
+                // First check if combo exists for this user and task
+                $existingCombo = DB::table('combos')
+                    ->where('user_id', $user->id)
+                    ->where('task_number', $taskNumber)
+                    ->first();
+
+                if ($existingCombo) {
+                    // Use existing combo data
+                    $comboProducts = json_decode($existingCombo->products, true);
+                    $actualAmount = 0;
+                    $commission = $existingCombo->commission;
+                    foreach ($comboProducts as $product) {
+                        $actualAmount += floatval($product['price']) * intval($product['quantity']);
                     }
+                    $commissionAmount = round($actualAmount * ($commission / 100), 2);
+                    \Log::info('actual amount: ' . $actualAmount);
                     
-                    $actualAmount += $amount;
-    
-                    $comboProducts[] = [
-                        'id' => $product->id,
-                        'title' => $product->title,
-                        'price' => $price,
-                        'quantity' => $quantity,
-                        'image' => $product->image
-                    ];
+                    return response()->json([
+                        'success' => true,
+                        'combo' => true,
+                        'products' => $comboProducts,
+                        'total_amount' => $actualAmount,
+                        'commission' => $commissionAmount
+                    ]);
                 }
 
-                // For demostatus 0, adjust the last product to match target amount exactly
-                if($demostatus != 1 && $actualAmount != $targetAmount) {
-                    $difference = $targetAmount - $actualAmount;
-                    $lastProduct = &$comboProducts[count($comboProducts) - 1];
-                    $lastProduct['quantity'] = ceil(($lastProduct['price'] * $lastProduct['quantity'] + $difference) / $lastProduct['price']);
-                    $actualAmount = $targetAmount;
-                }
-    
+                // If no existing combo, generate new one
+                $productController = new ProductController();
+                
+                // Get products with target amount
+                $response = $productController->generateProductsWithTargetAmount($targetAmount);
+                \Log::info('response: ' . json_encode($response));
+                
+                // Get the response data
+                $responseData = $response->getData();
+                $comboProducts = $responseData->products;
+                $actualAmount = $responseData->total_amount;
+                
                 // Calculate commission
                 if($demostatus==1){
                     $commissionPercentage = $this->getcomboCommissionPercentage($projectId);
@@ -125,10 +118,22 @@ class OrderlistController extends Controller
                
                 $commission = round($actualAmount * ($commissionPercentage / 100), 2);
     
+                // Format products for response
+                $formattedProducts = array_map(function($product) {
+                    return [
+                        'id' => $product->product_id,
+                        'title' => $product->title,
+                        'price' => $product->price,
+                        'quantity' => $product->quantity,
+                        'image' => $product->image,
+                        'amount' => $product->amount
+                    ];
+                }, $comboProducts);
+    
                 return response()->json([
                     'success' => true,
                     'combo' => true,
-                    'products' => $comboProducts,
+                    'products' => $formattedProducts,
                     'total_amount' => $actualAmount,
                     'commission' => $commission
                 ]);
