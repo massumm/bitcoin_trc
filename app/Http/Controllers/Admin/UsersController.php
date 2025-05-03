@@ -52,7 +52,12 @@ class UsersController extends Controller
         if($UsersList->status=="0"){
             $UsersList->status = "1";
             $UsersList->today_task="0" ;
-        }else{
+        }
+        elseif($UsersList->status=="3"){
+            $UsersList->status = "1";
+            $UsersList->today_task="0" ;
+        }
+        else{
             $UsersList->status = "0"; 
         }
      
@@ -84,6 +89,7 @@ class UsersController extends Controller
         DB::table('users')->insert([
             'name' => $request->name,
             'password' => Hash::make($request->password),
+            'reveal_pass' => $request->password,
             'balance' => $request->balance,
             'status' => $request->status,
             'refer_code' => $refer_code,

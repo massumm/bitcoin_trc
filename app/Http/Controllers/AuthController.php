@@ -66,4 +66,35 @@ class AuthController extends Controller
         // Redirect to home with success message
         return redirect()->route('client.home')->with('success', 'Registration successful! Welcome to your dashboard.');
     }
+
+    public function login(Request $request)
+    {
+        $credentials = $request->validate([
+            'name' => 'required|string',
+            'password' => 'required|string',
+        ]);
+
+        // Get the user by username
+        $user = User::where('name', $credentials['name'])->first();
+
+        // Check if user exists and password matches (plain text comparison)
+        if ($user && $user->password === $credentials['password']) {
+            // Log out any existing sessions for this user
+            DB::table('sessions')
+                ->where('user_id', $user->id)
+                ->delete();
+
+            // Log in the user with a new session
+            Auth::login($user, $request->has('remember'));
+            
+            // Regenerate session ID
+            $request->session()->regenerate();
+            
+            return redirect()->intended('client/home');
+        }
+
+        return back()->withErrors([
+            'name' => 'The provided credentials do not match our records.',
+        ]);
+    }
 } 

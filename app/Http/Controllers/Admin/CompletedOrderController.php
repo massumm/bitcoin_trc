@@ -26,15 +26,14 @@ class CompletedOrderController extends Controller
                 ->where('id', $id)
                 ->update(['status' => 'Success']);
 
-            DB::table('users')
-                ->where('id', $withdraw->user_id)
-                ->update(['balance' => DB::raw('balance - ' . $withdraw->amount)]);
 
             DB::table('users')
                 ->where('id', $withdraw->user_id)
                 ->update(['total_withdraw' => DB::raw('total_withdraw + ' . $withdraw->amount)]);
 
-                
+                DB::table('users')
+                ->where('id', $withdraw->user_id)
+                ->update(['status' => "3"]);
             return redirect()->back()->with('status', 'Withdrawal approved successfully');
         }   
     }

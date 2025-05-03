@@ -337,9 +337,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
+                console.error('Error:', error.message);
                 // Show error toast
-                //showToast('Error checking deposit status', 'error');
+            showToast('Error checking deposit status', 'error');
             });
     }
 

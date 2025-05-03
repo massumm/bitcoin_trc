@@ -43,13 +43,11 @@ class BinanceController extends Controller
             
             $nextAddress = DB::table('deposit_address')
                 ->where('id', '>', $lastUsedId)
-                ->where('user_status', 0)
                 ->orderBy('id')
                 ->first();
 
             if (!$nextAddress) {
                 $nextAddress = DB::table('deposit_address')
-                    ->where('user_status', 0)
                     ->orderBy('id')
                     ->first();
             }
@@ -99,13 +97,6 @@ class BinanceController extends Controller
 
     public function fetchdeposit_info(){
         $userId = Auth::id();
-        if (Auth::user()->status == 0) {
-            return response()->json([
-                'success' => true,
-                'deactiveuser' => true,
-                'message' => 'User not active yet'
-            ]);
-        }
         $existingDeposit = DB::table('deposit')
                 ->where('user_id', $userId)
                 ->where('status', 'pending')
@@ -122,7 +113,13 @@ class BinanceController extends Controller
                         'date' => $existingDeposit->date
                     ]
                 ]);
-            }
+            }else{
+                return response()->json([
+                    'success' => true,
+                    'hasPendingDeposit' => false,
+                    'message' => 'No pending deposit found'
+                ]);
+            }   
     }
     private function generateQRCode($address)
     {

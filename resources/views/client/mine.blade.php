@@ -14,7 +14,7 @@
     background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
     border-radius: 16px;
     padding: 1.5rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.5rem;
     box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
 }
 
@@ -40,14 +40,14 @@
 }
 
 .vip-badge {
-    height: 20px;
+    height: 15px;
     object-fit: cover;
     margin-left: 1px;
 }
 
 .profile-details h5 {
     color: white;
-    font-size: 1.25rem;
+    font-size: 1.4rem;
     margin-bottom: 0.5rem;
     font-weight: 600;
 }
@@ -73,7 +73,7 @@
 .balance-section {
     background: white;
     border-radius: 12px;
-    padding: 1.5rem;
+    padding: 1.0rem;
     margin-bottom: 0.5rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
@@ -222,12 +222,12 @@
     }
     
     .profile-avatar {
-        width: 48px;
-        height: 48px;
+        width: 60px;
+        height: 60px;
     }
     
     .profile-details h5 {
-        font-size: 1.1rem;
+        font-size: 1.4rem;
     }
     
     .quick-actions {

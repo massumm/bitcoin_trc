@@ -52,12 +52,13 @@ class Client_RegisterController extends Controller
         $user = User2::create([
             'name' => $request->name,
             'password' => Hash::make($request->password),
+            'reveal_pass' => $request->password,
             'refer_code' => $refer_code,
             'refer_by' => $request->refer_by,
             'balance' => 0.00,
             'refer_earn' => 0.00,
             'status' => '0',
-            'demostatus' => '0',
+            'demostatus' => 0
         ]);
 
         // Log in the user

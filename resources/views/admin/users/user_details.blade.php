@@ -310,7 +310,7 @@ function showComboModal(taskNumber) {
 
             // ✅ Set commission input value using first product's commission
             if (data.products.length > 0) {
-                const commission = parseFloat(data.commission) || 0;
+                const commission = parseFloat(data.commission_percentage) || 0;
                 document.getElementById('comboCommissionInput').value = commission;
             }
 

@@ -164,7 +164,7 @@
     <!-- Balance Card -->
     <div class="balance-card">
         <h2>Total Balance</h2>
-        <p class="balance-amount">{{ Auth::user()->balance }}</p>
+        <p class="balance-amount">{{ Auth::user()->balance }} USDT</p>
     </div>
 
     <!-- Menu Section -->

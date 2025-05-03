@@ -328,7 +328,7 @@
             if (data && data.success) {
                 // Show success message
                 const toast = document.createElement('div');
-                toast.className = 'alert alert-success position-fixed top-0 end-0 m-3';
+                toast.className = 'alert alert-success position-fixed start-50 top-50 translate-middle m-3';
                 toast.style.zIndex = '1050';
                 toast.innerHTML = '<i class="fas fa-check-circle me-2"></i>{{ __('messages.order_submitted_successfully') }}';
                 document.body.appendChild(toast);

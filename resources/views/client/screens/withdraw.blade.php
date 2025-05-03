@@ -46,7 +46,7 @@
     .input-field {
         width: 100%;
         padding: 10px;
-        padding-right: 80px; /* space for maximum button */
+        padding-right: 40px; /* Space for eye icon */
         border: 1px solid #ddd;
         border-radius: 8px;
         font-size: 16px;
@@ -121,9 +121,25 @@
         align-items: center;
     }
 
+    .position-relative {
+        position: relative;
+    }
+    
+    .position-absolute {
+        position: absolute;
+    }
+    
+    .fa-eye, .fa-eye-slash {
+        color: #666;
+        transition: color 0.3s;
+    }
+    
+    .fa-eye:hover, .fa-eye-slash:hover {
+        color: #4A90E2;
+    }
 </style>
 
-@if(Auth::user()->withdraw_status != 1)
+@if(Auth::user()->withdraw_status == 0)
     <div class="add-wallet-container" id="addWalletScreen">
         <a href="/client/mine/virtualcurrency" class="add-wallet-link">
             <div class="add-wallet-btn">+</div>
@@ -154,6 +170,7 @@
     <div class="input-group">
         <label class="input-label">{{ __('messages.withdrawal_password') }}</label>
         <input type="password" class="input-field" id="withdrawalPassword" placeholder="{{ __('messages.please_enter_your_password') }}">
+        <i class="fas fa-eye position-absolute" style="right: 10px; top: 50%; transform: translateY(50%); cursor: pointer;" id="togglePassword"></i>
     </div>
 
     <!-- Withdraw Button -->
@@ -163,18 +180,31 @@
 
 <script>
     function showSuccessMessage(message) {
-    const toast = document.createElement('div');
-    toast.className = 'alert alert-success position-fixed start-50 top-50 translate-middle';
-    toast.style.zIndex = '1050';
-    toast.style.minWidth = '300px';
-    toast.style.maxWidth = '80%';
-    toast.style.width = 'auto';
-    toast.style.textAlign = 'center';
+        const toast = document.createElement('div');
+        toast.className = 'alert alert-success position-fixed start-50 top-50 translate-middle m-3';
+        toast.style.zIndex = '1050';
+        toast.style.minWidth = '300px';
+        toast.style.maxWidth = '80%';
+        toast.style.width = 'auto';
+        toast.style.textAlign = 'center';
+        toast.innerHTML = '<i class="fas fa-check-circle me-2"></i>' + message;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
+
+    function showErrorMessage(message) {
+        const toast = document.createElement('div');
+        toast.className = 'alert alert-danger position-fixed start-50 top-50 translate-middle';
+        toast.style.zIndex = '1050';
+        toast.style.minWidth = '300px';
+        toast.style.maxWidth = '80%';
+        toast.style.width = 'auto';
   
-    toast.innerHTML = '<i class="fas fa-check-circle me-2"></i>' + message;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 3000);
-}
+        toast.style.textAlign = 'center';
+        toast.innerHTML = '<i class="fas fa-exclamation-circle me-2"></i>' + message;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
 
     const amountInput = document.getElementById('amountInput');
     const withdrawButton = document.getElementById('withdrawButton');
@@ -218,17 +248,29 @@
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                console.log(data);
                 showSuccessMessage(data.message);
-                window.location.href = '/client/mine'; // or show a success message
+                setTimeout(() => {
+                    window.location.href = '/client/mine';
+                }, 2000);
             } else {
-                alert(data.message || 'Failed to withdraw');
+                showErrorMessage(data.message || 'Failed to withdraw');
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('An error occurred. Please try again.');
+            showErrorMessage('An error occurred. Please try again.');
         });
+    });
+
+    // Add password toggle functionality
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('withdrawalPassword');
+
+    togglePassword.addEventListener('click', function() {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        this.classList.toggle('fa-eye');
+        this.classList.toggle('fa-eye-slash');
     });
 </script>
 

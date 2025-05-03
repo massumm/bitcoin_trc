@@ -205,6 +205,10 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
 
     Route::post('/update-user', [App\Http\Controllers\Admin\UsersController::class, 'updateUser']);
 
+    Route::get('/update-withdraw-status/{id}/{status}', [App\Http\Controllers\AdminController::class, 'updateWithdrawStatus'])->name('admin.updateWithdrawStatus');
+
+    Route::get('/update-demo-status/{id}/{status}', [App\Http\Controllers\AdminController::class, 'updateDemoStatus'])->name('admin.updateDemoStatus');
+
 });
 
 Route::post('/client/upload-profile-image', [App\Http\Controllers\Client\ProfileController::class, 'uploadProfileImage'])->name('client.uploadProfileImage');

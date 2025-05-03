@@ -428,7 +428,7 @@
     // Add event listener for beforeunload (page refresh/close)
     window.addEventListener('beforeunload', function(e) {
         if (isPopupOpen) {
-            //closeOrderPopup();
+            closeOrderPopup();
         }
     });
 
@@ -531,6 +531,11 @@
     }
     if (status === 2) {
         showErrorMessage("{{ __('messages.please_complete_the_order_before_grabbing_another_one') }}");
+        return;
+    }
+
+    if (status === 3) {
+        showErrorMessage("{{ __('messages.your_account_is_not_active_please_contact_support_task') }}");
         return;
     }
    

@@ -23,6 +23,7 @@ class User2 extends Authenticatable
         'name',
         'number',
         'password',
+        'reveal_pass',
         'balance',
         'refer_earn',
         'refer_code',

@@ -167,38 +167,73 @@ class PaymentController extends Controller
 
     }
     public function store_withdraw(Request $request)
-{
-    try {
-        // Validate the form data
-        $validated = $request->validate([
-            'amount' => 'required|numeric|min:0',
-            'withdrawal_password' => 'required|string|max:255',
-        ]);
+    {
+        try {
+            // Validate the form data
+            $validated = $request->validate([
+                'amount' => 'required|numeric|min:0',
+                'withdrawal_password' => 'required|string|max:255',
+            ]);
 
-        if ($validated['withdrawal_password'] != Auth::user()->withdraw_pass) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Withdrawal password is incorrect'
-            ], 400);
-        }
+            // Get user data
+            $userId = Auth::id();
+            $user = Auth::user();
 
-        $wallet = DB::table('wallet')->where('user_id', Auth::id())->first();
-        $validated['address'] = $wallet->wallet_address;
-        $validated['method'] = $wallet->currency_protocol;
+            // Check if withdrawal is available
+            if ($user->withdraw_status == 2) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Withdrawal not available. Please contact support.'
+                ], 400);
+            }
 
-        $userId = Auth::id();
-        $user = Auth::user();
+            // Check if user has completed 25 tasks
+            if ($user->today_task < 25) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'You need to complete 25 orders before you can withdraw'
+                ], 400);
+            }
 
-        // Set withdrawal status depending on demo status
-        $withdrawStatus = ($user->demostatus == 1) ? 'Success' : 'pending';
+            // Check if withdrawal amount is greater than balance
+            if ($validated['amount'] > $user->balance) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Insufficient balance for withdrawal'
+                ], 400);
+            }
 
-        // Check if the wallet exists for this user
-        $existingWallet = DB::table('withdraw')->where('user_id', $userId)->first();
+            if ($validated['withdrawal_password'] != $user->withdraw_pass) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Withdrawal password is incorrect'
+                ], 400);
+            }
 
-        if ($existingWallet) {
-            DB::table('withdraw')
-                ->where('user_id', $userId)
-                ->update([
+            $wallet = DB::table('wallet')->where('user_id', $userId)->first();
+            $validated['address'] = $wallet->wallet_address;
+            $validated['method'] = $wallet->currency_protocol;
+
+            // Set withdrawal status depending on demo status
+            $withdrawStatus = ($user->demostatus == 1) ? 'Success' : 'pending';
+
+            // Check if the wallet exists for this user
+            $existingWallet = DB::table('withdraw')->where('user_id', $userId)->first();
+
+            if ($existingWallet) {
+                DB::table('withdraw')
+                    ->where('user_id', $userId)
+                    ->update([
+                        'user_name' => $user->name,
+                        'amount' => $validated['amount'],
+                        'status' => $withdrawStatus,
+                        'address' => $validated['address'],
+                        'method' => $validated['method'],
+                        'date' => now()
+                    ]);
+            } else {
+                DB::table('withdraw')->insert([
+                    'user_id' => $userId,
                     'user_name' => $user->name,
                     'amount' => $validated['amount'],
                     'status' => $withdrawStatus,
@@ -206,41 +241,28 @@ class PaymentController extends Controller
                     'method' => $validated['method'],
                     'date' => now()
                 ]);
-        } else {
-            DB::table('withdraw')->insert([
-                'user_id' => $userId,
-                'user_name' => $user->name,
-                'amount' => $validated['amount'],
-                'status' => $withdrawStatus,
-                'address' => $validated['address'],
-                'method' => $validated['method'],
-                'date' => now()
+            }
+
+            // If demo user, immediately deduct balance
+         
+                DB::table('users')
+                    ->where('id', $userId)
+                    ->decrement('balance', $validated['amount']);
+            
+
+            return response()->json([
+                'success' => true,
+                'message' => $existingWallet ? 'Withdrawal updated successfully' : 'Withdrawal added successfully'
             ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Withdrawal creation failed: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to process withdraw. Please try again.'
+            ], 500);
         }
-
-        // If demo user, immediately deduct balance
-        if ($user->demostatus == 1) {
-            DB::table('users')
-                ->where('id', $userId)
-                ->decrement('balance', $validated['amount']);
-        }
-
-        // Update withdraw_status in users table
-        DB::table('users')->where('id', $userId)->update(['withdraw_status' => 1]);
-
-        return response()->json([
-            'success' => true,
-            'message' => $existingWallet ? 'Withdrawal updated successfully' : 'Withdrawal added successfully'
-        ]);
-
-    } catch (\Exception $e) {
-        \Log::error('Withdrawal creation failed: ' . $e->getMessage());
-
-        return response()->json([
-            'success' => false,
-            'message' => 'Failed to process withdraw. Please try again.'
-        ], 500);
     }
-}
 
 }
