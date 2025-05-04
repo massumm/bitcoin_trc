@@ -376,7 +376,7 @@
                 <p>{{ __('messages.cash_gap_between_tasks') }}</p>
             </div>
             <div class="col-6">
-                <h5>0 {{ __('messages.usdt') }}</h5>
+            <h5><span class="text-success">{{ Auth::user()->yesterday_comm }}</span> {{ __('messages.usdt') }}</h5>
                 <p>{{ __('messages.yesterday_buy_commission') }}</p>
             </div>
         </div>

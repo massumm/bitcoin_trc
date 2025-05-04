@@ -7,7 +7,7 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-
+use App\Http\Controllers\AdminController;
 class LoginController extends Controller
 {
     /*
@@ -65,6 +65,8 @@ class LoginController extends Controller
         if ($user->name === 'admin') {
             return redirect('/admin/dashboard');
         }
+        $adminController = new AdminController();
+        $adminController->todays_checker(Auth::id());
         return redirect('/client/dashboard');
     }
 }

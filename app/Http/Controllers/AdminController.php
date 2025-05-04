@@ -266,7 +266,7 @@ class AdminController extends Controller
                 // Update user's min_earn to 0 and miss_earn
                 $user->update([
                     'min_earn' => 0,
-                    'miss_earn' => $missEarn
+                    'yesterday_comm' => $missEarn
                 ]);
                 
                 return response()->json([
@@ -284,7 +284,7 @@ class AdminController extends Controller
                 'message' => 'No update needed - user already updated today',
                 'data' => [
                     'min_earn' => $user->min_earn,
-                    'miss_earn' => $user->miss_earn
+                    'yesterday_comm' => $user->yesterday_comm
                 ]
             ]);
             
