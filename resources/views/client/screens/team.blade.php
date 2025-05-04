@@ -48,7 +48,7 @@
             padding: 15px;
             margin-bottom: 10px;
             width: 100%;
-            max-width: 350px;
+         
         }
         .info-card .row {
             display: flex;

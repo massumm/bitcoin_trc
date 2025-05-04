@@ -13,7 +13,7 @@ class UsersController extends Controller
 {
     public function view(){
   
-        $UsersList = User2::all();
+        $UsersList = User2::orderBy('created_at', 'DESC')->get();
          return view('admin.users.userslist', compact('UsersList'));
     }
 
@@ -50,6 +50,10 @@ class UsersController extends Controller
         $UsersList =  User2::find($user_id);
         $data = request()->all();
         if($UsersList->status=="0"){
+            $UsersList->status = "1";
+            $UsersList->today_task="0" ;
+        }
+        elseif($UsersList->status=="2"){
             $UsersList->status = "1";
             $UsersList->today_task="0" ;
         }

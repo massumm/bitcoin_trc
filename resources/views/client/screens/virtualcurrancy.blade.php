@@ -10,14 +10,28 @@
         <div id="passwordSection">
             <div class="form-group">
                 <label class="input-label">{{ __('messages.password') }}</label>
-                <input type="password" name="password" class="form-control input-field" required
-                       placeholder="{{ __('messages.enter_your_password') }}">
+                <div class="input-group">
+                    <input type="password" name="password" class="form-control input-field" required
+                           placeholder="{{ __('messages.enter_your_password') }}" id="password">
+                    <div class="input-group-append">
+                        <span class="input-group-text" onclick="togglePassword('password')">
+                            <i class="fas fa-eye"></i>
+                        </span>
+                    </div>
+                </div>
             </div>
 
             <div class="form-group">
                 <label class="input-label">{{ __('messages.confirm_password') }}</label>
-                <input type="password" name="confirm_password" class="form-control input-field" required
-                       placeholder="{{ __('messages.retype_password') }}">
+                <div class="input-group">
+                    <input type="password" name="confirm_password" class="form-control input-field" required
+                           placeholder="{{ __('messages.retype_password') }}" id="confirm_password">
+                    <div class="input-group-append">
+                        <span class="input-group-text" onclick="togglePassword('confirm_password')">
+                            <i class="fas fa-eye"></i>
+                        </span>
+                    </div>
+                </div>
             </div>
 
             <button type="button" class="btn btn-primary submit-btn" onclick="showWalletFields()">
@@ -61,6 +75,11 @@
     </form>
 
     <script>
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }   
+
         function showWalletFields() {
             const password = document.querySelector('input[name="password"]').value;
             const confirmPassword = document.querySelector('input[name="confirm_password"]').value;

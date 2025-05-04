@@ -246,4 +246,54 @@ class AdminController extends Controller
             return redirect()->back()->with('error', 'Failed to update client role');
         }
     }
+
+    public function todays_checker($userId)
+    {
+        try {
+            // Get the user
+            $user = User2::findOrFail($userId);
+            
+            // Get today's date in Y-m-d format
+            $today = date('Y-m-d');
+            
+            // Check if user's updated_at date matches today
+            $userUpdatedDate = date('Y-m-d', strtotime($user->updated_at));
+            
+            if ($userUpdatedDate !== $today) {
+                // Store current min_earn to miss_earn
+                $missEarn = $user->min_earn;
+                
+                // Update user's min_earn to 0 and miss_earn
+                $user->update([
+                    'min_earn' => 0,
+                    'miss_earn' => $missEarn
+                ]);
+                
+                return response()->json([
+                    'success' => true,
+                    'message' => 'User earnings updated successfully',
+                    'data' => [
+                        'previous_min_earn' => $missEarn,
+                        'new_min_earn' => 0
+                    ]
+                ]);
+            }
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'No update needed - user already updated today',
+                'data' => [
+                    'min_earn' => $user->min_earn,
+                    'miss_earn' => $user->miss_earn
+                ]
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to check/update user earnings',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

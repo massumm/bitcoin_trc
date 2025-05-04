@@ -767,13 +767,13 @@
             } else {
                 if(data.message.includes('Insufficient balance')) {
                     showErrorMessage(data.message);
-                    successfullcloseOrderPopup();
-                    setTimeout(() => {
-                    window.location.reload();
-                }, 1500);
+                    //successfullcloseOrderPopup();
+                //     setTimeout(() => {
+                //     window.location.reload();
+                // }, 1500);
                     return;
                 }
-                successfullcloseOrderPopup();
+               // successfullcloseOrderPopup();
           
             }
         })

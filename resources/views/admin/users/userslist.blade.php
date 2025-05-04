@@ -126,3 +126,26 @@ function confirmDelete() {
 
 </div>
  @endsection
+
+@push('scripts')
+<script>
+    $(document).ready(function() {
+        $('#myDataTable').DataTable({
+            pageLength: 100,
+            language: {
+                search: "{{__('Search')}}",
+                lengthMenu: "{{__('Show _MENU_ entries')}}",
+                info: "{{__('Showing _START_ to _END_ of _TOTAL_ entries')}}",
+                infoEmpty: "{{__('Showing 0 to 0 of 0 entries')}}",
+                infoFiltered: "{{__('(filtered from _MAX_ total entries)')}}",
+                paginate: {
+                    first: "{{__('First')}}",
+                    last: "{{__('Last')}}",
+                    next: "{{__('Next')}}",
+                    previous: "{{__('Previous')}}"
+                }
+            }
+        });
+    });
+</script>
+@endpush

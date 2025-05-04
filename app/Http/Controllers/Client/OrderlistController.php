@@ -596,16 +596,42 @@ class OrderlistController extends Controller
             DB::beginTransaction();
 
             try {
-                $orderId = DB::table('orders')->insertGetId([
-                    'order_number' => $request->order_number,
-                    'user_id' => $user->id,
-                    'total_amount' => $request->total_amount,
-                    'commission' => $request->commission,
-                    'expected_income' => $request->expected_income,
-                    'status' => 'pending',
-                    'created_at' => now(),
-                    'updated_at' => now()
-                ]);
+                // Check if order with this number already exists
+                $existingOrder = DB::table('orders')
+                    ->where('order_number', $request->order_number)
+                    ->first();
+
+                if ($existingOrder) {
+                    // Update existing order
+                    DB::table('orders')
+                        ->where('id', $existingOrder->id)
+                        ->update([
+                            'total_amount' => $request->total_amount,
+                            'commission' => $request->commission,
+                            'expected_income' => $request->expected_income,
+                            'status' => 'pending',
+                            'updated_at' => now()
+                        ]);
+
+                    // Delete existing order items
+                    DB::table('order_items')
+                        ->where('order_id', $existingOrder->id)
+                        ->delete();
+
+                    $orderId = $existingOrder->id;
+                } else {
+                    // Create new order
+                    $orderId = DB::table('orders')->insertGetId([
+                        'order_number' => $request->order_number,
+                        'user_id' => $user->id,
+                        'total_amount' => $request->total_amount,
+                        'commission' => $request->commission,
+                        'expected_income' => $request->expected_income,
+                        'status' => 'pending',
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ]);
+                }
         
                 // Insert order items
                 foreach ($request->order_items as $item) {
@@ -628,7 +654,7 @@ class OrderlistController extends Controller
 
                 return response()->json([
                     'success' => true,
-                    'message' => 'Order created successfully',
+                    'message' => $existingOrder ? 'Order updated successfully' : 'Order created successfully',
                     'order_id' => $orderId
                 ]);
             } catch (\Exception $e) {
@@ -638,7 +664,7 @@ class OrderlistController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to create order',
+                'message' => 'Failed to process order',
                 'error' => $e->getMessage()
             ], 500);
         }
