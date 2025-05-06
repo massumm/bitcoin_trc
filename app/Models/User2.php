@@ -39,7 +39,8 @@ class User2 extends Authenticatable
         'withdraw_meth',
         'ref_dep_com',
         'demostatus',
-        'yesterday_comm'
+        'yesterday_comm',
+        'total_withdraw'
     ];
 
     /**

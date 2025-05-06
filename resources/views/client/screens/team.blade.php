@@ -182,8 +182,9 @@
                                     <thead>
                                         <tr>
                                             <th>Name</th>
-                                            <th>Balance</th>
+                                        
                                             <th>Total Deposit</th>
+                                            <th>Total Withdraw</th>
                                             <th>Joined Date</th>
                                         </tr>
                                     </thead>
@@ -191,8 +192,9 @@
                                         @foreach($teamData['level1'] as $member)
                                         <tr>
                                             <td>{{ $member['name'] }}</td>
-                                            <td>{{ number_format($member['balance'], 2) }}</td>
+                                    
                                             <td>{{ number_format($member['total_deposit'], 2) }}</td>
+                                            <td>{{ number_format($member['total_withdraw'], 2) }}</td>
                                             <td>{{ \Carbon\Carbon::parse($member['joined_date'])->format('Y-m-d') }}</td>
                                         </tr>
                                         @endforeach
@@ -210,8 +212,9 @@
                                     <thead>
                                         <tr>
                                             <th>Name</th>
-                                            <th>Balance</th>
+                                         
                                             <th>Total Deposit</th>
+                                            <th>Total Withdraw</th>
                                             <th>Joined Date</th>
                                         </tr>
                                     </thead>
@@ -219,8 +222,9 @@
                                         @foreach($teamData['level2'] as $member)
                                         <tr>
                                             <td>{{ $member['name'] }}</td>
-                                            <td>{{ number_format($member['balance'], 2) }}</td>
+                                
                                             <td>{{ number_format($member['total_deposit'], 2) }}</td>
+                                            <td>{{ number_format($member['total_withdraw'], 2) }}</td>
                                             <td>{{ \Carbon\Carbon::parse($member['joined_date'])->format('Y-m-d') }}</td>
                                         </tr>
                                         @endforeach
@@ -238,8 +242,9 @@
                                     <thead>
                                         <tr>
                                             <th>Name</th>
-                                            <th>Balance</th>
+                                   
                                             <th>Total Deposit</th>
+                                            <th>Total Withdraw</th>
                                             <th>Joined Date</th>
                                         </tr>
                                     </thead>
@@ -247,8 +252,9 @@
                                         @foreach($teamData['level3'] as $member)
                                         <tr>
                                             <td>{{ $member['name'] }}</td>
-                                            <td>{{ number_format($member['balance'], 2) }}</td>
+                                     
                                             <td>{{ number_format($member['total_deposit'], 2) }}</td>
+                                            <td>{{ number_format($member['total_withdraw'], 2) }}</td>
                                             <td>{{ \Carbon\Carbon::parse($member['joined_date'])->format('Y-m-d') }}</td>
                                         </tr>
                                         @endforeach

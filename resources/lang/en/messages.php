@@ -62,7 +62,7 @@ return [
     'order_no' => 'Order No.',
     'submit_order' => 'Submit Order',
     'please_complete_the_order_before_grabbing_another_one' => 'Please complete the order before grabbing another one',
-    'your_account_is_not_active_please_contact_support' => 'Your account is not active. Please contact support.',
+    'your_account_is_not_active_please_contact_support' => 'No order yet, please contact customer service.',
     'error_fetching_products' => 'Error Fetching Products',
     'insufficient_balance' => 'Insufficient Balance',
     'order_submitted_successfully' => 'Order Submitted Successfully',

@@ -60,6 +60,7 @@ class MineController extends Controller
                     'name' => $user->name,
                     'balance' => $user->balance,
                     'total_deposit' =>$user->total_deposit,
+                    'total_withdraw'=> $user->total_withdraw,
                     'joined_date' => $user->created_at
                 ];
             }),
@@ -68,6 +69,7 @@ class MineController extends Controller
                     'name' => $user->name,
                     'balance' => $user->balance,
                     'total_deposit' =>$user->total_deposit,
+                    'total_withdraw'=> $user->total_withdraw,
                     'joined_date' => $user->created_at
                 ];
             }),
@@ -76,6 +78,7 @@ class MineController extends Controller
                     'name' => $user->name,
                     'balance' => $user->balance,
                     'total_deposit' =>$user->total_deposit,
+                    'total_withdraw'=> $user->total_withdraw,
                     'joined_date' => $user->created_at
                 ];
             })
