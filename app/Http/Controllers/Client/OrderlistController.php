@@ -303,6 +303,9 @@ class OrderlistController extends Controller
                 $tier = 'fixed1';
             }elseif($demostatus==3){
                 $tier = 'fixed2';
+                $fixedValue = $data[$tier][$taskNumber] * $balance;
+                \Log::info("Using fixed value $fixedValue for task $taskNumber in $tier tier");
+                return $fixedValue;
             }
 
             if (!isset($data[$tier][$taskNumber])) {
