@@ -96,7 +96,45 @@ class ProductController extends Controller
             ], 400);
         }
 
-       
+        // Split total amount randomly among products
+        $portions = [];
+        $remaining = $targetAmount;
+        for ($i = 0; $i < $productCount - 1; $i++) {
+            $max = $remaining - ($productCount - $i - 1) * 1; // minimum 1 for each remaining
+            $portion = round(mt_rand(100, $max * 100) / 100, 2);
+            $portions[] = $portion;
+            $remaining -= $portion;
+        }
+        $portions[] = round($remaining, 2);
+        shuffle($portions);
+
+        // Assign prices to products
+        $normalProducts = [];
+        foreach ($products as $index => $product) {
+            $price = $portions[$index];
+            $quantity = 1; // Normal products have quantity 1
+
+            $normalProducts[] = [
+                'product_id' => $product->product_id,
+                'title'      => $product->title,
+                'price'      => $price,
+                'quantity'   => $quantity,
+                'image'      => $product->image,
+                'amount'     => $price
+            ];
+        }
+
+        // Calculate commission (5% of total amount)
+        $actualAmount = array_sum(array_column($normalProducts, 'amount'));
+        $commissionAmount = round($actualAmount * 0.05, 2);
+
+        return response()->json([
+            'success' => true,
+            'combo' => false,
+            'products' => $normalProducts,
+            'total_amount' => $actualAmount,
+            'commission' => $commissionAmount
+        ]);
     }
         
 

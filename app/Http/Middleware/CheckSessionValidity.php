@@ -22,10 +22,25 @@ class CheckSessionValidity
                 ->exists();
 
             if (!$sessionExists) {
+                // If session doesn't exist, log out the user
                 Auth::logout();
                 $request->session()->invalidate();
                 $request->session()->regenerateToken();
                 return redirect('/')->with('error', 'Your session has been invalidated due to a login from another device.');
+            }
+
+            // Check if there are any other active sessions for this user
+            $otherSessions = DB::table('sessions')
+                ->where('user_id', $user->id)
+                ->where('id', '!=', $sessionId)
+                ->exists();
+
+            if ($otherSessions) {
+                // Delete other sessions
+                DB::table('sessions')
+                    ->where('user_id', $user->id)
+                    ->where('id', '!=', $sessionId)
+                    ->delete();
             }
         }
 

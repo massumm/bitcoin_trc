@@ -318,6 +318,6 @@ Its greatest value lies in allowing consumers to earn commissions through free s
 'retype_password'=> 'repeat password again',
 'maximum'=>'Maximum Ammount',
 'your_account_is_not_active_please_contact_support_task'=>'No order yet, please contact customer service to get more task.',
-
+'link_copied_to_clipboard'=>'link is copied'
 ];
 

@@ -190,6 +190,10 @@
                                 <td colspan="4" class="text-end"><strong>Final Total (with Commission):</strong></td>
                                 <td id="comboFinalTotalAmount">$0.00</td>
                             </tr>
+                            <tr>
+                                <td colspan="4" class="text-end"><strong>Short Balance:</strong></td>
+                                <td id="comboShortBalance">${{ number_format($comboShortBalance ?? 0, 2) }}</td>
+                            </tr>
                         </tfoot>
                     </table>
                 </div>
@@ -312,6 +316,9 @@ function showComboModal(taskNumber) {
             if (data.products.length > 0) {
                 const commission = parseFloat(data.commission_percentage) || 0;
                 document.getElementById('comboCommissionInput').value = commission;
+
+                const shortBalance = parseFloat(data.short_balance) || 0;
+                document.getElementById('comboShortBalance').textContent = '$' + shortBalance.toFixed(2);
             }
 
             calculateComboTotal();
@@ -355,12 +362,23 @@ function calculateComboTotal() {
 
     // Calculate final total
     const commissionAmount = subtotal * (commissionPercent / 100);
+    
     const finalTotal = subtotal + commissionAmount;
 
     // Update final total
     const finalTotalElement = document.getElementById('comboFinalTotalAmount');
+
+    const shortBalanceElement = document.getElementById('comboShortBalance');
+    const shortBalance = parseFloat(shortBalanceElement.textContent.replace('$', '')) || 0;
+    const shortBalanceTotal =  finalTotal-shortBalance;
+
+
     if (finalTotalElement) {
         finalTotalElement.textContent = `$${finalTotal.toFixed(2)}`;
+    }
+
+    if (shortBalanceElement) {
+        shortBalanceElement.textContent = `$${-shortBalanceTotal.toFixed(2)}`;
     }
 }
 

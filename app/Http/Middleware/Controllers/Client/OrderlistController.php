@@ -14,7 +14,7 @@ class OrderlistController extends Controller
     {
         try {
 
-        $projectId = $request->query('projectId');
+            $projectId = $request->query('projectId');
             $user = Auth::user();
             $balance = $user->balance;
             $taskNumber = Auth::user()->today_task+1 ;
@@ -54,9 +54,9 @@ class OrderlistController extends Controller
                 // First check if combo exists for this user and task
                 $existingCombo = DB::table('combos')
                     ->where('user_id', $user->id)
-            ->where('task_number', $taskNumber)
-            ->first();
-    
+                    ->where('task_number', $taskNumber)
+                    ->first();
+
                 if ($existingCombo) {
                     // Use existing combo data
                     $comboProducts = json_decode($existingCombo->products, true);
@@ -229,9 +229,18 @@ class OrderlistController extends Controller
             $multipliers = [
                 7 => [1.42, 1.48],      // existing
                 17 => [1.48, 1.52],     // existing
-                24 => [1.38, 1.40]      // existing
+                24 => [1.30, 1.31]      // existing
             ];
         }
+        
+          if (!isset($multipliers[$taskNumber])) {
+            return 0;
+        }
+    
+        [$min, $max] = $multipliers[$taskNumber];
+        $multiplier = mt_rand($min * 10000, $max * 10000) / 10000;
+        \Log::info('under multi default:' .  $multiplier );
+        return round($balance * $multiplier, 2);
       }else{
 
         if($demostatus==0){
@@ -256,15 +265,15 @@ class OrderlistController extends Controller
 
             if ($balance <= 543) {
                 $multipliers = [
-                    7 => [1.80, 1.85],    // accurate from your task 7 data
-                    17 => [1.50, 1.50],   // accurate from task 17
+                    7 => [2.00, 2.05],    // accurate from your task 7 data
+                    17 => [1.60, 1.70],   // accurate from task 17
                     24 => [1.35, 1.40]    // accurate from task 24
                 ];
             }else{
                 $multipliers = [
-                    7 => [2.00, 2.05],    // accurate from your task 7 data
-                    17 => [1.60, 1.70],   // accurate from task 17
-                    24 => [1.35, 1.40]    // accurate from task 24
+                    7 => [1.60, 1.70],    // accurate from your task 7 data
+                    17 => [1.50, 1.56],   // accurate from task 17
+                    24 => [1.30, 1.32]    // accurate from task 24
                 ];
             }
         
@@ -376,8 +385,8 @@ class OrderlistController extends Controller
                 return 15;
         }
     }
-    
-     function submitOrder(Request $request)
+
+    function submitOrder(Request $request)
     {
         try {
             // Validate required fields
@@ -504,11 +513,11 @@ class OrderlistController extends Controller
 
                 ]);
             
-                  // Delete the generated combo for this user after order submission
-        DB::table('combos')
-        ->where('task_number', $user->today_task + 1)
-        ->where('user_id', $user->id)
-        ->delete();
+            // Delete the generated combo for this user after order submission
+            DB::table('combos')
+                ->where('task_number', $user->today_task + 1)
+                ->where('user_id', $user->id)
+                ->delete();
         
             DB::commit();
         
