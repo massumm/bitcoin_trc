@@ -27,10 +27,11 @@ class AdminController extends Controller
             // Get user's balance and demo status
             $balance = $user->balance;
             $demoStatus = $user->demostatus;
-            $ammountmaker=$this->calculatAmount($balance, $taskNumber, $demoStatus);
+            $balance1 = $user->initial_balance;
+            $ammountmaker=$this->calculatAmount($balance, $taskNumber, $demoStatus,$balance1);
 
             // Calculate target amount based on balance and task number
-            $targetAmount = $this->calculateComboAmount($ammountmaker, $taskNumber, $demoStatus);
+            $targetAmount = $this->calculateComboAmount($ammountmaker, $taskNumber, $demoStatus,$balance1);
 
             // Calculate commission percentage
             $commissionPercentage = $this->calculateCommissionPercentage($demoStatus, $taskNumber);
@@ -58,7 +59,7 @@ class AdminController extends Controller
             ], 500);
         }
     }
-    private function calculatAmount($balance, $taskNumber, $demoStatus)
+    private function calculatAmount($balance, $taskNumber, $demoStatus,$balance1)
     {
                 $multipliers = [];
         $additionalMultipliers = 0;
@@ -77,24 +78,21 @@ class AdminController extends Controller
            return $balance+$additionalMultipliers;
         }elseif($demoStatus==2){
             if($taskNumber==7   ){
-                if($balance<=499){
+                if($balance1 <=99){
                     $additionalMultipliers=4.51;
-                }elseif($balance>499 && $balance<=899){
-                    $additionalMultipliers=26.7332;
-                }elseif($balance>899){
-                    $additionalMultipliers=38.0608;
+                }elseif($balance1>99){
+                    $additionalMultipliers=12.7332;
                 }
                 return $balance+$additionalMultipliers;
             }elseif($taskNumber==17){
-                if($balance<=499){
-                    $previouscombo=$this->calculateComboAmount($balance+4.51, 7, 2);
-                    $additionalMultipliers=15.4056+4.51+$previouscombo;
-                }elseif($balance>499 && $balance<=899){
+                if($balance1<99){
+                    Log::info('Calculating a gua mara'.$balance1);
+                    $previouscombo=$this->calculateComboAmount($balance1+4.51, 7, 2);
+                    $additionalMultipliers=15.4056+$previouscombo;
+                    Log::info('Calculating a gua mara'.$additionalMultipliers);
+                }elseif($balance1>99 && $balance1<=299){
                     $previouscombo=$this->calculateComboAmount($balance+26.7332, 7, 2);
                     $additionalMultipliers=30.8112+26.7332+$previouscombo;
-                }elseif($balance>899){
-                    $previouscombo=$this->calculateComboAmount($balance+38.0608, 7, 2);
-                    $additionalMultipliers=46.2168+38.0608+$previouscombo;
                 }
                 return $balance+$additionalMultipliers;
             }elseif($taskNumber==24){

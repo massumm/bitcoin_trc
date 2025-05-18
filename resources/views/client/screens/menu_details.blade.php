@@ -428,7 +428,7 @@
     // Add event listener for beforeunload (page refresh/close)
     window.addEventListener('beforeunload', function(e) {
         if (isPopupOpen) {
-            closeOrderPopup();
+           // closeOrderPopup();
         }
     });
 

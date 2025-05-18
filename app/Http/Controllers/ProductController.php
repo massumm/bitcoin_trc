@@ -9,13 +9,12 @@ class ProductController extends Controller
 {
     public function generateProductsWithTargetAmount($targetAmount)
     {
-        
         $productCount = 5;
 
         $products = DB::table('products')
             ->inRandomOrder()
             ->limit($productCount)
-            ->get(['id as product_id', 'title', 'image']);
+            ->get(['id as product_id', 'title', 'image', 'price']);
 
         if ($products->count() < $productCount) {
             return response()->json([
@@ -36,18 +35,18 @@ class ProductController extends Controller
         $portions[] = round($remaining, 2);
         shuffle($portions);
 
-        // Step 2: Assign quantity and calculate price
+        // Step 2: Assign quantity based on fixed price
         $comboProducts = [];
         foreach ($products as $index => $product) {
             $amount = $portions[$index];
-            $quantity = rand(1, 5);
-            $price = round($amount / $quantity, 2);
-            $adjustedAmount = round($price * $quantity, 2);
+            // Calculate quantity based on fixed price
+            $quantity = ceil($amount / $product->price);
+            $adjustedAmount = round($product->price * $quantity, 2);
 
             $comboProducts[] = [
                 'product_id' => $product->product_id,
                 'title'      => $product->title,
-                'price'      => $price,
+                'price'      => $product->price,
                 'quantity'   => $quantity,
                 'image'      => $product->image,
                 'amount'     => $adjustedAmount
@@ -60,11 +59,11 @@ class ProductController extends Controller
 
         if (abs($diff) > 0.01) {
             $lastIndex = count($comboProducts) - 1;
-            $comboProducts[$lastIndex]['amount'] += $diff;
-            $comboProducts[$lastIndex]['price'] = round(
-                $comboProducts[$lastIndex]['amount'] / $comboProducts[$lastIndex]['quantity'],
-                2
-            );
+            // Adjust quantity of last product to match target amount
+            $lastProduct = $comboProducts[$lastIndex];
+            $newQuantity = ceil(($lastProduct['amount'] + $diff) / $lastProduct['price']);
+            $comboProducts[$lastIndex]['quantity'] = $newQuantity;
+            $comboProducts[$lastIndex]['amount'] = round($lastProduct['price'] * $newQuantity, 2);
         }
 
         // Calculate commission (5% of total amount)

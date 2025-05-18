@@ -34,7 +34,8 @@ class BinanceController extends Controller
 
             // Get current user's ID
             $userId = Auth::id();
-
+            $user = Auth::user();
+            $isDemo = $user->demostatus == 1;
             // Check for existing deposit with same order number and pending status
             
 
@@ -42,15 +43,17 @@ class BinanceController extends Controller
             $lastUsedId = session('last_used_address_id', 0);
             
             $nextAddress = DB::table('deposit_address')
-                ->where('id', '>', $lastUsedId)
+            ->where('id', '>', $lastUsedId)
+            ->where('user_status', $isDemo ? 1 : 0)
+            ->orderBy('id')
+            ->first();
+
+        if (!$nextAddress) {
+            $nextAddress = DB::table('deposit_address')
+                ->where('user_status', $isDemo ? 1 : 0)
                 ->orderBy('id')
                 ->first();
-
-            if (!$nextAddress) {
-                $nextAddress = DB::table('deposit_address')
-                    ->orderBy('id')
-                    ->first();
-            }
+        }
 
             if ($nextAddress) {
                 session(['last_used_address_id' => $nextAddress->id]);
@@ -110,7 +113,8 @@ class BinanceController extends Controller
                         'orderNumber' => $existingDeposit->order_number,
                         'amount' => $existingDeposit->amount,
                         'address' => $existingDeposit->trxid,
-                        'date' => $existingDeposit->date
+                        'date' => $existingDeposit->date,
+                        'qrCode'=>$this->generateQRCode($existingDeposit->trxid)
                     ]
                 ]);
             }else{

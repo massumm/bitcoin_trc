@@ -33,7 +33,7 @@
                                     ? (in_array($i, $comboTasks) ? 'btn-warning' : 'btn-success') 
                                     : 'btn-secondary' 
                             }}"
-                            onclick="{{ in_array($i, $comboTasks) ? 'showComboModal('.$i.')' : 'showProductModal('.$i.')' }}"
+                            onclick="{{ in_array($i, $comboTasks) ? 'showComboModal('.$i.')' : '' }}"
                         >
                             Task {{ $i }}
                             @if(in_array($i, $comboTasks))
@@ -183,16 +183,16 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="4" class="text-end"><strong>Subtotal:</strong></td>
+                                <td colspan="4" class="text-end"><strong>total:</strong></td>
                                 <td id="comboTotalAmount">$0.00</td>
                             </tr>
                             <tr>
-                                <td colspan="4" class="text-end"><strong>Final Total (with Commission):</strong></td>
+                                <td colspan="4" class="text-end"><strong>commissions:</strong></td>
                                 <td id="comboFinalTotalAmount">$0.00</td>
                             </tr>
                             <tr>
                                 <td colspan="4" class="text-end"><strong>Short Balance:</strong></td>
-                                <td id="comboShortBalance">${{ number_format($comboShortBalance ?? 0, 2) }}</td>
+                                <td id="comboShortBalance">$0.00</td>
                             </tr>
                         </tfoot>
                     </table>
@@ -235,6 +235,7 @@ let productModal;
 let comboModal;
 let editUserModal;
 let currentTaskNumber = 0;
+let previousbalance = 0;
 
 document.addEventListener('DOMContentLoaded', function() {
     productModal = new bootstrap.Modal(document.getElementById('productModal'));
@@ -280,6 +281,16 @@ function showEditModal() {
 }
 
 function showComboModal(taskNumber) {
+    // Get the combo tasks array from PHP
+    const comboTasks = @json($comboTasks);
+    console.log(comboTasks);
+    
+    // Check if the task number is a combo task
+    if (!comboTasks.includes(taskNumber)) {
+        alert('This is not a combo task!');
+        return;
+    }
+
     currentTaskNumber = taskNumber;
     const user_id = '{{ $user->id }}';
 
@@ -317,8 +328,11 @@ function showComboModal(taskNumber) {
                 const commission = parseFloat(data.commission_percentage) || 0;
                 document.getElementById('comboCommissionInput').value = commission;
 
-                const shortBalance = parseFloat(data.short_balance) || 0;
-                document.getElementById('comboShortBalance').textContent = '$' + shortBalance.toFixed(2);
+                 previousbalance = parseFloat(data.short_balance) || 0;
+                // document.getElementById('comboShortBalance').value = previousbalance;
+                console.log(previousbalance);
+
+              
             }
 
             calculateComboTotal();
@@ -348,7 +362,7 @@ function calculateComboTotal() {
 
         subtotal += itemSubtotal;
     });
-
+ 
 
     // Update subtotal
     const subtotalElement = document.getElementById('comboTotalAmount');
@@ -363,23 +377,28 @@ function calculateComboTotal() {
     // Calculate final total
     const commissionAmount = subtotal * (commissionPercent / 100);
     
-    const finalTotal = subtotal + commissionAmount;
+    const finalTotal =  commissionAmount;
 
     // Update final total
     const finalTotalElement = document.getElementById('comboFinalTotalAmount');
 
     const shortBalanceElement = document.getElementById('comboShortBalance');
-    const shortBalance = parseFloat(shortBalanceElement.textContent.replace('$', '')) || 0;
-    const shortBalanceTotal =  finalTotal-shortBalance;
 
+    const shortBalance = parseFloat(shortBalanceElement.textContent.replace('$', '')) || 0;
+    console.log('calculateComboTotal 001');
+    console.log(subtotal);
+    console.log(previousbalance);
+    const shortBalanceTotal =  previousbalance-subtotal;
+    console.log(shortBalanceTotal);
+    shortBalanceElement.textContent = `$${shortBalanceTotal.toFixed(2)}`;
 
     if (finalTotalElement) {
         finalTotalElement.textContent = `$${finalTotal.toFixed(2)}`;
     }
 
-    if (shortBalanceElement) {
-        shortBalanceElement.textContent = `$${-shortBalanceTotal.toFixed(2)}`;
-    }
+    // if (shortBalanceElement) {
+    //     shortBalanceElement.textContent = `$${-shortBalanceTotal.toFixed(2)}`;
+    // }
 }
 
 
