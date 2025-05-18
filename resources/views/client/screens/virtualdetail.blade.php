@@ -126,35 +126,38 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.getElementById('displayAmount').innerHTML = `${amount}<span style="font-size: 16px; margin-left: 4px;">{{ __('messages.usdt') }}</span>`;
 
-    let orderNumber = localStorage.getItem('orderNumber');
-    if (!orderNumber) {
-        orderNumber = generateOrderNumber();
-        localStorage.setItem('orderNumber', orderNumber);
-    }
-    document.getElementById('orderNumber').textContent = orderNumber;
+    // let orderNumber = localStorage.getItem('orderNumber');
+    // if (!orderNumber) {
+    //     orderNumber = generateOrderNumber();
+    //     localStorage.setItem('orderNumber', orderNumber);
+    // }
+    console.log()
+ 
   
     // Check if we have saved deposit information
-    const savedQRCode = localStorage.getItem('qrCode');
-    const savedWalletAddress = localStorage.getItem('walletAddress');
-    
-    if (savedQRCode && savedWalletAddress) {
-        // Restore saved information
-        document.getElementById('qrCode').src = savedQRCode;
-        document.getElementById('qrCode').style.display = 'block';
-        document.getElementById('loadingQR').style.display = 'none';
-        document.getElementById('walletAddress').textContent = savedWalletAddress;
-    } else {
-        // Fetch new deposit address
-        fetchDepositAddress(orderNumber);
-    }
+    // const savedQRCode = localStorage.getItem('qrCode');
+    // const savedWalletAddress = localStorage.getItem('walletAddress');
+    checkPendingDeposits();
+
+    // if (savedQRCode && savedWalletAddress) {
+    //     // Restore saved information
+    //     document.getElementById('qrCode').src = savedQRCode;
+    //     document.getElementById('qrCode').style.display = 'block';
+    //     document.getElementById('loadingQR').style.display = 'none';
+    //     document.getElementById('walletAddress').textContent = savedWalletAddress;
+    // } else {
+    //     // Fetch new deposit address
+    //     fetchDepositAddress(orderNumber);
+    // }
 
     startTimer();
 });
 
-function fetchDepositAddress(orderNumber) {
+function fetchDepositAddress() {
     const urlParams = new URLSearchParams(window.location.search);
     const amount = urlParams.get('amount') || '100.00';
-
+    orderNumber = generateOrderNumber();
+    document.getElementById('orderNumber').textContent = orderNumber;
     fetch('/client/get-deposit-address', {
         method: 'POST',
         headers: {
@@ -181,8 +184,8 @@ function fetchDepositAddress(orderNumber) {
             }
 
             // Save to localStorage
-            localStorage.setItem('qrCode',qrCode);
-            localStorage.setItem('walletAddress', walletAddress);
+            // localStorage.setItem('qrCode',qrCode);
+            // localStorage.setItem('walletAddress', walletAddress);
 
             // Update UI
             document.getElementById('qrCode').src = qrCode;
@@ -200,7 +203,43 @@ function fetchDepositAddress(orderNumber) {
             '<p class="text-danger">{{ __('messages.failed_to_load_deposit_address_please_try_again') }}</p>';
     });
 }
+function checkPendingDeposits() {
+        fetch('/client/check-deposit-addresss')
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                if (data.success) {
+                    if (data.hasPendingDeposit) {
 
+                        let qrCode, walletAddress;
+            
+            if (data.hasPendingDeposit) {
+                qrCode = data.pendingDeposit.qrCode;
+                walletAddress = data.pendingDeposit.address;
+            } 
+
+            // Save to localStorage
+            // localStorage.setItem('qrCode',qrCode);
+            // localStorage.setItem('walletAddress', walletAddress);
+
+            // Update UI
+            document.getElementById('qrCode').src = qrCode;
+            document.getElementById('qrCode').style.display = 'block';
+            document.getElementById('loadingQR').style.display = 'none';
+            document.getElementById('walletAddress').textContent = walletAddress;
+
+
+                    } else {
+                        fetchDepositAddress();
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error.message);
+                // Show error toast
+            showToast('Error checking deposit status', 'error');
+            });
+    }
 function generateOrderNumber() {
     const timestamp = Date.now().toString().slice(-10);
     const randomPart = Math.floor(100000 + Math.random() * 900000);
@@ -217,16 +256,16 @@ function copyAddress() {
 function cancelDeposit() {
     if (confirm('{{ __('messages.are_you_sure_you_want_to_cancel_this_deposit') }}')) {
         // Clear all saved data
-        localStorage.removeItem('orderNumber');
-        localStorage.removeItem('qrCode');
-        localStorage.removeItem('walletAddress');
+        // localStorage.removeItem('orderNumber');
+        // localStorage.removeItem('qrCode');
+        // localStorage.removeItem('walletAddress');
         history.back();
     }
 }
 
 function markTransferred() {
     alert('{{ __('messages.please_wait_for_confirmation_from_customer_service') }}');
-    localStorage.removeItem('orderNumber');
+    // localStorage.removeItem('orderNumber');
 }
 
 function startTimer() {
@@ -246,9 +285,9 @@ function startTimer() {
 
 function goBack() {
     // Clear all saved data
-    localStorage.removeItem('orderNumber');
-    localStorage.removeItem('qrCode');
-    localStorage.removeItem('walletAddress');
+    // localStorage.removeItem('orderNumber');
+    // localStorage.removeItem('qrCode');
+    // localStorage.removeItem('walletAddress');
      console.log("back")
     // Go back and reload the previous page
     window.location.href = '/client/mine';
@@ -259,10 +298,10 @@ window.goBack = goBack;
 // Also handle browser back button
 window.onpopstate = function(event) {
     // Clear all saved data
-    localStorage.removeItem('orderNumber');
-    localStorage.removeItem('qrCode');
-    localStorage.removeItem('walletAddress');
-    
+    // localStorage.removeItem('orderNumber');
+    // localStorage.removeItem('qrCode');
+    // localStorage.removeItem('walletAddress');
+  
     // Reload the previous page
     window.location.href = '/client/mine';
 };
