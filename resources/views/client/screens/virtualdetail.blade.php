@@ -237,7 +237,7 @@ function checkPendingDeposits() {
             .catch(error => {
                 console.error('Error:', error.message);
                 // Show error toast
-            showToast('Error checking deposit status', 'error');
+            showToast('Error checking deposit status');
             });
     }
 function generateOrderNumber() {
@@ -246,11 +246,75 @@ function generateOrderNumber() {
     return timestamp + randomPart;
 }
 
+function showToast(message) {
+    const toast = document.createElement('div');
+    toast.className = 'alert alert-success';
+    toast.style.position = 'fixed';
+    toast.style.left = '50%';
+    toast.style.top = '50%';
+    toast.style.transform = 'translate(-50%, -50%)';
+    toast.style.zIndex = '1050';
+    toast.style.minWidth = '300px';
+    toast.style.maxWidth = '80%';
+    toast.style.width = 'auto';
+    toast.style.backgroundColor = '#28a745';
+    toast.style.color = 'white';
+    toast.style.border = 'none';
+    toast.style.borderRadius = '8px';
+    toast.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+    toast.style.padding = '15px 25px';
+    toast.style.textAlign = 'center';
+    toast.style.display = 'flex';
+    toast.style.alignItems = 'center';
+    toast.style.justifyContent = 'center';
+    toast.innerHTML = '<i class="fas fa-check-circle me-2"></i>' + message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
+
 function copyAddress() {
     const address = document.getElementById('walletAddress').textContent;
-    navigator.clipboard.writeText(address).then(() => {
-        alert('{{ __('messages.address_copied_to_clipboard') }}');
-    });
+    
+    // Try using the modern Clipboard API first
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(address).then(() => {
+            showToast('{{ __('messages.address_copied_to_clipboard') }}');
+        }).catch(() => {
+            fallbackCopyTextToClipboard(address);
+        });
+    } else {
+        fallbackCopyTextToClipboard(address);
+    }
+}
+
+function fallbackCopyTextToClipboard(text) {
+    // Create a temporary textarea element
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    
+    // Make the textarea out of viewport
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+    textArea.style.top = '-999999px';
+    document.body.appendChild(textArea);
+    
+    // Select and copy the text
+    textArea.focus();
+    textArea.select();
+    
+    try {
+        const successful = document.execCommand('copy');
+        if (successful) {
+            showToast('{{ __('messages.address_copied_to_clipboard') }}');
+        } else {
+            showToast('{{ __('messages.failed_to_copy_address') }}');
+        }
+    } catch (err) {
+        showToast('{{ __('messages.failed_to_copy_address') }}');
+    }
+    
+    // Clean up
+    document.body.removeChild(textArea);
 }
 
 function cancelDeposit() {
