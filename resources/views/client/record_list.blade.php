@@ -375,7 +375,7 @@
             menuList.innerHTML = `
                 <div class="text-center py-5">
                     <i class="fas fa-spinner fa-spin fa-2x text-primary"></i>
-                    <p class="mt-2">{{ __('messages.http://127.0.0.1:8000/uploads/medicins/img130.jpg') }}...</p>
+                    <p class="mt-2">{{ __('messages.loading') }}...</p>
                 </div>
             `;
 

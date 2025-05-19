@@ -310,7 +310,7 @@ function showComboModal(taskNumber) {
                     </td>
                     <td>${product.product_id}</td>
                     <td>${product.title}</td>
-                    <td>$${product.price.toFixed(2)}</td>
+                    <td>$${product.price}</td>
                     <td>
                         <input type="number" 
                                class="form-control quantity-input" 
@@ -358,11 +358,12 @@ function calculateComboTotal() {
         const quantity = parseInt(quantityInput.value) || 0;
 
         const itemSubtotal = price * quantity;
+        console.log("itemSubtotal",itemSubtotal);
         row.querySelector('.subtotal').textContent = `$${itemSubtotal.toFixed(2)}`;
 
         subtotal += itemSubtotal;
     });
- 
+ console.log("subtotal",subtotal);
 
     // Update subtotal
     const subtotalElement = document.getElementById('comboTotalAmount');
