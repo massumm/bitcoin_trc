@@ -61,7 +61,7 @@ return [
     'order_commission' => 'Order Commission',
     'order_no' => 'Order No.',
     'submit_order' => 'Submit Order',
-    'please_complete_the_order_before_grabbing_another_one' => 'Please complete the order before grabbing another one',
+    'please_complete_the_order_before_grabbing_another_one' => 'You have an unpaid order. Please complete it first',
     'your_account_is_not_active_please_contact_support' => 'No order yet, please contact customer service.',
     'error_fetching_products' => 'Error Fetching Products',
     'insufficient_balance' => 'Insufficient Balance',
@@ -162,7 +162,7 @@ return [
     'password' => 'Password',
     'rememberMe' => 'Remember Me',
     'signIn' => 'Login',
-    'signUp' => 'Sign Up',
+    'signUp' => 'Registration',
     'dontHaveAnAccount' => 'Don\'t Have an Account?',
     'enterYourName' => 'Enter Your Name',
     'referralCode' => 'Referral Code',
@@ -318,6 +318,6 @@ Its greatest value lies in allowing consumers to earn commissions through free s
 'retype_password'=> 'repeat password again',
 'maximum'=>'Maximum Ammount',
 'your_account_is_not_active_please_contact_support_task'=>'No order yet, please contact customer service to get more task.',
-
+'link_copied_to_clipboard'=>'link is copied'
 ];
 

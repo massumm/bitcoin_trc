@@ -33,7 +33,7 @@
                                     ? (in_array($i, $comboTasks) ? 'btn-warning' : 'btn-success') 
                                     : 'btn-secondary' 
                             }}"
-                            onclick="{{ in_array($i, $comboTasks) ? 'showComboModal('.$i.')' : 'showProductModal('.$i.')' }}"
+                            onclick="{{ in_array($i, $comboTasks) ? 'showComboModal('.$i.')' : '' }}"
                         >
                             Task {{ $i }}
                             @if(in_array($i, $comboTasks))
@@ -183,11 +183,11 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="4" class="text-end"><strong>Subtotal:</strong></td>
+                                <td colspan="4" class="text-end"><strong>total:</strong></td>
                                 <td id="comboTotalAmount">$0.00</td>
                             </tr>
                             <tr>
-                                <td colspan="4" class="text-end"><strong>Final Total (with Commission):</strong></td>
+                                <td colspan="4" class="text-end"><strong>commissions:</strong></td>
                                 <td id="comboFinalTotalAmount">$0.00</td>
                             </tr>
                             <tr>
@@ -235,6 +235,7 @@ let productModal;
 let comboModal;
 let editUserModal;
 let currentTaskNumber = 0;
+let previousbalance = 0;
 
 document.addEventListener('DOMContentLoaded', function() {
     productModal = new bootstrap.Modal(document.getElementById('productModal'));
@@ -280,58 +281,70 @@ function showEditModal() {
 }
 
 function showComboModal(taskNumber) {
-    // currentTaskNumber = taskNumber;
-    // const user_id = '{{ $user->id }}';
+    // Get the combo tasks array from PHP
+    const comboTasks = @json($comboTasks);
+    console.log(comboTasks);
+    
+    // Check if the task number is a combo task
+    if (!comboTasks.includes(taskNumber)) {
+        alert('This is not a combo task!');
+        return;
+    }
 
-    // fetch(/admin/get-combo-products/${taskNumber}/${user_id}, {
-    //     headers: {
-    //         'X-CSRF-TOKEN': '{{ csrf_token() }}'
-    //     }
-    // })
-    // .then(response => response.json())
-    // .then(data => {
-    //     if (data.success) {
-    //         const tbody = document.getElementById('comboProductsBody');
-    //         tbody.innerHTML = data.products.map(product => 
-    //             <tr>
-    //                 <td>
-    //                     <img src="{{ asset('') }}${product.image}" alt="${product.title}" style="width: 50px; height: 50px; object-fit: cover;">
-    //                 </td>
-    //                 <td>${product.product_id}</td>
-    //                 <td>${product.title}</td>
-    //                 <td>$${product.price.toFixed(2)}</td>
-    //                 <td>
-    //                     <input type="number" 
-    //                            class="form-control quantity-input" 
-    //                            data-price="${product.price}"
-    //                            value="${product.quantity}" 
-    //                            min="1" 
-    //                            onchange="calculateComboTotal()">
-    //                 </td>
-    //                 <td class="subtotal">$${(product.price * product.quantity).toFixed(2)}</td>
-    //             </tr>
-    //         ).join('');
-    //         let previousbalance = 0;
-    //         // ✅ Set commission input value using first product's commission
-    //         if (data.products.length > 0) {
-    //             const commission = parseFloat(data.commission_percentage) || 0;
-    //             document.getElementById('comboCommissionInput').value = commission;
+    currentTaskNumber = taskNumber;
+    const user_id = '{{ $user->id }}';
 
-    //             // previousbalance = parseFloat(data.short_balance) || 0;
-    //             // document.getElementById('comboShortBalance').value = previousbalance;
-    //             // calculateComboTotal(previousbalance);
-    //         }
+    fetch(`/admin/get-combo-products/${taskNumber}/${user_id}`, {
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const tbody = document.getElementById('comboProductsBody');
+            tbody.innerHTML = data.products.map(product => `
+                <tr>
+                    <td>
+                        <img src="{{ asset('') }}${product.image}" alt="${product.title}" style="width: 50px; height: 50px; object-fit: cover;">
+                    </td>
+                    <td>${product.product_id}</td>
+                    <td>${product.title}</td>
+                    <td>$${product.price.toFixed(2)}</td>
+                    <td>
+                        <input type="number" 
+                               class="form-control quantity-input" 
+                               data-price="${product.price}"
+                               value="${product.quantity}" 
+                               min="1" 
+                               onchange="calculateComboTotal()">
+                    </td>
+                    <td class="subtotal">$${(product.price * product.quantity).toFixed(2)}</td>
+                </tr>
+            `).join('');
 
-    //         calculateComboTotal();
-    //         comboModal.show();
-    //     } else {
-    //         alert('Failed to load combo products: ' + data.message);
-    //     }
-    // })
-    // .catch(error => {
-    //     console.error('Error:', error);
-    //     alert('An error occurred while loading combo products.');
-    // });
+            // ✅ Set commission input value using first product's commission
+            if (data.products.length > 0) {
+                const commission = parseFloat(data.commission_percentage) || 0;
+                document.getElementById('comboCommissionInput').value = commission;
+
+                 previousbalance = parseFloat(data.short_balance) || 0;
+                // document.getElementById('comboShortBalance').value = previousbalance;
+                console.log(previousbalance);
+
+              
+            }
+
+            calculateComboTotal();
+            comboModal.show();
+        } else {
+            alert('Failed to load combo products: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while loading combo products.');
+    });
 }
 
 function calculateComboTotal() {
@@ -345,7 +358,7 @@ function calculateComboTotal() {
         const quantity = parseInt(quantityInput.value) || 0;
 
         const itemSubtotal = price * quantity;
-        row.querySelector('.subtotal').textContent = $${itemSubtotal.toFixed(2)};
+        row.querySelector('.subtotal').textContent = `$${itemSubtotal.toFixed(2)}`;
 
         subtotal += itemSubtotal;
     });
@@ -354,7 +367,7 @@ function calculateComboTotal() {
     // Update subtotal
     const subtotalElement = document.getElementById('comboTotalAmount');
     if (subtotalElement) {
-        subtotalElement.textContent = $${subtotal.toFixed(2)};
+        subtotalElement.textContent = `$${subtotal.toFixed(2)}`;
     }
 
     // Get commission percentage from input
@@ -364,27 +377,27 @@ function calculateComboTotal() {
     // Calculate final total
     const commissionAmount = subtotal * (commissionPercent / 100);
     
-    const finalTotal = subtotal + commissionAmount;
+    const finalTotal =  commissionAmount;
 
     // Update final total
     const finalTotalElement = document.getElementById('comboFinalTotalAmount');
 
-    // const shortBalanceElement = document.getElementById('comboShortBalance');
+    const shortBalanceElement = document.getElementById('comboShortBalance');
 
-    // const shortBalance = parseFloat(shortBalanceElement.textContent.replace('$', '')) || 0;
-    // console.log('calculateComboTotal 001');
-    // console.log(subtotal);
-    // console.log(previousbalance);
-    // const shortBalanceTotal =  previousbalance-subtotal;
-    // console.log(shortBalanceTotal);
-    // shortBalanceElement.textContent = $${shortBalanceTotal.toFixed(2)};
+    const shortBalance = parseFloat(shortBalanceElement.textContent.replace('$', '')) || 0;
+    console.log('calculateComboTotal 001');
+    console.log(subtotal);
+    console.log(previousbalance);
+    const shortBalanceTotal =  previousbalance-subtotal;
+    console.log(shortBalanceTotal);
+    shortBalanceElement.textContent = `$${shortBalanceTotal.toFixed(2)}`;
 
     if (finalTotalElement) {
-        finalTotalElement.textContent = $${finalTotal.toFixed(2)};
+        finalTotalElement.textContent = `$${finalTotal.toFixed(2)}`;
     }
 
     // if (shortBalanceElement) {
-    //     shortBalanceElement.textContent = $${-shortBalanceTotal.toFixed(2)};
+    //     shortBalanceElement.textContent = `$${-shortBalanceTotal.toFixed(2)}`;
     // }
 }
 

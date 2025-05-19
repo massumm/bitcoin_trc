@@ -49,8 +49,22 @@ document.addEventListener('DOMContentLoaded', function() {
         const shareLink = document.getElementById('shareLink');
         shareLink.select();
         document.execCommand('copy');
-            alert('{{ __('messages.link_copied_to_clipboard') }}');
+        showErrorMessage('{{ __('messages.link_copied_to_clipboard') }}');
+  
     }
 });
+    function showErrorMessage(message) {
+        const toast = document.createElement('div');
+        toast.className = 'alert alert-danger position-fixed start-50 top-50 translate-middle';
+        toast.style.zIndex = '1050';
+        toast.style.minWidth = '300px';
+        toast.style.maxWidth = '80%';
+        toast.style.width = 'auto';
+  
+        toast.style.textAlign = 'center';
+        toast.innerHTML = '<i class="fas fa-exclamation-circle me-2"></i>' + message;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
 </script>
 @endsection
