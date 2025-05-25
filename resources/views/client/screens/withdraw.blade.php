@@ -209,33 +209,42 @@
     const amountInput = document.getElementById('amountInput');
     const withdrawButton = document.getElementById('withdrawButton');
     const maxAmountButton = document.getElementById('maxAmountButton');
+    const MIN_WITHDRAWAL = 20;
 
-    amountInput.addEventListener('input', function() {
-        if (this.value.trim() !== '') {
+    function updateButtonState() {
+        const amount = parseFloat(amountInput.value) || 0;
+        const balance = {{ Auth::user()->balance }};
+        
+        if (amount >= MIN_WITHDRAWAL && amount <= balance && amountInput.value.trim() !== '') {
             withdrawButton.disabled = false;
             withdrawButton.classList.add('active');
         } else {
             withdrawButton.disabled = true;
             withdrawButton.classList.remove('active');
         }
+    }
+
+    amountInput.addEventListener('input', function() {
+        updateButtonState();
     });
 
     maxAmountButton.addEventListener('click', function() {
         const maxBalance = Math.floor({{ Auth::user()->balance }}); // no decimals
         amountInput.value = maxBalance;
-
-        if (maxBalance !== 0) {
-            withdrawButton.disabled = false;
-            withdrawButton.classList.add('active');
-        } else {
-            withdrawButton.disabled = true;
-            withdrawButton.classList.remove('active');
-        }
+        updateButtonState();
     });
+
+    // Initial button state check
+    updateButtonState();
 
     withdrawButton.addEventListener('click', function() {
         let amount = amountInput.value;
         let withdrawalPassword = document.getElementById('withdrawalPassword').value;
+
+        if (amount < MIN_WITHDRAWAL) {
+            //showErrorMessage('Minimum withdrawal amount is 20 USDT');
+            return;
+        }
 
         fetch('/client/mine/withdraw', {
             method: 'POST',

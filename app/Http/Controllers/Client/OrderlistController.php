@@ -62,9 +62,10 @@ class OrderlistController extends Controller
                     $comboProducts = json_decode($existingCombo->products, true);
                     $actualAmount = 0;
                     $commission = $existingCombo->commission;
-                    foreach ($comboProducts as $product) {
-                        $actualAmount += floatval($product['price']) * intval($product['quantity']);
-                    }
+                    $actualAmount = $balance + $existingCombo->short_balance;
+                    // foreach ($comboProducts as $product) {
+                    //     $actualAmount += floatval($product['price']) * intval($product['quantity']);
+                    // }
                     $commissionAmount = round($actualAmount * ($commission / 100), 2);
                     \Log::info('actual amount: ' . $actualAmount);
                     
@@ -319,9 +320,9 @@ class OrderlistController extends Controller
             $data = json_decode(file_get_contents($json), true);
 
             if($demostatus==0){
-                if ($balance <= 250) {
+            
                     $tier = 'fixed';
-                } 
+                
             }elseif($demostatus==2){
                 if ($balance <= 90) {
                 $tier = 'fixed1';

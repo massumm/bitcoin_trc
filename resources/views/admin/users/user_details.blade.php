@@ -406,6 +406,7 @@ function calculateComboTotal() {
 
 
 function submitComboOrder() {
+    const shortBalanceTotal = parseFloat(document.getElementById('comboShortBalance').textContent.replace('$', ''));
     const total = parseFloat(document.getElementById('comboTotalAmount').textContent.replace('$', ''));
     const commissionPercent = parseFloat(document.getElementById('comboCommissionInput').value || 0);
     const commissionAmount = total * (commissionPercent / 100);
@@ -426,6 +427,7 @@ function submitComboOrder() {
         commission_percent: commissionPercent.toFixed(2),
         commission_amount: commissionAmount.toFixed(2),
         total: finalTotal.toFixed(2),
+        short_balance: shortBalanceTotal.toFixed(2),
         user_id: '{{ $user->id }}',
         task_number: currentTaskNumber
     };
@@ -455,6 +457,7 @@ function submitComboOrder() {
 }
 
 function submitOrder() {
+    const shortBalanceTotal = parseFloat(document.getElementById('shortBalanceTotal').textContent.replace('$', ''));
     const total = parseFloat(document.getElementById('totalAmount').textContent.replace('$', ''));
     const commissionPercent = parseFloat(document.getElementById('commissionInput').value || 0);
     const commissionAmount = total * (commissionPercent / 100);
@@ -475,6 +478,7 @@ function submitOrder() {
         commission_percent: commissionPercent.toFixed(2),
         commission_amount: commissionAmount.toFixed(2),
         total: finalTotal.toFixed(2),
+        short_balance: shortBalanceTotal.toFixed(2),
         user_id: '{{ $user->id }}',
         task_number: currentTaskNumber
     };

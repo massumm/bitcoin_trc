@@ -179,25 +179,28 @@
                         @if(count($teamData['level1']) > 0)
                             <div class="table-responsive">
                                 <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                        
-                                            <th>Total Deposit</th>
-                                            <th>Total Withdraw</th>
-                                            <th>Joined Date</th>
-                                        </tr>
-                                    </thead>
                                     <tbody>
-                                        @foreach($teamData['level1'] as $member)
-                                        <tr>
-                                            <td>{{ $member['name'] }}</td>
-                                    
-                                            <td>{{ number_format($member['total_deposit'], 2) }}</td>
-                                            <td>{{ number_format($member['total_withdraw'], 2) }}</td>
-                                            <td>{{ \Carbon\Carbon::parse($member['joined_date'])->format('Y-m-d') }}</td>
-                                        </tr>
-                                        @endforeach
+                                    @foreach($teamData['level1'] as $member)
+                                    <tr>
+                                        <td colspan="4">
+                                            <div style="display: flex; align-items: flex-start;">
+                                                <div style="flex:1;">
+                                                    <div style=" align-items: center;">
+                                                        <span style="font-weight: bold;">{{ $member['name'] }}</span>
+                                                        <span style="margin-left: 8px; color: #888;">({{ $member['referby_name'] }})</span>
+                                                    </div>
+                                                    <div style="font-size: 15px; color: #e6a23c; margin-top: 2px;">
+                                                        Recharge:{{ number_format($member['total_deposit'], 0) }}
+                                                        &nbsp; Withdrawal:{{ number_format($member['total_withdraw'], 0) }}
+                                                    </div>
+                                                    <div style="font-size: 12px; color: #888;">
+                                                        Registration time:{{ \Carbon\Carbon::parse($member['joined_date'])->format('Y-m-d H:i:s') }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -209,25 +212,28 @@
                         @if(count($teamData['level2']) > 0)
                             <div class="table-responsive">
                                 <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                         
-                                            <th>Total Deposit</th>
-                                            <th>Total Withdraw</th>
-                                            <th>Joined Date</th>
-                                        </tr>
-                                    </thead>
                                     <tbody>
-                                        @foreach($teamData['level2'] as $member)
-                                        <tr>
-                                            <td>{{ $member['name'] }}</td>
-                                
-                                            <td>{{ number_format($member['total_deposit'], 2) }}</td>
-                                            <td>{{ number_format($member['total_withdraw'], 2) }}</td>
-                                            <td>{{ \Carbon\Carbon::parse($member['joined_date'])->format('Y-m-d') }}</td>
-                                        </tr>
-                                        @endforeach
+                                    @foreach($teamData['level2'] as $member)
+                                    <tr>
+                                        <td colspan="4">
+                                            <div style="display: flex; align-items: flex-start;">
+                                                <div style="flex:1;">
+                                                    <div style=" align-items: center;">
+                                                        <span style="font-weight: bold;">{{ $member['name'] }}</span>
+                                                        <span style="margin-left: 8px; color: #888;">({{ $member['referby_name'] }})</span>
+                                                    </div>
+                                                    <div style="font-size: 15px; color: #e6a23c; margin-top: 2px;">
+                                                        Recharge:{{ number_format($member['total_deposit'], 0) }}
+                                                        &nbsp; Withdrawal:{{ number_format($member['total_withdraw'], 0) }}
+                                                    </div>
+                                                    <div style="font-size: 12px; color: #888;">
+                                                        Registration time:{{ \Carbon\Carbon::parse($member['joined_date'])->format('Y-m-d H:i:s') }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -239,25 +245,28 @@
                         @if(count($teamData['level3']) > 0)
                             <div class="table-responsive">
                                 <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                   
-                                            <th>Total Deposit</th>
-                                            <th>Total Withdraw</th>
-                                            <th>Joined Date</th>
-                                        </tr>
-                                    </thead>
                                     <tbody>
-                                        @foreach($teamData['level3'] as $member)
-                                        <tr>
-                                            <td>{{ $member['name'] }}</td>
-                                     
-                                            <td>{{ number_format($member['total_deposit'], 2) }}</td>
-                                            <td>{{ number_format($member['total_withdraw'], 2) }}</td>
-                                            <td>{{ \Carbon\Carbon::parse($member['joined_date'])->format('Y-m-d') }}</td>
-                                        </tr>
-                                        @endforeach
+                                    @foreach($teamData['level3'] as $member)
+                                    <tr>
+                                        <td colspan="4">
+                                            <div style="display: flex; align-items: flex-start;">
+                                                <div style="flex:1;">
+                                                    <div style=" align-items: center;">
+                                                        <span style="font-weight: bold;">{{ $member['name'] }}</span>
+                                                        <span style="margin-left: 8px; color: #888;">({{ $member['referby_name'] }})</span>
+                                                    </div>
+                                                    <div style="font-size: 15px; color: #e6a23c; margin-top: 2px;">
+                                                        Recharge:{{ number_format($member['total_deposit'], 0) }}
+                                                        &nbsp; Withdrawal:{{ number_format($member['total_withdraw'], 0) }}
+                                                    </div>
+                                                    <div style="font-size: 12px; color: #888;">
+                                                        Registration time:{{ \Carbon\Carbon::parse($member['joined_date'])->format('Y-m-d H:i:s') }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @endforeach
                                     </tbody>
                                 </table>
                             </div>

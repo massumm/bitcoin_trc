@@ -8,6 +8,7 @@ use App\Models\User2;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class UsersController extends Controller
 {
@@ -125,7 +126,7 @@ class UsersController extends Controller
     {
         try {
             $data = $request->json()->all();
-            
+            Log::info('short_balance 00000:'.$data['short_balance']);
             // Prepare products array with all required fields
             $products = array_map(function($product) {
                 return [
@@ -150,24 +151,29 @@ class UsersController extends Controller
                 ->first();
             
             if ($existingCombo) {
+                Log::info('short_balance:111 '.$data['short_balance']);
                 // Update existing combo
+         
                 DB::table('combos')
                     ->where('user_id', $data['user_id'])
                     ->where('task_number', $data['task_number'])
                     ->update([
                         'commission' => $data['commission_percent'],
                         'products' => json_encode($products),
+                        'short_balance' => abs($data['short_balance']),
                         'updated_at' => now()
                     ]);
                 
                 $message = 'Combo updated successfully';
             } else {
+                Log::info('short_balance: 222 '.$data['short_balance']);
                 // Insert new combo
                 DB::table('combos')->insert([
                     'user_id' => $data['user_id'],
                     'task_number' => $data['task_number'],
                     'commission' => $data['commission_percent'],
                     'products' => json_encode($products),
+                    'short_balance' => abs($data['short_balance']),
                     'created_at' => now(),
                     'updated_at' => now()
                 ]);

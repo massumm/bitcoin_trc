@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Models\User;
 use App\Models\User2;
+use Illuminate\Support\Facades\Auth;    
+
 
 class AdminController extends Controller
 {
@@ -23,18 +25,21 @@ class AdminController extends Controller
                     'message' => 'User not found'
                 ], 404);
             }
+     
 
             // Get user's balance and demo status
             $balance = $user->balance;
-            $demoStatus = $user->demostatus;
             $balance1 = $user->initial_balance;
+            $demoStatus = $user->demostatus;
+            Log::info('taskNumber:' .  $taskNumber . 'id:' . $id);
             $ammountmaker=$this->calculatAmount($balance, $taskNumber, $demoStatus,$balance1);
-
+            Log::info('ammountmaker:' .  $ammountmaker );
             // Calculate target amount based on balance and task number
             $targetAmount = $this->calculateComboAmount($ammountmaker, $taskNumber, $demoStatus,$balance1);
-
+            Log::info('targetAmount:' .  $targetAmount . 'demoStatus:' . $demoStatus. 'taskNumber:' . $taskNumber);
             // Calculate commission percentage
             $commissionPercentage = $this->calculateCommissionPercentage($demoStatus, $taskNumber);
+            Log::info('commissionPercentage:' .  $commissionPercentage );
 
             // Initialize ProductController
             $productController = new ProductController();
@@ -61,7 +66,8 @@ class AdminController extends Controller
     }
     private function calculatAmount($balance, $taskNumber, $demoStatus,$balance1)
     {
-                $multipliers = [];
+        Log::info('calculatAmount:' .  $balance . 'taskNumber:' . $taskNumber . 'demoStatus:' . $demoStatus);
+        $multipliers = [];
         $additionalMultipliers = 0;
         $commission = 0;
        
@@ -75,59 +81,136 @@ class AdminController extends Controller
                 $additionalMultipliers=44.9156;
             }
            
-           return $balance+$additionalMultipliers;
+           return $balance1+$additionalMultipliers;
         }elseif($demoStatus==2){
-            if($taskNumber==7   ){
-                if($balance1 <=99){
-                    $additionalMultipliers=4.51;
-                }elseif($balance1>99){
-                    $additionalMultipliers=12.7332;
+            if($taskNumber== 7){
+                Log::info('balance101 ESOB KI :' .  $balance1 . 'taskNumber:' . $taskNumber . 'demoStatus:' . $demoStatus);
+
+                if ($balance1 < 100) {
+                    $additionalMultipliers = 4.51;
+                } else {
+                    $additionalMultipliers = 12.7332;
                 }
-                return $balance+$additionalMultipliers;
+                return $balance1+$additionalMultipliers;
             }elseif($taskNumber==17){
-                if($balance1<99){
-                    Log::info('Calculating a gua mara'.$balance1);
-                    $previouscombo=$this->calculateComboAmount($balance1+4.51, 7, 2);
-                    $additionalMultipliers=15.4056+$previouscombo;
-                    Log::info('Calculating a gua mara'.$additionalMultipliers);
-                }elseif($balance1>99 && $balance1<=299){
-                    $previouscombo=$this->calculateComboAmount($balance+26.7332, 7, 2);
-                    $additionalMultipliers=30.8112+26.7332+$previouscombo;
+                if($balance1 < 100){
+                    Log::info('balance101 :' .  $balance1 );
+                    $previouscombo=$this->calculateComboAmount($balance1+4.51, 7, 2,$balance1);
+                    Log::info('previouscombo:' .  $previouscombo );
+                    $commissionPercentage00 = $this->calculateCommissionPercentage(2, 7);
+                    $previosucommision=round($previouscombo * ($commissionPercentage00 / 100), 2);
+                    $additionalMultipliers=15.4056+$previouscombo+$previosucommision;
+                    Log::info('additionalMultipliers:' .  $additionalMultipliers );
+                }else{
+                    $previouscombo=$this->calculateComboAmount($balance1+12.7332, 7, 2,$balance1);
+                    Log::info('previouscombo:' .  $previouscombo );
+                    $commissionPercentage00 = $this->calculateCommissionPercentage(2, 7);
+                    $previosucommision=round($previouscombo * ($commissionPercentage00 / 100), 2);
+                    $additionalMultipliers=15.4056+$previouscombo+$previosucommision;
                 }
-                return $balance+$additionalMultipliers;
+                return $additionalMultipliers;
             }elseif($taskNumber==24){
-                if($balance<=499){
-                    $previouscombo=$this->calculateComboAmount($balance+15.4056, 7, 2);
-                    $additionalMultipliers=23.6972+15.4056+$previouscombo;
-                }elseif($balance>499 && $balance<=899){
-                    $previouscombo=$this->calculateComboAmount($balance+30.8112, 17, 2);
-                    $additionalMultipliers=47.3944+30.8112+$previouscombo;
-                }elseif($balance>899){
-                    $previouscombo=$this->calculateComboAmount($balance+46.2168, 17, 2);
-                    $additionalMultipliers=71.0916+46.2168+$previouscombo;
+                if($balance1 < 100){
+                    Log::info('balance101 :' .  $balance1 );
+                    $previouscombo=$this->calculateComboAmount($balance1+4.51,7, 2,$balance1);
+                    $commissionPercentage00 = $this->calculateCommissionPercentage(2, 7);
+                    $previosucommision=round($previouscombo * ($commissionPercentage00 / 100), 2);
+                    $additionalMultipliers=15.4056+$previouscombo+$previosucommision;
+
+                    $previouscombo=$this->calculateComboAmount($additionalMultipliers,17, 2,$balance1);
+                    $commissionPercentage00 = $this->calculateCommissionPercentage(2, 17);
+                    $previosucommision=round($previouscombo * ($commissionPercentage00 / 100), 2);
+                    $additionalMultipliers=26.7332+$previouscombo+$previosucommision;
+
+                }else{
+                    $previouscombo=$this->calculateComboAmount($balance1+12.7332, 7, 2,$balance1);
+                    $commissionPercentage00 = $this->calculateCommissionPercentage(2, 7);
+                    $previosucommision=round($previouscombo * ($commissionPercentage00 / 100), 2);
+                    $additionalMultipliers=15.4056+$previouscombo+$previosucommision;
+
+                    $previouscombo=$this->calculateComboAmount($additionalMultipliers,17, 2,$balance1);
+                    $commissionPercentage00 = $this->calculateCommissionPercentage(2, 17);
+                    $previosucommision=round($previouscombo * ($commissionPercentage00 / 100), 2);
+                    $additionalMultipliers=26.7332+$previouscombo+$previosucommision;
+
+
                 }
-                return $balance+$additionalMultipliers;
+                return $additionalMultipliers;
             }
            
-        }elseif($demoStatus==3){    
-        
+        }elseif($demoStatus==3){ 
+            $previous=0;
             if($taskNumber==5){
-                Log::info('Calculating a gua mara');
-                return $balance*1.3;
+                $previous=$balance1+27.65;
+                return $previous;
             }elseif($taskNumber==10){
-                return $balance*12.5;
+                $previous=$this->calculateComboAmount($balance1+27.65, 5, 3,$balance1);
+                $commissionPercentage00 = $this->calculateCommissionPercentage(3, 5);
+                $previosucommision=round($previous * ($commissionPercentage00 / 100), 2);
+                Log::info('previous:aihai ' .  $previous . 'commissionPercentage:' . $commissionPercentage00 . 'previosucommision:' . $previosucommision );
+                $previous=$previous+86.19+$previosucommision;
+                return $previous;
             }elseif($taskNumber==18){
-                return $balance*42;
+                //for ammount making 5
+                $previous=$this->calculateComboAmount($balance1+27.65, 5, 3,$balance1);
+                $commissionPercentage00 = $this->calculateCommissionPercentage(3, 5);
+                $previosucommision=round($previous * ($commissionPercentage00 / 100), 2);
+                $previousammount=$previous+86.19+$previosucommision;
+                //for ammount making 10
+                $previouscombo=$this->calculateComboAmount($previousammount, 10, 3,$balance1);
+                $commissionPercentage11 = $this->calculateCommissionPercentage(3, 10);
+                $previosucommision=round($previouscombo * ($commissionPercentage11 / 100), 2);
+                return $previouscombo+65.88+$previosucommision;
             }elseif($taskNumber==23){
-                return $balance*162;
+                //for ammount making 5
+                $previous=$this->calculateComboAmount($balance1+27.65, 5, 3,$balance1);
+                $commissionPercentage00 = $this->calculateCommissionPercentage(3, 5);
+                $previosucommision=round($previous * ($commissionPercentage00 / 100), 2);
+                $previousammount=$previous+86.19+$previosucommision;
+                //for ammount making 10 
+                $previouscombofor5=$this->calculateComboAmount($previousammount, 10, 3,$balance1);
+                $commissionPercentage11 = $this->calculateCommissionPercentage(3, 10);
+                $previosucommision=round($previouscombofor5 * ($commissionPercentage11 / 100), 2);
+                $previouscombofor5=$previouscombofor5+65.88+$previosucommision;
+                //for ammount making 18
+                $previouscombofor18=$this->calculateComboAmount($previouscombofor5, 18, 3,$balance1);
+                $commissionPercentage23 = $this->calculateCommissionPercentage(3, 18);
+                $previosucommision=round($previouscombofor18 * ($commissionPercentage23 / 100), 2);
+                $previouscombofor18=$previouscombofor18+986.19+$previosucommision;
+                //for ammount making 25
+
+                
+                return $previouscombofor18;
             }elseif($taskNumber==25){
-                return $balance*586;
+
+                $previous=$this->calculateComboAmount($balance1+27.65, 5, 3,$balance1);
+                $commissionPercentage00 = $this->calculateCommissionPercentage(3, 5);
+                $previosucommision=round($previous * ($commissionPercentage00 / 100), 2);
+                $previousammount=$previous+86.19+$previosucommision;
+                //for ammount making 10 
+                $previouscombofor5=$this->calculateComboAmount($previousammount, 10, 3,$balance1);
+                $commissionPercentage11 = $this->calculateCommissionPercentage(3, 10);
+                $previosucommision=round($previouscombofor5 * ($commissionPercentage11 / 100), 2);
+                $previouscombofor5=$previouscombofor5+65.88+$previosucommision;
+                //for ammount making 18
+                $previouscombofor18=$this->calculateComboAmount($previouscombofor5, 18, 3,$balance1);
+                $commissionPercentage23 = $this->calculateCommissionPercentage(3, 18);
+                $previosucommision=round($previouscombofor18 * ($commissionPercentage23 / 100), 2);
+                $previouscombofor18=$previouscombofor18+986.19+$previosucommision;
+//for ammount making 23
+                $previouscombofor23=$this->calculateComboAmount($previouscombofor18, 23, 3,$balance1);
+                $commissionPercentage25 = $this->calculateCommissionPercentage(3, 23);
+                $previosucommision=round($previouscombofor23 * ($commissionPercentage25 / 100), 2);
+                $previouscombofor25=$previouscombofor23+1298.72+$previosucommision;
+
+                return $previouscombofor25;
             }   
         }
     }   
     
-    private function calculateComboAmount($balance, $taskNumber, $demoStatus)
+    private function calculateComboAmount($balance, $taskNumber, $demoStatus,$balance1)
     {
+        Log::info(' calulate combo  :' .  $balance1 . 'balance:' . $balance. 'taskNumber:' . $taskNumber . 'demoStatus:' . $demoStatus);
         $multipliers = [];
 
         if ($demoStatus == 1) {
@@ -146,37 +229,50 @@ class AdminController extends Controller
             }
         } else {
             if ($demoStatus == 0) {
-                if ($balance <= 40) {
-                    $multipliers = [20 => [1.37, 1.39]];
-                } elseif ($balance <= 50) {
-                    $multipliers = [20 => [1.37, 1.39]];
-                } elseif ($balance <= 60) {
-                    $multipliers = [20 => [1.37, 1.39]];
-                } else {
-                    $multipliers = [20 => [1.37, 1.39]];
-                }
+               
+                    $multipliers = [20 => 17];
+                    return round($balance + $multipliers[20], 2);
+               
             } elseif ($demoStatus == 2) {
-                if ($balance <= 543) {
-                    $multipliers = [
-                        7 => [2.00, 2.05],
-                        17 => [1.60, 1.70],
-                        24 => [1.35, 1.40]
-                    ];
-                } else {
-                    $multipliers = [
-                        7 => [2.00, 2.05],
-                        17 => [1.60, 1.70],
-                        24 => [1.35, 1.40]
-                    ];
-                }
+            
+
+            if ($balance1 < 100) {
+                $multipliers = [
+                    7 =>38,    // accurate from your task 7 data
+                    17 => 58,   // accurate from task 17
+                    24 => 98    // accurate from task 24
+                ];
+              
+            }elseif($balance1 <= 30)    {
+                $multipliers = [
+                    7 =>31,    // accurate from your task 7 data
+                    17 => 55,   // accurate from task 17
+                    24 => 98    // accurate from task 24
+                ];
+            }else{
+                $multipliers = [
+                    7 =>37,    // accurate from your task 7 data
+                    17 => 55,   // accurate from task 17
+                    24 => 81    // accurate from task 24
+                ];
+            }
+            Log::info('multipliers:' .  $multipliers[$taskNumber] . 'balance:'.$balance);
+
+                return round($balance + $multipliers[$taskNumber], 2);
             } elseif ($demoStatus == 3) {
                 $multipliers = [
-                    5 => [7.00, 7.05],
-                    10 => [2.68, 2.70],
-                    18 => [2.02, 2.05],
-                    23 => [1.80, 1.85],
-                    25 => [2.02, 2.05],
+                    5 => 151,
+                    10 => 412.86,
+                    18 => 917.7434,
+                    23 => 2646.332,
+                    25 => 14906.1576,
                 ];
+                if (!isset($multipliers[$taskNumber])) {
+                    return 0;
+                }
+                $multiplier = $multipliers[$taskNumber];
+                \Log::info('under multi default:' .  $multiplier. 'balance:'.$balance);
+                return round($balance + $multiplier, 2);
             }
         }
 
@@ -203,16 +299,17 @@ class AdminController extends Controller
                 return 20;
             }
         }elseif($demoStatus==3){
+            Log::info('taskNumber: 3333 ' .  $taskNumber . 'demoStatus:' . $demoStatus);
                 if($taskNumber==5){
-                    $commissionPercentage=20;
+                    return 20;
                 }elseif($taskNumber==10){
-                    $commissionPercentage=25;
+                    return 25;
                 }elseif($taskNumber==18){
-                    $commissionPercentage=40;
+                    return 40;
                 }elseif($taskNumber==23){
-                    $commissionPercentage=80;
+                    return 80;
                 }elseif($taskNumber==25){
-                    $commissionPercentage=80;
+                    return 80;
                 }
             }
         // Default commission percentage if no specific rule matches

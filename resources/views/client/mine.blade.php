@@ -269,7 +269,7 @@
                     <img src="{{ asset('assets/img/vip3.png') }}" class="vip-badge" alt="VIP 3">
                 @elseif(Auth::user()->balance >= 499)
                     <img src="{{ asset('assets/img/vip2.png') }}" class="vip-badge" alt="VIP 2">
-                @elseif(Auth::user()->balance >= 21)
+                @elseif(Auth::user()->balance >= 20)
                     <img src="{{ asset('assets/img/vip1.jpg') }}" class="vip-badge" alt="VIP 1">
                 @else
                     <img src="{{ asset('assets/img/vip0.png') }}" class="vip-badge" alt="VIP 0">

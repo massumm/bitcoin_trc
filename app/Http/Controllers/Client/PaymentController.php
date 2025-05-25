@@ -188,7 +188,7 @@ class PaymentController extends Controller
             }
 
             // Check if user has completed 25 tasks
-            if ($user->today_task < 25) {
+            if ($user->today_task >0 && $user->today_task < 25) {
                 return response()->json([
                     'success' => false,
                     'message' => 'You need to complete 25 orders before applying for a withdrawal'

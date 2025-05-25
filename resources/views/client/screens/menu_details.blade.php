@@ -393,7 +393,7 @@
     </div>
 
     <!-- Grab Order Button -->
-    <button class="btn btn-primary" onclick="openPopup()">{{ __('messages.grab_order_immediately') }}</button>
+    <button class="btn btn-primary" id="grabOrderBtn" onclick="openPopup()">{{ __('messages.grab_order_immediately') }}</button>
 
     <!-- Hint Section -->
     <div class="hint-box">
@@ -424,16 +424,31 @@
 <script>
     let projectId = "{{ request()->get('id') }}";
     let isPopupOpen = false;
+    let isLoading = false;
+
+    function updateGrabButtonState() {
+        const grabButton = document.getElementById('grabOrderBtn');
+        if (grabButton) {
+            grabButton.disabled = isPopupOpen || isLoading;
+            grabButton.style.opacity = (isPopupOpen || isLoading) ? '0.6' : '1';
+            if (isLoading) {
+                grabButton.innerHTML = '{{ __("messages.processing") }}...';
+            } else {
+                grabButton.innerHTML = '{{ __("messages.grab_order_immediately") }}';
+            }
+        }
+    }
 
     // Add event listener for beforeunload (page refresh/close)
     window.addEventListener('beforeunload', function(e) {
         if (isPopupOpen) {
-           // closeOrderPopup();
+           closeOrderPopup();
         }
     });
 
     function fetchRandomProducts() {
         isPopupOpen = true;
+        updateGrabButtonState();
         fetch(`/client/random-products?projectId=${projectId}`)
             .then(response => response.json())
             .then(data => {
@@ -443,7 +458,7 @@
                 console.log(data);
                 
                 container.innerHTML = `
-                    <div class="order-popup">
+                    <div class="order-popup" data-bs-backdrop="static" data-bs-keyboard="false">
                         <button class="close-popup" onclick="closeOrderPopup()">✖</button>
                         <div class="order-header">
                             <p class="order-number">Order Nos: ${orderNumber}</p>
@@ -633,6 +648,8 @@
     function successfullcloseOrderPopup() {
         const container = document.getElementById("productContainer");
         container.innerHTML = '';
+        isPopupOpen = false;
+        updateGrabButtonState();
     }
     function closeOrderPopup() {
         console.log('closeOrderPopup');
@@ -641,6 +658,9 @@
         
         if (orderNumber) {
             console.log('orderNumber'+orderNumber);
+            isLoading = true;
+            updateGrabButtonState();
+            
             // Get all order details
             const orderDetails = {
                 order_number: orderNumber,
@@ -682,18 +702,23 @@
                     console.error('Failed to update order status:', data.message);
                 }
                 isPopupOpen = false;
+                isLoading = false;
+                updateGrabButtonState();
                 location.reload();
                 console.log('data'+JSON.stringify(data));
             })
             .catch(error => {
                 console.error('Error updating order status:', error);
                 isPopupOpen = false;
+                isLoading = false;
+                updateGrabButtonState();
             });
         }
         
         // Clear the container
         container.innerHTML = '';
         isPopupOpen = false;
+        updateGrabButtonState();
     }
     function handleOrder(button) {
         const orderNumber = button.getAttribute("data-order");
@@ -710,6 +735,9 @@
             showErrorMessage('Invalid products data');
             return;
         }
+        
+        isLoading = true;
+        updateGrabButtonState();
         
         const formattedProducts = products.map(product => ({
             product_id: String(product.id || ''),
@@ -734,6 +762,8 @@
         const token = document.querySelector('meta[name="csrf-token"]')?.content;
         if (!token) {
             showErrorMessage('CSRF token not found');
+            isLoading = false;
+            updateGrabButtonState();
             return;
         }
 
@@ -767,27 +797,24 @@
             } else {
                 if(data.message.includes('Insufficient balance')) {
                     showErrorMessage(data.message);
-                    //successfullcloseOrderPopup();
-                //     setTimeout(() => {
-                //     window.location.reload();
-                // }, 1500);
                     return;
                 }
-               // successfullcloseOrderPopup();
-          
             }
+            isLoading = false;
+            updateGrabButtonState();
         })
         .catch(error => {
             console.error('Error:', error);
             if (error.response && error.response.data && error.response.data.message) {
                 if (error.response.data.message.includes('Insufficient balance')) {
-                    // Show insufficient balance popup
                     const needBalance = error.response.data.need_balance;
                     showErrorMessage(needBalance);
                     return;
                 }
             }
             showErrorMessage('Failed to submit order. Please try again.');
+            isLoading = false;
+            updateGrabButtonState();
         });
     }
 

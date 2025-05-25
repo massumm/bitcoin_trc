@@ -47,7 +47,12 @@ class MineController extends Controller
                 ...$level2Users->pluck('id'),
                 ...$level3Users->pluck('id')
             ])->sum('amount'),
-            'total_withdraw' => 0, // Add withdraw calculation if needed
+            'total_withdraw' => \DB::table('withdraw')->whereIn('user_id', [
+                $user->id,
+                ...$level1Users->pluck('id'),
+                ...$level2Users->pluck('id'),
+                ...$level3Users->pluck('id')
+            ])->sum('amount'),
             'order_commission' => $user->ref_earn ?? 0,
             'newcomers' => $level1Users->count() + $level2Users->count() + $level3Users->count(),
             'activities_number' => 0, // Add activities calculation if needed
@@ -56,30 +61,36 @@ class MineController extends Controller
 
         $teamData = [
             'level1' => $level1Users->map(function($user) {
+                $referby_name = \App\Models\User2::where('refer_code', $user->refer_by)->value('name');
                 return [
                     'name' => $user->name,
                     'balance' => $user->balance,
-                    'total_deposit' =>$user->total_deposit,
-                    'total_withdraw'=> $user->total_withdraw,
-                    'joined_date' => $user->created_at
+                    'total_deposit' => $user->total_deposit,
+                    'total_withdraw' => $user->total_withdraw,
+                    'joined_date' => $user->created_at,
+                    'referby_name' => $referby_name
                 ];
             }),
             'level2' => $level2Users->map(function($user) {
+                $referby_name = \App\Models\User2::where('refer_code', $user->refer_by)->value('name');
                 return [
                     'name' => $user->name,
                     'balance' => $user->balance,
-                    'total_deposit' =>$user->total_deposit,
-                    'total_withdraw'=> $user->total_withdraw,
-                    'joined_date' => $user->created_at
+                    'total_deposit' => $user->total_deposit,
+                    'total_withdraw' => $user->total_withdraw,
+                    'joined_date' => $user->created_at,
+                    'referby_name' => $referby_name
                 ];
             }),
             'level3' => $level3Users->map(function($user) {
+                $referby_name = \App\Models\User2::where('refer_code', $user->refer_by)->value('name');
                 return [
                     'name' => $user->name,
                     'balance' => $user->balance,
-                    'total_deposit' =>$user->total_deposit,
-                    'total_withdraw'=> $user->total_withdraw,
-                    'joined_date' => $user->created_at
+                    'total_deposit' => $user->total_deposit,
+                    'total_withdraw' => $user->total_withdraw,
+                    'joined_date' => $user->created_at,
+                    'referby_name' => $referby_name
                 ];
             })
         ];
