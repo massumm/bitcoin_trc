@@ -435,7 +435,7 @@ class OrderlistController extends Controller
                     'commission' => $request->commission,
                     'expected_income' => $request->expected_income,
                     'status' => $isInsufficientBalance ? 'pending' : 'completed',
-                    'updated_at' => now(),
+                    'updated_at' => $request->current_date,
                 ]);
         
                 // Delete the existing order items before inserting new ones
@@ -461,7 +461,7 @@ class OrderlistController extends Controller
                     'commission' => $request->commission,
                     'expected_income' => $request->expected_income,
                     'status' => $isInsufficientBalance ? 'pending' : 'completed',
-                    'created_at' => now()
+                    'created_at' => $request->current_date
                 ]);
         
                 // Insert order items

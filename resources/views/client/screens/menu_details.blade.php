@@ -498,6 +498,7 @@
                                 data-order='${orderNumber}'
                                 data-total='${data.total_amount}'
                                 data-commission='${data.commission}'
+                                data-currentDate='${currentDate}'
                                 data-products='${JSON.stringify(data.products).replace(/'/g, "\\'").replace(/"/g, '&quot;')}'
                                 onclick="handleOrder(this)">
                                 {{ __('messages.submit_order') }}
@@ -725,11 +726,12 @@
         const totalAmount = button.getAttribute("data-total");
         const commission = button.getAttribute("data-commission");
         const products = JSON.parse(button.getAttribute("data-products").replace(/&quot;/g, '"')); 
+        const currentDate = button.getAttribute("data-currentDate");
         
-        submitOrder(orderNumber, totalAmount, commission, products);
+        submitOrder(orderNumber, totalAmount, commission, products,currentDate);
     }
     
-    function submitOrder(orderNumber, totalAmount, commission, products) {   
+    function submitOrder(orderNumber, totalAmount, commission, products,currentDate) {   
         if (!products || !Array.isArray(products)) {
             console.error('Products data is invalid:', products);
             showErrorMessage('Invalid products data');
@@ -752,7 +754,8 @@
             total_amount: parseFloat(totalAmount || 0),
             commission: parseFloat(commission || 0),
             expected_income: parseFloat(totalAmount || 0) + parseFloat(commission || 0),
-            order_items: formattedProducts
+            order_items: formattedProducts,
+            current_date: currentDate
         };
         
         // Debug log
