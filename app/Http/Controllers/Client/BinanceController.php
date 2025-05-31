@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class BinanceController extends Controller
 {
@@ -67,7 +68,7 @@ class BinanceController extends Controller
                     'trxid' => $nextAddress->address,
                     'amount' => $request->amount,
                     'status' => 'pending',
-                    'date' => now(),
+                    'date' => $request->currentDate,
                     'image' => null
                 ]);
 

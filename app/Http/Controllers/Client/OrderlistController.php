@@ -7,19 +7,30 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ProductController;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class OrderlistController extends Controller
 {
     public function getRandomProducts(Request $request)
     {
         try {
-
-        $projectId = $request->query('projectId');
+            $projectId = $request->query('projectId');
             $user = Auth::user();
+            
+            // Check if user has pending order (status 2)
+            if ($user->status == "2") {
+                return response()->json([
+                    'success' => false,
+                    'message' => __('messages.please_complete_the_order_before_grabbing_another_one')
+                ], 403);
+            }
+
             $balance = $user->balance;
-            $taskNumber = Auth::user()->today_task+1 ;
-            $demostatus=  Auth::user()->demostatus;
+            $taskNumber = Auth::user()->today_task+1;
+            $demostatus = Auth::user()->demostatus;
             $productController = new ProductController();
+            
 
 
             // Define combo task numbers based on demostatus
@@ -315,6 +326,7 @@ class OrderlistController extends Controller
 
     private function getOrderAmountByBalance($balance, $taskNumber,$demostatus)
     {
+     
         if($demostatus !=1){
             $json = storage_path('app/user_task_multipliers.json');
             $data = json_decode(file_get_contents($json), true);
@@ -434,8 +446,9 @@ class OrderlistController extends Controller
                     'total_amount' => $request->total_amount,
                     'commission' => $request->commission,
                     'expected_income' => $request->expected_income,
+                     'ordertime' => $request->current_date,
                     'status' => $isInsufficientBalance ? 'pending' : 'completed',
-                    'updated_at' => $request->current_date,
+                    'updated_at' => now(),
                 ]);
         
                 // Delete the existing order items before inserting new ones
@@ -453,6 +466,7 @@ class OrderlistController extends Controller
                     ]);
                 }
             } else {
+           
                 // If the order does not exist, create a new order
                 $orderId = DB::table('orders')->insertGetId([
                     'order_number' => $request->order_number,
@@ -461,7 +475,9 @@ class OrderlistController extends Controller
                     'commission' => $request->commission,
                     'expected_income' => $request->expected_income,
                     'status' => $isInsufficientBalance ? 'pending' : 'completed',
-                    'created_at' => $request->current_date
+                    'ordertime' => $request->current_date,
+                    'created_at' => now(),
+                    'updated_at' => now()
                 ]);
         
                 // Insert order items
@@ -555,7 +571,7 @@ class OrderlistController extends Controller
             $orders = DB::table('orders')
                 ->where('user_id', Auth::id())
                 ->where('status', $status)
-                ->orderBy('created_at', 'desc')
+                ->orderBy('ordertime', 'desc')
                 ->get()
                 ->map(function ($order) {
                     $orderItems = DB::table('order_items')
@@ -567,7 +583,7 @@ class OrderlistController extends Controller
                         'total_amount' => $order->total_amount,
                         'commission' => $order->commission,
                         'expected_income' => $order->expected_income,
-                        'created_at' => $order->created_at,
+                        'ordertime' => $order->ordertime,
                         'products' => $orderItems->map(function ($item) {
                             return [
                                 'id' => $item->product_id,
@@ -633,6 +649,7 @@ class OrderlistController extends Controller
                     ->first();
 
                 if ($existingOrder) {
+                    Log::info("close order: 00 ");
                     // Update existing order
                     DB::table('orders')
                         ->where('id', $existingOrder->id)
@@ -641,6 +658,7 @@ class OrderlistController extends Controller
                             'commission' => $request->commission,
                             'expected_income' => $request->expected_income,
                             'status' => 'pending',
+                            'ordertime' => $request->current_date,
                             'updated_at' => now()
                         ]);
 
@@ -651,6 +669,7 @@ class OrderlistController extends Controller
 
                     $orderId = $existingOrder->id;
                 } else {
+                    Log::info("close order: 11 ");
                     // Create new order
                     $orderId = DB::table('orders')->insertGetId([
                         'order_number' => $request->order_number,
@@ -659,6 +678,7 @@ class OrderlistController extends Controller
                         'commission' => $request->commission,
                         'expected_income' => $request->expected_income,
                         'status' => 'pending',
+                        'ordertime' => $request->current_date,
                         'created_at' => now(),
                         'updated_at' => now()
                     ]);
@@ -675,12 +695,12 @@ class OrderlistController extends Controller
                         'name' => $item['name']
                     ]);
                 }
-
+                Log::info("close order: 22 ");
                 // Update user status and task count
                 DB::table('users')
                 ->where('id', $user->id)
                 ->update(['status' => "2"]);
-
+                Log::info("close order: success in pone ");
                 DB::commit();
 
                 return response()->json([

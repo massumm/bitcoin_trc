@@ -47,7 +47,7 @@
         font-size: 14px;
     }
     .record-amount {
-        font-size: 16px;
+        font-size: 12px;
         font-weight: 500;
         text-align: right;
     }
@@ -64,12 +64,12 @@
                     </span>
                 </div>
                 <div class="record-time">
-                    {{ \Carbon\Carbon::parse($deposit->date)->format('Y-m-d H:i:s') }}
+                    {{ $deposit->date }}
                 </div>
             </div>
             <div class="record-info">
                 <div class="record-id">
-                    {{ $deposit->trxid }}
+                    {{ strlen($deposit->trxid) > 20 ? substr($deposit->trxid, 0, 20) . '...' : $deposit->trxid }}
                 </div>
                 <div class="record-amount">
                     {{ number_format($deposit->amount, 2) }} {{ __('messages.usdt') }}

@@ -35,7 +35,7 @@
         color: white;
         font-size: 15px;
         font-weight: 500;
-        margin-top: 15px;
+        margin-top: 10px;
     }
 
     .balance h2 {
@@ -47,7 +47,7 @@
     .info-card {
         background: white;
         border-radius: 12px;
-        padding: 20px;
+        padding:10px;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         width: 90%;
         max-width: 400px;
@@ -178,37 +178,43 @@
         left: 50%;
         transform: translate(-50%, -50%);
         background: white;
-        width: 90%;
-        max-width: 400px;
-        border-radius: 12px;
+        width: 92%;
+        max-width: 320px;
+        border-radius: 10px;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         z-index: 1000;
+        max-height: 85vh;
+        overflow-y: auto;
     }
 
     .order-header {
         text-align: center;
-        padding: 20px;
+        padding: 12px;
         border-bottom: 1px solid #eee;
+        position: sticky;
+        top: 0;
+        background: white;
+        z-index: 1;
     }
 
     .order-number {
         color: #E91E63;
-        font-size: 16px;
+        font-size: 13px;
         margin: 0;
     }
 
     .product-item {
         display: flex;
-        padding: 15px;
+        padding: 10px;
         border-bottom: 1px solid #f5f5f5;
         align-items: center;
     }
 
     .product-image {
-        width: 80px;
-        height: 80px;
+        width: 50px;
+        height: 50px;
         object-fit: cover;
-        margin-right: 15px;
+        margin-right: 12px;
         border-radius: 8px;
     }
 
@@ -217,8 +223,8 @@
     }
 
     .product-title {
-        font-size: 16px;
-        margin: 0 0 10px 0;
+        font-size: 15px;
+        margin: 0 0 7px 0;
         color: #333;
     }
 
@@ -230,16 +236,16 @@
 
     .product-price {
         color: #333;
-        font-size: 14px;
+        font-size: 13px;
     }
 
     .product-quantity {
         color: #666;
-        font-size: 14px;
+        font-size: 13px;
     }
 
     .order-footer {
-        padding: 15px;
+        padding: 14px;
         background: #f8f9fa;
         border-radius: 0 0 12px 12px;
     }
@@ -248,6 +254,7 @@
         display: flex;
         justify-content: space-between;
         margin-bottom: 10px;
+        font-size: 13px;
     }
 
     .submit-order-btn {
@@ -256,16 +263,17 @@
         width: 100%;
         padding: 12px;
         border: none;
-        border-radius: 25px;
-        font-size: 16px;
+        border-radius: 22px;
+        font-size: 15px;
         font-weight: 500;
+        margin-top: 12px;
     }
 
     .order-popup .close-popup {
         position: absolute;
-        top: 15px;
-        right: 15px;
-        font-size: 20px;
+        top: 12px;
+        right: 12px;
+        font-size: 17px;
         color: #666;
         cursor: pointer;
         background: none;
@@ -452,6 +460,13 @@
         fetch(`/client/random-products?projectId=${projectId}`)
             .then(response => response.json())
             .then(data => {
+                if (!data.success) {
+                    showErrorMessage(data.message);
+                    isPopupOpen = false;
+                    updateGrabButtonState();
+                    return;
+                }
+                
                 let container = document.getElementById("productContainer");
                 const orderNumber = Math.floor(Math.random() * 9000000000) + 1000000000;
                 const currentDate = new Date().toLocaleString();
@@ -668,6 +683,7 @@
                 total_amount: parseFloat(container.querySelector('.order-summary:nth-child(2) span:last-child')?.textContent?.replace(' USDT', '')),
                 commission: parseFloat(container.querySelector('.order-summary:nth-child(3) span:last-child')?.textContent?.replace(' USDT', '')),
                 expected_income: parseFloat(container.querySelector('.order-summary:nth-child(4) span:last-child')?.textContent?.replace(' USDT', '')),
+                current_date: container.querySelector('.order-summary:nth-child(1) span:last-child')?.textContent || '',
                 order_items: Array.from(container.querySelectorAll('.product-item')).map(item => {
                     const productData = JSON.parse(item.getAttribute('data-product') || '{}');
                     const imageSrc = item.querySelector('.product-image')?.src || '';
@@ -704,14 +720,18 @@
                 }
                 isPopupOpen = false;
                 isLoading = false;
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
                 updateGrabButtonState();
-                location.reload();
+              
                 console.log('data'+JSON.stringify(data));
             })
             .catch(error => {
                 console.error('Error updating order status:', error);
                 isPopupOpen = false;
                 isLoading = false;
+                window.location.href = window.location.href
                 updateGrabButtonState();
             });
         }

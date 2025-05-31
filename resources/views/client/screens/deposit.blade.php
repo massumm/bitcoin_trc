@@ -416,14 +416,14 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = 'https://t.me/customerservice10002';
     };
 
-    function showToast(message, type = 'success') {
-        const toast = document.createElement('div');
-        toast.className = `alert alert-${type} position-fixed top-0 end-0 m-3`;
-        toast.style.zIndex = '1050';
-        toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>${message}`;
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 3000);
-    }
+    // function showToast(message, type = 'success') {
+    //     const toast = document.createElement('div');
+    //     toast.className = `alert alert-${type} position-fixed top-0 end-0 m-3`;
+    //     toast.style.zIndex = '1050';
+    //     toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>${message}`;
+    //     document.body.appendChild(toast);
+    //     setTimeout(() => toast.remove(), 3000);
+    // }
 
     depositAmount.addEventListener('input', function() {
         const amount = this.value || '0.00';

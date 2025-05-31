@@ -4,7 +4,7 @@
 <style>
 /* Common Styles */
 .dashboard-container {
-    padding: 1rem;
+    padding: 0.9rem;
     background: #f8f9fa;
     height: calc(100vh - 62px); /* Subtract header height */
     overflow: hidden;
@@ -13,36 +13,36 @@
 /* Balance Card */
 .balance-card {
     background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
-    border-radius: 12px;
-    padding: 1rem;
+    border-radius: 11px;
+    padding: 0.9rem;
     color: white;
-    margin-bottom: 1rem;
+    margin-bottom: 0.9rem;
     box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
 }
 
 .balance-card h2 {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 500;
     margin-bottom: 0.25rem;
     opacity: 0.9;
 }
 
 .balance-card .balance-amount {
-    font-size: 1.8rem;
+    font-size: 1.65rem;
     font-weight: 600;
     margin-bottom: 0;
 }
 
 /* Menu Cards */
 .menu-section {
-    margin-bottom: 1rem;
+    margin-bottom: 0.9rem;
 }
 
 .menu-card {
     background: white;
-    border-radius: 8px;
-    padding: 0.75rem;
-    height: 90px;
+    border-radius: 7px;
+    padding: 0.7rem;
+    height: 83px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -59,28 +59,28 @@
 }
 
 .menu-card i {
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
+    font-size: 1.4rem;
+    margin-bottom: 0.45rem;
     color: #3B82F6;
 }
 
 .menu-card p {
     margin: 0;
     color: #1F2937;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     font-weight: 500;
 }
 
 /* Platform Cards */
 .platform-section {
-    margin-top: 1rem;
+    margin-top: 0.9rem;
 }
 
 .section-title {
     color: #1F2937;
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 600;
-    margin-bottom: 1rem;
+    margin-bottom: 0.9rem;
     display: flex;
     align-items: center;
 }
@@ -91,10 +91,10 @@
 }
 
 .platform-card {
-    height: 160px;
-    border-radius: 8px;
+    height: 147px;
+    border-radius: 7px;
     overflow: hidden;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.45rem;
     transition: all 0.3s ease;
     border: none;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
@@ -106,22 +106,22 @@
 }
 
 .platform-card .card-img-top {
-    height: 100px;
+    height: 92px;
     object-fit: cover;
 }
 
 .platform-card .card-body {
-    height: 60px;
+    height: 55px;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0.5rem;
+    padding: 0.45rem;
     background: white;
 }
 
 .platform-card .card-text {
     margin: 0;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     color: #1F2937;
     font-weight: 500;
     text-align: center;
@@ -134,8 +134,8 @@
 
 /* Row Spacing */
 .row {
-    --bs-gutter-y: 0.75rem;
-    --bs-gutter-x: 0.75rem;
+    --bs-gutter-y: 0.7rem;
+    --bs-gutter-x: 0.7rem;
 }
 
 /* Responsive Adjustments */
@@ -146,16 +146,16 @@
     }
     
     .menu-card {
-        height: 80px;
-        padding: 0.5rem;
+        height: 74px;
+        padding: 0.45rem;
     }
     
     .platform-card {
-        height: 160px;
+        height: 147px;
     }
     
     .platform-card .card-img-top {
-        height: 100px;
+        height: 92px;
     }
 }
 </style>

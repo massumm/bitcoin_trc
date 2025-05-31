@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Wallet;
+use Carbon\Carbon;
 
 class PaymentController extends Controller
 {
@@ -37,7 +38,7 @@ class PaymentController extends Controller
                     'trxid' => $trxid,
                     'amount' => $request->amount,
                     'status' => 'pending',
-                    'date' => now(),
+                    'date' => $request->current_date,
                 ]);
         } else {
             // If order does not exist, insert a new record
@@ -48,7 +49,7 @@ class PaymentController extends Controller
                 'trxid' => $trxid,
                 'amount' => $request->amount,
                 'status' => 'pending',
-                'date' => now(),
+                'date' =>$request->current_date,
                 'image' => null // Will be updated when user uploads payment proof
             ]);
         }
@@ -249,7 +250,7 @@ class PaymentController extends Controller
                     'status' => $withdrawStatus,
                     'address' => $validated['address'],
                     'method' => $validated['method'],
-                    'date' => now()
+                    'date' => $request->current_date
                 ]);
 
             // If demo user, immediately deduct balance

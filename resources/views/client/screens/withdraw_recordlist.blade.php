@@ -64,7 +64,7 @@
                     </span>
                 </div>
                 <div class="record-time">
-                    {{ \Carbon\Carbon::parse($withdraw->date)->format('Y-m-d H:i:s') }}
+                    {{ $withdraw->date}}
                 </div>
             </div>
             <div class="record-info">

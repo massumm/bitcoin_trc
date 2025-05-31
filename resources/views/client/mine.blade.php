@@ -4,7 +4,7 @@
 <style>
 /* Common Styles */
 .profile-container {
-    padding: 1.5rem;
+    padding: 1.15rem;
     background: #f8f9fa;
     min-height: 100vh;
 }
@@ -12,8 +12,8 @@
 /* Profile Header Card */
 .profile-header {
     background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
-    border-radius: 16px;
-    padding: 1.5rem;
+    border-radius: 13.5px;
+    padding: 1.15rem;
     margin-bottom: 0.5rem;
     box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
 }
@@ -28,27 +28,27 @@
     position: relative;
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.85rem;
 }
 
 .profile-avatar {
-    width: 64px;
-    height: 64px;
+    width: 56px;
+    height: 56px;
     border-radius: 50%;
-    border: 3px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.2);
     object-fit: cover;
 }
 
 .vip-badge {
-    height: 15px;
+    height: 13.5px;
     object-fit: cover;
     margin-left: 1px;
 }
 
 .profile-details h5 {
     color: white;
-    font-size: 1.4rem;
-    margin-bottom: 0.5rem;
+    font-size: 1.25rem;
+    margin-bottom: 0.25rem;
     font-weight: 600;
 }
 
@@ -72,8 +72,8 @@
 /* Balance Section */
 .balance-section {
     background: white;
-    border-radius: 12px;
-    padding: 1.0rem;
+    border-radius: 11.5px;
+    padding: 0.85rem;
     margin-bottom: 0.5rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
@@ -81,14 +81,14 @@
 .balance-label {
     color: #6B7280;
     font-size: 0.95rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.25rem;
 }
 
 .balance-amount {
     color: #1F2937;
-    font-size: 1.5rem;
+    font-size: 1.35rem;
     font-weight: 600;
-    margin-bottom: 1rem;
+    margin-bottom: 0.85rem;
 }
 
 .balance-amount .amount {
@@ -97,7 +97,7 @@
 
 .action-buttons {
     display: flex;
-    gap: 1rem;
+    gap: 0.85rem;
 }
 
 .action-btn {
@@ -105,15 +105,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0.75rem;
-    border-radius: 8px;
+    padding: 0.7rem;
+    border-radius: 9px;
     font-weight: 500;
+    font-size: 1rem;
     transition: all 0.3s ease;
 }
 
 .action-btn img {
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
     margin-right: 0.5rem;
 }
 
@@ -143,15 +144,14 @@
 .quick-actions {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    align-content: center;
-    gap: 1.75rem;
-    margin-bottom: 1.5rem;
+    gap: 0.85rem;
+    margin-bottom: 1.15rem;
 }
 
 .quick-action-item {
     background: white;
-    border-radius: 12px;
-    padding: 1rem 0.5rem;
+    border-radius: 11.5px;
+    padding: 0.85rem 0.5rem;
     text-align: center;
     text-decoration: none;
     transition: all 0.3s ease;
@@ -165,22 +165,22 @@
 }
 
 .quick-action-item i {
-    font-size: 2rem;
+    font-size: 1.65rem;
     color: #3B82F6;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.6rem;
 }
 
 .quick-action-item p {
     margin: 0;
     color: #4B5563;
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 500;
 }
 
 /* Menu List */
 .menu-list {
     background: white;
-    border-radius: 12px;
+    border-radius: 11.5px;
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
@@ -188,7 +188,7 @@
 .menu-item {
     display: flex;
     align-items: center;
-    padding: 1rem 1.25rem;
+    padding: 0.85rem 1.15rem;
     text-decoration: none;
     color: #1F2937;
     border-bottom: 1px solid #E5E7EB;
@@ -204,55 +204,63 @@
 }
 
 .menu-item i {
-    width: 24px;
-    margin-right: 1rem;
+    width: 22px;
+    margin-right: 0.85rem;
     color: #3B82F6;
     font-size: 1.1rem;
 }
 
 .menu-item span {
-    font-size: 0.95rem;
+    font-size: 1rem;
     font-weight: 500;
 }
 
 /* Responsive Adjustments */
-@media (max-width: 768px) {
+@media (max-width: 360px) {
     .profile-container {
-        padding: 1rem;
+        padding: 0.85rem;
     }
     
     .profile-avatar {
-        width: 60px;
-        height: 60px;
+        width: 50px;
+        height: 50px;
     }
     
     .profile-details h5 {
-        font-size: 1.4rem;
+        font-size: 1.15rem;
+    }
+    
+    .profile-details p {
+        font-size: 0.9rem;
     }
     
     .quick-actions {
-        gap: 1.75rem;
-        margin-bottom: 0.5rem;
+        gap: 0.6rem;
     }
     
     .quick-action-item {
-        padding: 1rem;
+        padding: 0.7rem 0.4rem;
     }
     
     .quick-action-item i {
-        font-size: 1.5rem;
+        font-size: 1.45rem;
+        margin-bottom: 0.5rem;
     }
     
     .quick-action-item p {
         font-size: 0.9rem;
     }
     
-    .action-buttons {
-        flex-direction: column;
+    .menu-item {
+        padding: 0.7rem 0.85rem;
     }
     
-    .action-btn {
-        width: 100%;
+    .menu-item i {
+        font-size: 1rem;
+    }
+    
+    .menu-item span {
+        font-size: 0.95rem;
     }
 }
 </style>
@@ -262,7 +270,7 @@
     <div class="profile-header">
         <div class="profile-header-content">
             <div class="profile-info">
-                <img src="{{ asset('assets/img/profile.jpg') }}" class="profile-avatar" alt="User Image">
+                <img src="{{ Auth::user()->profile_image ? asset('assets/img/' . Auth::user()->profile_image) : asset('assets/img/profile.jpg') }}" class="profile-avatar" alt="User Image">
              
                 <div class="profile-details">
                     <h5 >{{ Auth::user()->name }}    @if(Auth::user()->balance >= 899)

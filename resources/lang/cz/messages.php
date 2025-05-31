@@ -149,7 +149,7 @@ return [
     'cancel_deposit_application' => 'Cancel Deposit Application',
     'are_you_sure_you_want_to_cancel_this_deposit' => 'Are you sure you want to cancel this deposit?',
     'failed_to_load_deposit_address_please_try_again' => 'Failed to Load Deposit Address. Please Try Again.',
-    'address_copied_to_clipboard' => 'Address Copied to Clipboard',
+    'address_copied_to_clipboard' => 'Address Copied Successfully',
     'failed_to_load_deposit_address_please_try_again' => 'Failed to Load Deposit Address. Please Try Again.',
     'message_after_successful_payment' => 'After a successful payment, you must click the payment button
     and <a href="#" class="text-warning text-decoration-none">Contact Customer Service</a> to confirm',     

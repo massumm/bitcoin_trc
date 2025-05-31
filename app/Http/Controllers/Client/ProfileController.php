@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ProfileController extends Controller
 {
@@ -24,7 +25,7 @@ class ProfileController extends Controller
                 $image->move(public_path('assets/img'), $filename);
                 
                 // Update user's profile image in database if needed
-                // DB::table('users')->where('id', Auth::id())->update(['profile_image' => $filename]);
+                DB::table('users')->where('id', Auth::id())->update(['profile_image' => $filename]);
 
                 return response()->json([
                     'success' => true,

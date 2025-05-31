@@ -240,6 +240,7 @@
     withdrawButton.addEventListener('click', function() {
         let amount = amountInput.value;
         let withdrawalPassword = document.getElementById('withdrawalPassword').value;
+        let currentDate = new Date().toLocaleString();
 
         if (amount < MIN_WITHDRAWAL) {
             //showErrorMessage('Minimum withdrawal amount is 20 USDT');
@@ -252,7 +253,7 @@
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
             },
-            body: JSON.stringify({ amount: amount, withdrawal_password: withdrawalPassword })
+            body: JSON.stringify({ amount: amount, withdrawal_password: withdrawalPassword, current_date: currentDate    })
         })
         .then(response => response.json())
         .then(data => {

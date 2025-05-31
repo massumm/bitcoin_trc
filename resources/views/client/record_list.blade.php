@@ -4,45 +4,45 @@
 <style>
 /* Common Styles */
 .records-container {
-    padding: 1.5rem;
+    padding: 1.4rem;
     background: #f8f9fa;
     min-height: 100vh;
 }
 
 .page-title {
     color: #1F2937;
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     font-weight: 600;
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: 1.85rem;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .page-title i {
-    margin-right: 0.75rem;
+    margin-right: 0.7rem;
     color: #3B82F6;
 }
 
 /* Tab Navigation */
 .nav-tabs {
     border: none;
-    margin-bottom: 2rem;
+    margin-bottom: 1.85rem;
     display: flex;
     justify-content: center;
-    gap: 1rem;
+    gap: 0.9rem;
 }
 
 .nav-link {
     color: #4B5563;
     background: white;
     border: 1px solid #E5E7EB;
-    border-radius: 8px;
-    padding: 0.75rem 2rem;
+    border-radius: 7px;
+    padding: 0.7rem 1.85rem;
     font-weight: 500;
     transition: all 0.3s ease;
-    min-width: 140px;
+    min-width: 130px;
     text-align: center;
 }
 
@@ -62,9 +62,9 @@
 /* Order Card Styles */
 .order-card {
     background: white;
-    border-radius: 12px;
+    border-radius: 11px;
     border: 1px solid #E5E7EB;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.4rem;
     overflow: hidden;
     transition: all 0.3s ease;
 }
@@ -75,7 +75,7 @@
 }
 
 .order-header {
-    padding: 1.25rem;
+    padding: 1.15rem;
     border-bottom: 1px solid #E5E7EB;
     display: flex;
     justify-content: space-between;
@@ -84,29 +84,29 @@
 
 .order-title {
     color: #1F2937;
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 600;
     margin: 0;
 }
 
 .order-date {
     color: #6B7280;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
 }
 
 /* Product List */
 .product-list {
-    padding: 1.25rem;
+    padding: 1.15rem;
     border-bottom: 1px solid #E5E7EB;
 }
 
 .product-item {
     display: flex;
     align-items: center;
-    padding: 1rem;
+    padding: 0.9rem;
     background: #F9FAFB;
-    border-radius: 8px;
-    margin-bottom: 1rem;
+    border-radius: 7px;
+    margin-bottom: 0.9rem;
     transition: all 0.3s ease;
 }
 
@@ -119,11 +119,11 @@
 }
 
 .product-image {
-    width: 80px;
-    height: 80px;
-    border-radius: 8px;
+    width: 74px;
+    height: 74px;
+    border-radius: 7px;
     object-fit: cover;
-    margin-right: 1rem;
+    margin-right: 0.9rem;
 }
 
 .product-details {
@@ -132,9 +132,9 @@
 
 .product-title {
     color: #1F2937;
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 500;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.45rem;
 }
 
 .product-info {
@@ -150,12 +150,12 @@
 
 .product-quantity {
     color: #6B7280;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
 }
 
 /* Order Footer */
 .order-footer {
-    padding: 1.25rem;
+    padding: 1.15rem;
     background: #F9FAFB;
 }
 
@@ -163,8 +163,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 0.75rem;
-    font-size: 0.95rem;
+    margin-bottom: 0.7rem;
+    font-size: 0.9rem;
 }
 
 .order-summary:last-child {
@@ -187,18 +187,18 @@
 
 .submit-order-btn {
     width: 100%;
-    padding: 0.875rem;
+    padding: 0.8rem;
     background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 7px;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
+    gap: 0.45rem;
 }
 
 .submit-order-btn:hover {
@@ -207,49 +207,49 @@
 }
 
 .submit-order-btn i {
-    font-size: 1.1rem;
+    font-size: 1rem;
 }
 
 /* Empty State */
 .empty-state {
     text-align: center;
-    padding: 3rem 1rem;
+    padding: 2.75rem 0.9rem;
     color: #6B7280;
 }
 
 .empty-state i {
-    font-size: 3rem;
+    font-size: 2.75rem;
     color: #E5E7EB;
-    margin-bottom: 1rem;
+    margin-bottom: 0.9rem;
 }
 
 .empty-state p {
-    font-size: 1rem;
+    font-size: 0.95rem;
     margin: 0;
 }
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
     .records-container {
-        padding: 1rem;
+        padding: 0.9rem;
     }
     
     .nav-link {
-        padding: 0.625rem 1.5rem;
-        min-width: 120px;
+        padding: 0.6rem 1.4rem;
+        min-width: 110px;
     }
     
     .product-image {
-        width: 60px;
-        height: 60px;
+        width: 55px;
+        height: 55px;
     }
     
     .product-title {
-        font-size: 0.95rem;
+        font-size: 0.9rem;
     }
     
     .order-summary {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
     }
 }
 </style>
@@ -387,7 +387,7 @@
                         <div class="order-card">
                             <div class="order-header">
                                 <h5 class="order-title">{{ __('messages.order') }} #${order.order_number}</h5>
-                                <span class="order-date">${new Date(order.created_at).toLocaleString()}</span>
+                                <span class="order-date">${order.ordertime}</span>
                             </div>
                             
                             <div class="product-list">
@@ -408,7 +408,7 @@
                             <div class="order-footer">
                                 <div class="order-summary">
                                     <span class="summary-label">{{ __('messages.transaction_time') }}</span>
-                                    <span class="summary-value">${new Date(order.created_at).toLocaleString()}</span>
+                                    <span class="summary-value">${order.ordertime}</span>
                                 </div>
                                 <div class="order-summary">
                                     <span class="summary-label">{{ __('messages.order_amount') }}</span>

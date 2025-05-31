@@ -4,41 +4,41 @@
 <style>
 /* Common Styles */
 .menu-container {
-    padding: 1.5rem;
+    padding: 1.4rem;
     background: #f8f9fa;
 }
 
 .page-title {
     color: #1F2937;
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     font-weight: 600;
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: 1.85rem;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .page-title i {
-    margin-right: 0.75rem;
+    margin-right: 0.7rem;
     color: #3B82F6;
 }
 
 /* Tab Styling */
 .nav-tabs {
     border: none;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.4rem;
     display: flex;
     justify-content: center;
-    gap: 0.5rem;
+    gap: 0.45rem;
 }
 
 .nav-tabs .nav-link {
     color: #4B5563;
     background: white;
     border: 1px solid #E5E7EB;
-    border-radius: 8px;
-    padding: 0.75rem 1.5rem;
+    border-radius: 7px;
+    padding: 0.7rem 1.4rem;
     font-weight: 500;
     transition: all 0.3s ease;
 }
@@ -59,11 +59,11 @@
 /* Menu Item Cards */
 .menu-card {
     background: white;
-    border-radius: 12px;
+    border-radius: 11px;
     border: 1px solid #E5E7EB;
     overflow: hidden;
     transition: all 0.3s ease;
-    margin-bottom: 1rem;
+    margin-bottom: 0.9rem;
     text-decoration: none;
     display: block;
     position: relative;
@@ -77,32 +77,31 @@
 
 .vip-badge {
     position: absolute !important;
-    top: 10px !important;
-    left: 10px !important;
-    width: 30px !important;
-    height: 30px !important;
+    top: 9px !important;
+    left: 9px !important;
+    width: 28px !important;
+    height: 28px !important;
     z-index: 2 !important;
-
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .menu-card-body {
-    padding: 1.25rem;
+    padding: 1.15rem;
     display: flex;
     align-items: center;
     position: relative;
 }
 
 .menu-image-container {
-    width: 90px;
-    height: 90px;
+    width: 83px;
+    height: 83px;
     background: #F3F4F6;
-    border-radius: 10px;
-    padding: 0.5rem;
+    border-radius: 9px;
+    padding: 0.45rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-right: 1.25rem;
+    margin-right: 1.15rem;
 }
 
 .menu-image {
@@ -117,23 +116,23 @@
 
 .menu-title {
     color: #1F2937;
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 600;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.45rem;
 }
 
 .menu-text {
     color: #4B5563;
-    font-size: 0.95rem;
-    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    margin-bottom: 0.45rem;
     display: flex;
     align-items: center;
 }
 
 .menu-text i {
-    margin-right: 0.5rem;
+    margin-right: 0.45rem;
     color: #3B82F6;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
 }
 
 .commission-text {
@@ -144,39 +143,39 @@
 }
 
 .commission-text i {
-    margin-right: 0.5rem;
-    font-size: 0.9rem;
+    margin-right: 0.45rem;
+    font-size: 0.85rem;
 }
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
     .menu-container {
-        padding: 1rem;
+        padding: 0.9rem;
     }
     
     .vip-badge {
-        width: 50px !important;
-        height: 25px !important;
-        top: 8px !important;
-        left: 8px !important;
+        width: 46px !important;
+        height: 23px !important;
+        top: 7px !important;
+        left: 7px !important;
     }
     
     .nav-tabs .nav-link {
-        padding: 0.3rem 0.5rem;
-        font-size:  1.0rem;
+        padding: 0.3rem 0.45rem;
+        font-size: 0.95rem;
     }
     
     .menu-image-container {
-        width: 70px;
-        height: 70px;
+        width: 64px;
+        height: 64px;
     }
     
     .menu-title {
-        font-size: 1rem;
+        font-size: 0.95rem;
     }
     
     .menu-text {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
     }
 }
 </style>

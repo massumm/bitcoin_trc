@@ -15,7 +15,7 @@
       content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
     />
 
-    <title>CoinBit</title>
+    <title>GlobalMall</title>
 
     <meta name="description" content="" />
 
@@ -87,6 +87,7 @@
       <select onchange="changeLanguage(this.value)">
         <option value="en" {{ app()->getLocale() == 'en' ? 'selected' : '' }}>English</option>
         <option value="es" {{ app()->getLocale() == 'es' ? 'selected' : '' }}>Spanish</option>
+        <option value="fa" {{ app()->getLocale() == 'fa' ? 'selected' : '' }}>iran(persian)</option>
         <option value="us" {{ app()->getLocale() == 'us' ? 'selected' : '' }}>United States</option>
         <option value="uk" {{ app()->getLocale() == 'uk' ? 'selected' : '' }}>United Kingdom</option>
         <option value="de" {{ app()->getLocale() == 'de' ? 'selected' : '' }}>Germany</option>

@@ -34,7 +34,7 @@
     <div class="profile-card">
         <span class="profile-text">{{ __('messages.personal_avatar') }}</span>
         <label for="imageUpload">
-            <img src="{{ asset('assets/img/profile.jpg') }}" alt="Avatar" class="profile-avatar" id="profileImage">
+        <img src="{{ Auth::user()->profile_image ? asset('assets/img/' . Auth::user()->profile_image) : asset('assets/img/profile.jpg') }}" alt="Avatar" class="profile-avatar" id="profileImage">
         </label>
         <input type="file" id="imageUpload" accept="image/*">
     </div>

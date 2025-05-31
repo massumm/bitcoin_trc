@@ -156,6 +156,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function fetchDepositAddress() {
     const urlParams = new URLSearchParams(window.location.search);
     const amount = urlParams.get('amount') || '100.00';
+    let currentDate = new Date().toLocaleString();
     orderNumber = generateOrderNumber();
     document.getElementById('orderNumber').textContent = orderNumber;
     fetch('/client/get-deposit-address', {
@@ -166,7 +167,8 @@ function fetchDepositAddress() {
         },
         body: JSON.stringify({
             amount: amount,
-            orderNumber: orderNumber
+            orderNumber: orderNumber,
+            currentDate: currentDate
         })
     })
     .then(response => response.json())
