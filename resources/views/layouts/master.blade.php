@@ -19,7 +19,7 @@
 $dbTitle = DB::table('tbl_basic_setting')->value('d_title');
 ?>
 
-<title id="medishop_title"><?php echo $dbTitle; ?></title>
+<title id="medishop_title">GlobalMall</title>
 
     <meta name="description" content="" />
 

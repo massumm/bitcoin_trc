@@ -150,7 +150,7 @@
         <div class="language-item" onclick="changeLanguage('us')">us</div>
         <div class="language-item" onclick="changeLanguage('uk')">uk</div>
         <div class="language-item" onclick="changeLanguage('de')">german'</div>
-        <div class="language-item" onclick="changeLanguage('ae')">arabic</div>
+        <div class="language-item" onclick="changeLanguage('ar')">arabic</div>
         <div class="language-item" onclick="changeLanguage('cz')">czech</div>
         <div class="language-item" onclick="changeLanguage('fr')">french</div>
         <div class="language-item" onclick="changeLanguage('pt')">portuguese</div>

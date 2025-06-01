@@ -33,6 +33,9 @@
     .status-success {
         color: #52c41a;
     }
+    .status-pending {
+        color: #faad14;
+    }
     .record-time {
         color: #8c8c8c;
         font-size: 12px;
@@ -59,8 +62,8 @@
             <div class="record-header">
                 <div class="record-type">
                     <span>{{ __('messages.withdraw') }}</span>
-                    <span class="record-status {{ $withdraw->status == 0 ? 'status-failed' : 'status-success' }}">
-                        {{ $withdraw->status}}
+                    <span class="record-status {{ strtolower($withdraw->status) == 'failed' ? 'status-failed' : (strtolower($withdraw->status) == 'success' ? 'status-success' : 'status-pending') }}">
+                        {{ $withdraw->status }}
                     </span>
                 </div>
                 <div class="record-time">

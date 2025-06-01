@@ -290,6 +290,7 @@
             total_amount: parseFloat(button.getAttribute('data-total')),
             commission: parseFloat(button.getAttribute('data-commission')),
             expected_income: parseFloat(button.getAttribute('data-expected_income')),
+            current_date: new Date().toLocaleString(),
             order_items: JSON.parse(button.getAttribute('data-products').replace(/'/g, '"')).map(product => ({
                 product_id: String(product.id || ''),
                 quantity: parseInt(product.quantity || 6),
