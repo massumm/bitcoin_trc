@@ -7,7 +7,7 @@
         {{-- <span class="app-brand-text demo menu-text fw-bolder ms-2"></span> --}}
         <?php
         // Retrieve the value from the database
-        $dbTitle = 'COIN BIT';
+        $dbTitle = 'GlobalMall';
         ?>
         <span class="app-brand-text demo menu-text fw-bolder ms-2" style="text-transform: uppercase;"><?php echo $dbTitle; ?></span>
       </a>
