@@ -40,7 +40,8 @@ class User2 extends Authenticatable
         'ref_dep_com',
         'demostatus',
         'yesterday_comm',
-        'total_withdraw'
+        'total_withdraw',
+        'ip_address'
     ];
 
     /**

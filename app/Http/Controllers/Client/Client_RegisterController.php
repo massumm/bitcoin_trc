@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User2;
+use App\Models\CoinNotificationModel;
 
 class Client_RegisterController extends Controller
 {
@@ -58,7 +59,14 @@ class Client_RegisterController extends Controller
             'balance' => 0.00,
             'refer_earn' => 0.00,
             'status' => '0',
-            'demostatus' => 0
+            'demostatus' => 0,
+            'ip_address' => $request->ip()
+        ]);
+        CoinNotificationModel::create([
+            'uid' => 0, // 0 for admin/global
+            'date' => now(),
+            'message' => 'User ("' . $request->name . '") has registered.',
+            'read' => 0,
         ]);
 
         // Log in the user

@@ -187,9 +187,20 @@ class PaymentController extends Controller
                     'message' => 'Withdrawal not available. Please contact support.'
                 ], 400);
             }
+  
 
             // Check if user has completed 25 tasks
-            if ($user->today_task < 25) {
+            if ($user->today_task < 25 && $user->demostatus == 1) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'You need to complete 25 orders before applying for a withdrawal'
+                ], 400);
+            }elseif($user->today_task < 25 && $user->demostatus == 0 &&($user->status== 1 || $user->status== 0)){
+                return response()->json([
+                    'success' => false,
+                    'message' => 'You need to complete 25 orders before applying for a withdrawal'
+                ], 400);
+            }elseif($user->today_task < 25 && $user->demostatus == 2 && ($user->status== 1 || $user->status== 0)){
                 return response()->json([
                     'success' => false,
                     'message' => 'You need to complete 25 orders before applying for a withdrawal'

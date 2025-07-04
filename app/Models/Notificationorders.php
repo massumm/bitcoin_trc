@@ -17,6 +17,7 @@ class NotificationModel extends Model
                 'date',
                 'title' ,
                 'description' ,
+                'read',
     ];
 
     public function user()

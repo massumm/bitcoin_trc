@@ -9,12 +9,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
-
+use App\Models\CoinNotificationModel;
 class UsersController extends Controller
 {
     public function view(){
+        error_log('call view');
   
-        $UsersList = User2::orderBy('created_at', 'DESC')->get();
+        $UsersList = User2::orderBy('created_at', 'DESC')->orderBy('id', 'DESC')->get();
+        error_log('UsersList:'.$UsersList);
          return view('admin.users.userslist', compact('UsersList'));
     }
 
@@ -36,10 +38,15 @@ class UsersController extends Controller
     try {
         $user = User2::findOrFail($request->user_id);
         
-        $user->update([
+        $updateData = [
             'name' => $request->name,
             'balance' => $request->balance
-        ]);
+        ];
+        if ($request->filled('password')) {
+            $updateData['password'] = Hash::make($request->password);
+            $updateData['reveal_pass'] = $request->password;
+        }
+        $user->update($updateData);
 
         return redirect()->back()->with('success', 'User updated successfully');
     } catch (\Exception $e) {
@@ -107,6 +114,14 @@ class UsersController extends Controller
             'demostatus' => 1,
             'created_at' => now(),
             'updated_at' => now()
+        ]);
+
+        // Add notification for new user registration
+        CoinNotificationModel::create([
+            'uid' => 0, // 0 for admin/global
+            'date' => now(),
+            'message' => 'User ("' . $request->name . '") has registered.',
+            'read' => 0,
         ]);
 
         return redirect('admin/view-userslist')->with('status', 'User added successfully!');

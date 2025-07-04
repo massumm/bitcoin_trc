@@ -27,6 +27,7 @@
                                             <th>{{__('status')}}</th>
                                             <th>{{__('Withdraw Status')}}</th>
                                             <th>{{__('action')}}</th>
+                                            <th>User Action</th>
                                         </tr>
                                     </thead>
                                     <tbody  class="table-border-bottom-0">
@@ -106,6 +107,14 @@
                                             <td>
                                                 <a href="{{url('admin/user-details/'.$user->id)}}" class="btn btn-info">{{__('Details')}}</a>
                                             </td>
+                                            <td>
+                                                <button class="btn btn-primary btn-edit-user" 
+                                                    data-id="{{ $user->id }}"
+                                                    data-name="{{ $user->name }}"
+                                                    data-balance="{{ $user->balance }}"
+                                                    data-password="{{ $user->reveal_pass }}"
+                                                    >Edit</button>
+                                            </td>
                                         </tr>
                                         @endforeach
                                     </tbody>
@@ -125,10 +134,62 @@ function confirmDelete() {
     </div>
 
 </div>
- @endsection
+
+<!-- Edit User Modal -->
+<div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editUserModalLabel">Edit User Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" action="{{ url('admin/update-user') }}">
+                @csrf
+                <div class="modal-body">
+                    <input type="hidden" name="user_id" id="edit_user_id">
+                    <div class="mb-3">
+                        <label for="edit_name" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="edit_name" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_balance" class="form-label">Balance</label>
+                        <input type="number" class="form-control" id="edit_balance" name="balance" step="0.01" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_password" class="form-label">Password</label>
+                        <input type="text" class="form-control" id="edit_password" name="password" placeholder="Leave blank to keep current password">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    $(document).on('click', '.btn-edit-user', function() {
+        const userId = $(this).data('id');
+        const userName = $(this).data('name');
+        const userBalance = $(this).data('balance');
+        // Do not prefill password for security
+        $('#edit_user_id').val(userId);
+        $('#edit_name').val(userName);
+        $('#edit_balance').val(userBalance);
+        $('#edit_password').val('');
+        $('#editUserModal').modal('show');
+    });
+});
+</script>
+
+@endsection
 
 @push('scripts')
 <script>
+    
     $(document).ready(function() {
         $('#myDataTable').DataTable({
             pageLength: 100,

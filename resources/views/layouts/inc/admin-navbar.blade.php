@@ -24,7 +24,19 @@ id="layout-navbar"
   <!-- /Search -->
 
   <ul class="navbar-nav flex-row align-items-center ms-auto">
-    <!-- Place this tag where you want the button to render. -->
+    <!-- Notification Icon -->
+    <li class="nav-item me-3 dropdown">
+      <a class="nav-link position-relative" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="bx bx-bell fs-4"></i>
+        <span id="notificationBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.75rem; display:none;">
+          0
+          <span class="visually-hidden">unread messages</span>
+        </span>
+      </a>
+      <ul class="dropdown-menu dropdown-menu-end" id="notificationList" aria-labelledby="notificationDropdown" style="width: 300px; max-height: 400px; overflow-y: auto;">
+        <li class="dropdown-item text-center text-muted">No notifications</li>
+      </ul>
+    </li>
 
 {{--
     <li class="nav-item lh-1 me-3">
@@ -110,3 +122,94 @@ id="layout-navbar"
   </ul>
 </div>
 </nav>
+
+<audio id="notificationSound" src="{{ asset('assets/ringtone.wav') }}" preload="auto"></audio>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let lastNotificationCount = 0;
+    let userInteracted = false;
+
+    // Show alert when page loads to enable notification sound
+    // setTimeout(() => {
+    //     if (confirm('Enable notification sound alerts? Click OK to enable.')) {
+    //         console.log('User enabled notification sound');
+    //         // Try to play audio to unlock it
+    //         document.getElementById('notificationSound').play().catch(() => {});
+    //         userInteracted = true;
+    //     }
+    // }, 1000); // Show after 1 second
+
+    // Track user interaction to enable audio
+    document.addEventListener('click', () => {
+      console.log('user interacted click'+userInteracted);
+        if (!userInteracted) {
+            console.log('play sound user interacted');
+            // Try to play audio to unlock it
+            document.getElementById('notificationSound').play().catch(() => {});
+            userInteracted = true;
+        }
+    });
+
+    function fetchNotificationCount() {
+        fetch('/admin/notification-count')
+            .then(response => response.json())
+            .then(data => {
+                const badge = document.getElementById('notificationBadge');
+                if (data.count > 0) {
+                    badge.textContent = data.count;
+                    badge.style.display = 'inline-block';
+                } else {
+                    badge.style.display = 'none';
+                }
+
+                // Play sound if new notifications arrived and user has interacted
+                if (data.count > lastNotificationCount && userInteracted) {
+                    console.log('play sound');
+                    document.getElementById('notificationSound').play().catch(error => {
+                        console.log('Audio play failed:', error);
+                    });
+                }
+                lastNotificationCount = data.count;
+            });
+    }
+    fetchNotificationCount();
+    setInterval(fetchNotificationCount, 10000); // Poll every 10s
+
+    document.getElementById('notificationDropdown').addEventListener('click', function(e) {
+        e.preventDefault();
+
+        // Fetch notifications
+        fetch('/admin/notification-list')
+            .then(response => response.json())
+            .then(data => {
+                const notificationList = document.getElementById('notificationList');
+                notificationList.innerHTML = ''; // Clear previous notifications
+
+                if (data.notifications && data.notifications.length > 0) {
+                    data.notifications.forEach(notification => {
+                        const li = document.createElement('li');
+                        li.className = 'dropdown-item';
+                        li.textContent = notification.message;
+                        notificationList.appendChild(li);
+                    });
+                } else {
+                    const li = document.createElement('li');
+                    li.className = 'dropdown-item text-center text-muted';
+                    li.textContent = 'No notifications';
+                    notificationList.appendChild(li);
+                }
+            });
+
+        // Mark as read (optional, if you want to mark as read on click)
+        fetch('/admin/notification-mark-read', { 
+            method: 'POST', 
+            headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') } 
+        })
+        .then(() => {
+            document.getElementById('notificationBadge').style.display = 'none';
+        });
+    });
+});
+</script>
+

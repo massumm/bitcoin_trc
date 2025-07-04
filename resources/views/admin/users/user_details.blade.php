@@ -4,11 +4,7 @@
 <div class="container-fluid px-4">
     <div class="card mt-4">
         <div class="card-header">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <button class="btn btn-primary" onclick="showEditModal()">
-                    <i class="fas fa-edit"></i> Edit User
-                </button>
-            </div>
+         
             <h1 class="text-center display-4 mb-4">{{ $user->name }}</h1>
             <h2 class="text-center mb-4">Balance: {{ $user->balance }}</h2>
             
@@ -66,6 +62,10 @@
                     <div class="mb-3">
                         <label for="balance" class="form-label">Balance</label>
                         <input type="number" class="form-control" id="balance" name="balance" value="{{ $user->balance }}" step="0.01" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Leave blank to keep current password">
                     </div>
                 </div>
                 <div class="modal-footer">

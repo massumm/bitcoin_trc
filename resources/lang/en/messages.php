@@ -321,5 +321,6 @@ Its greatest value lies in allowing consumers to earn commissions through free s
 'loading'=>'loading',
 'processing'=>'processing',
 'submitting'=>'submitting',
+'passwords_do_not_match'=>'Passwords do not match',
 ];
 

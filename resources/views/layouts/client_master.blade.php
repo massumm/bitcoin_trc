@@ -5,12 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
     <title id="medishop_title">GlobalMall</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://coinbittrust.com/">
+    <meta property="og:title" content="Quick order grab, one step faster">
+    <meta property="og:description" content="Don't run around, don't need to search around, don't be exposed to wind and rain. At home, in the office, the mouse is a little easier, happy with one click, grab the order, and make money online.">
+    <meta property="og:image" content="https://coinbittrust.com/assets/img/profile.jpg">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://coinbittrust.com/">
+    <meta name="twitter:title" content="Quick order grab, one step faster">
+    <meta name="twitter:description" content="Don't run around, don't need to search around, don't be exposed to wind and rain. At home, in the office, the mouse is a little easier, happy with one click, grab the order, and make money online.">
+    <meta name="twitter:image" content="https://coinbittrust.com/assets/img/profile.jpg">
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/profile.jpg') }}" />
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
 
 
     <!-- Bootstrap & Icons -->

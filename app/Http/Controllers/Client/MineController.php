@@ -41,18 +41,23 @@ class MineController extends Controller
         $stats = [
             'team_amount' => $level1Users->sum('balance') + $level2Users->sum('balance') + $level3Users->sum('balance'),
             'agent_profit' => $user->refer_earn,
-            'total_recharge' => \DB::table('deposit')->whereIn('user_id', [
-                $user->id,
-                ...$level1Users->pluck('id'),
-                ...$level2Users->pluck('id'),
-                ...$level3Users->pluck('id')
-            ])->sum('amount'),
+            'total_recharge' => \DB::table('deposit')
+                ->whereIn('user_id', [
+                    $user->id,
+                    ...$level1Users->pluck('id'),
+                    ...$level2Users->pluck('id'),
+                    ...$level3Users->pluck('id')
+                ])
+                ->where('status', 'Success')
+                ->sum('amount'),
             'total_withdraw' => \DB::table('withdraw')->whereIn('user_id', [
                 $user->id,
                 ...$level1Users->pluck('id'),
                 ...$level2Users->pluck('id'),
                 ...$level3Users->pluck('id')
-            ])->sum('amount'),
+            ])
+            ->where('status', 'Success')
+            ->sum('amount'),
             'order_commission' => $user->ref_earn ?? 0,
             'newcomers' => $level1Users->count() + $level2Users->count() + $level3Users->count(),
             'activities_number' => 0, // Add activities calculation if needed

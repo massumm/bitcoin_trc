@@ -18,7 +18,7 @@
 
                     <div class="card">
                         <div class="card-header">
-                          <h4>Medicine Order Statistics</h4>
+                          <h4> Order Statistics</h4>
                         </div>
                         <div class="card-body">
                           <div class="row text-center">

@@ -209,6 +209,11 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
 
     Route::get('/update-demo-status/{id}/{status}', [App\Http\Controllers\AdminController::class, 'updateDemoStatus'])->name('admin.updateDemoStatus');
 
+    // Notification routes
+    Route::get('/notification-count', [App\Http\Controllers\Admin\NotificationController::class, 'count']);
+    Route::post('/notification-mark-read', [App\Http\Controllers\Admin\NotificationController::class, 'markRead']);
+    Route::get('/notification-list', [App\Http\Controllers\Admin\NotificationController::class, 'list']);
+
 });
 
 Route::post('/client/upload-profile-image', [App\Http\Controllers\Client\ProfileController::class, 'uploadProfileImage'])->name('client.uploadProfileImage');
