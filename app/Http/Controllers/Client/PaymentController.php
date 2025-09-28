@@ -193,17 +193,22 @@ class PaymentController extends Controller
             if ($user->today_task < 25 && $user->demostatus == 1) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'You need to complete 25 orders before applying for a withdrawal'
+                    'message' => 'You need to complete 25 orders before applying for a withdrawal'
                 ], 400);
-            }elseif($user->today_task < 25 && $user->demostatus == 0 &&($user->status== 1 || $user->status== 0)){
+            }elseif($user->today_task < 25 && $user->demostatus == 0 &&($user->status== 1 || $user->status== 0 || $user->status== 2)){
                 return response()->json([
                     'success' => false,
-                    'message' => 'You need to complete 25 orders before applying for a withdrawal'
+                    'message' => 'You need to complete 25 orders before applying for a withdrawal'
                 ], 400);
-            }elseif($user->today_task < 25 && $user->demostatus == 2 && ($user->status== 1 || $user->status== 0)){
+            }elseif($user->today_task < 25 && $user->demostatus == 2 && ($user->status== 1 || $user->status== 0|| $user->status== 2)){
                 return response()->json([
                     'success' => false,
-                    'message' => 'You need to complete 25 orders before applying for a withdrawal'
+                    'message' => 'You need to complete 25 orders before applying for a withdrawal'
+                ], 400);
+            }elseif($user->today_task < 25 && $user->demostatus == 3 && ($user->status== 1 || $user->status== 0|| $user->status== 2)){
+                return response()->json([
+                    'success' => false,
+                    'message' => 'You need to complete 25 orders before applying for a withdrawal'
                 ], 400);
             }
 

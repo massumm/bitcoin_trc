@@ -15,7 +15,7 @@ class UsersController extends Controller
     public function view(){
         error_log('call view');
   
-        $UsersList = User2::orderBy('created_at', 'DESC')->orderBy('id', 'DESC')->get();
+        $UsersList = User2::orderBy('id', 'DESC')->get();
         error_log('UsersList:'.$UsersList);
          return view('admin.users.userslist', compact('UsersList'));
     }

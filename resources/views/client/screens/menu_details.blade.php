@@ -742,19 +742,30 @@
         updateGrabButtonState();
     }
     function handleOrder(button) {
+        // Disable the button immediately to prevent double clicks
+        button.disabled = true;
+        button.style.opacity = '0.6';
+        button.innerHTML = '{{ __("messages.processing") }}...';
+        
         const orderNumber = button.getAttribute("data-order");
         const totalAmount = button.getAttribute("data-total");
         const commission = button.getAttribute("data-commission");
         const products = JSON.parse(button.getAttribute("data-products").replace(/&quot;/g, '"')); 
         const currentDate = button.getAttribute("data-currentDate");
         
-        submitOrder(orderNumber, totalAmount, commission, products,currentDate);
+        submitOrder(orderNumber, totalAmount, commission, products, currentDate, button);
     }
     
-    function submitOrder(orderNumber, totalAmount, commission, products,currentDate) {   
+    function submitOrder(orderNumber, totalAmount, commission, products, currentDate, submitButton) {   
         if (!products || !Array.isArray(products)) {
             console.error('Products data is invalid:', products);
             showErrorMessage('Invalid products data');
+            // Re-enable button on error
+            if (submitButton) {
+                submitButton.disabled = false;
+                submitButton.style.opacity = '1';
+                submitButton.innerHTML = '{{ __("messages.submit_order") }}';
+            }
             return;
         }
         
@@ -787,6 +798,12 @@
             showErrorMessage('CSRF token not found');
             isLoading = false;
             updateGrabButtonState();
+            // Re-enable button on error
+            if (submitButton) {
+                submitButton.disabled = false;
+                submitButton.style.opacity = '1';
+                submitButton.innerHTML = '{{ __("messages.submit_order") }}';
+            }
             return;
         }
 
@@ -804,6 +821,12 @@
             if (!response.ok) {
                 if(response.status === 403 && data.need_balance) {
                     showErrorMessage(data.message);
+                    // Re-enable button on error
+                    if (submitButton) {
+                        submitButton.disabled = false;
+                        submitButton.style.opacity = '1';
+                        submitButton.innerHTML = '{{ __("messages.submit_order") }}';
+                    }
                     return;
                 }
                 throw new Error(data.message || `HTTP error! status: ${response.status}`);
@@ -820,6 +843,12 @@
             } else {
                 if(data.message.includes('Insufficient balance')) {
                     showErrorMessage(data.message);
+                    // Re-enable button on error
+                    if (submitButton) {
+                        submitButton.disabled = false;
+                        submitButton.style.opacity = '1';
+                        submitButton.innerHTML = '{{ __("messages.submit_order") }}';
+                    }
                     return;
                 }
             }
@@ -832,12 +861,24 @@
                 if (error.response.data.message.includes('Insufficient balance')) {
                     const needBalance = error.response.data.need_balance;
                     showErrorMessage(needBalance);
+                    // Re-enable button on error
+                    if (submitButton) {
+                        submitButton.disabled = false;
+                        submitButton.style.opacity = '1';
+                        submitButton.innerHTML = '{{ __("messages.submit_order") }}';
+                    }
                     return;
                 }
             }
             showErrorMessage('Failed to submit order. Please try again.');
             isLoading = false;
             updateGrabButtonState();
+            // Re-enable button on error
+            if (submitButton) {
+                submitButton.disabled = false;
+                submitButton.style.opacity = '1';
+                submitButton.innerHTML = '{{ __("messages.submit_order") }}';
+            }
         });
     }
 

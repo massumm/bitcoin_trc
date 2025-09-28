@@ -77,8 +77,8 @@ class AuthController extends Controller
         // Get the user by username
         $user = User::where('name', $credentials['name'])->first();
 
-        // Check if user exists and password matches (plain text comparison)
-        if ($user && $user->password === $credentials['password']) {
+        // Check if user exists and password matches (using Hash::check for security)
+        if ($user && Hash::check($credentials['password'], $user->password)) {
             // Log out any existing sessions for this user
             DB::table('sessions')
                 ->where('user_id', $user->id)
@@ -90,7 +90,12 @@ class AuthController extends Controller
             // Regenerate session ID
             $request->session()->regenerate();
             
-            return redirect()->intended('client/home');
+            // Redirect based on user role
+            if ($user->name === 'admin') {
+                return redirect('/admin/dashboard');
+            } else {
+                return redirect('/client/dashboard');
+            }
         }
 
         return back()->withErrors([

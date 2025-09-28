@@ -1,6 +1,23 @@
 @extends('layouts.master')
 @section('content')
+    <!-- CSS -->
+    {{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
+    {{-- <script src="{{ asset('assets/dist/jquery.fancybox.min.js') }}"></script> --}}
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    {{-- <link rel="stylesheet" href="{{ asset('assets/dist/jquery.fancybox.css') }}"> --}}
+    <!-- JavaScript -->
+    {{-- <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script> --}}
+    {{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" /> --}}
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
+
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
 <div class="container-fluid px-4">
 
     <div class="card mt-4">
@@ -123,14 +140,6 @@
                             </div>
                    </div>
 
-
-
-                 <script>
-function confirmDelete() {
-    return confirm('Are you sure you want to delete this user?');
-}
-</script>
-
     </div>
 
 </div>
@@ -170,6 +179,17 @@ function confirmDelete() {
 </div>
 
 <script>
+
+
+$(document).ready(function() {
+            $('#myDataTable').DataTable({
+                order: [0, 'dec'] // Sort by the first column (index 0) in descending order
+            });
+        });
+
+    function confirmDelete() {
+    return confirm('Are you sure you want to delete this user?');
+}
 document.addEventListener('DOMContentLoaded', function() {
     $(document).on('click', '.btn-edit-user', function() {
         const userId = $(this).data('id');
@@ -186,27 +206,3 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 @endsection
-
-@push('scripts')
-<script>
-    
-    $(document).ready(function() {
-        $('#myDataTable').DataTable({
-            pageLength: 100,
-            language: {
-                search: "{{__('Search')}}",
-                lengthMenu: "{{__('Show _MENU_ entries')}}",
-                info: "{{__('Showing _START_ to _END_ of _TOTAL_ entries')}}",
-                infoEmpty: "{{__('Showing 0 to 0 of 0 entries')}}",
-                infoFiltered: "{{__('(filtered from _MAX_ total entries)')}}",
-                paginate: {
-                    first: "{{__('First')}}",
-                    last: "{{__('Last')}}",
-                    next: "{{__('Next')}}",
-                    previous: "{{__('Previous')}}"
-                }
-            }
-        });
-    });
-</script>
-@endpush
