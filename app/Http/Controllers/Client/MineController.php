@@ -65,7 +65,7 @@ class MineController extends Controller
         ];
 
         $teamData = [
-            'level1' => $level1Users->sortByDesc('balance')->map(function($user) {
+            'level1' => $level1Users->sortByDesc('created_at')->map(function($user) {
                 $referby_name = \App\Models\User2::where('refer_code', $user->refer_by)->value('name');
                 return [
                     'name' => $user->name,
@@ -76,7 +76,7 @@ class MineController extends Controller
                     'referby_name' => $referby_name
                 ];
             }),
-            'level2' => $level2Users->sortByDesc('balance')->map(function($user) {
+            'level2' => $level2Users->sortByDesc('created_at')->map(function($user) {
                 $referby_name = \App\Models\User2::where('refer_code', $user->refer_by)->value('name');
                 return [
                     'name' => $user->name,
@@ -87,7 +87,7 @@ class MineController extends Controller
                     'referby_name' => $referby_name
                 ];
             }),
-            'level3' => $level3Users->sortByDesc('balance')->map(function($user) {
+            'level3' => $level3Users->sortByDesc('created_at')->map(function($user) {
                 $referby_name = \App\Models\User2::where('refer_code', $user->refer_by)->value('name');
                 return [
                     'name' => $user->name,
