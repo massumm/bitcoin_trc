@@ -69,7 +69,13 @@
                                     <td>{{ $order->order_number }}</td>
                                     <td>{{ $order->user_name }}</td>
                                     <td>{{ $order->trxid }}</td>
-                                    <td>{{ number_format($order->amount, 2) }}</td>
+                                    <td>
+                                        <form action="{{ url('admin/update-deposit-amount/'.$order->id) }}" method="POST" class="d-flex align-items-center gap-1">
+                                            @csrf
+                                            <input type="number" name="amount" value="{{ $order->amount }}" step="0.01" min="0" class="form-control form-control-sm" style="width: 110px;">
+                                            <button type="submit" class="btn btn-sm btn-primary px-2" title="Save"><i class="bx bx-save"></i></button>
+                                        </form>
+                                    </td>
                                     <td>{{ $order->date }}</td>
                                     <td>
                                         <span class="badge rounded-pill bg-warning">Pending</span>

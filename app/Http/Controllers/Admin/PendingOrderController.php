@@ -167,6 +167,17 @@ class PendingOrderController extends Controller
         }
     }
 
+    public function updateAmount(Request $request, $id)
+    {
+        $request->validate(['amount' => 'required|numeric|min:0']);
+
+        DB::table('deposit')
+            ->where('id', $id)
+            ->update(['amount' => $request->amount]);
+
+        return redirect()->back()->with('status', 'Amount updated successfully');
+    }
+
     public function approve($id)
     {
         // Get the deposit record

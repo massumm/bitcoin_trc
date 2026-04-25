@@ -151,6 +151,7 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
      Route::get('/update-pstatus/{p_order_id}', [App\Http\Controllers\Admin\PendingOrderController::class, 'p_sts_update']);
       //pending order list  view
      Route::get('/view-pending-order', [App\Http\Controllers\Admin\PendingOrderController::class, 'view']);
+     Route::post('/update-deposit-amount/{id}', [App\Http\Controllers\Admin\PendingOrderController::class, 'updateAmount']);
     //pending order status update
 
     Route::get('/update-o_status/{p_order_id}', [App\Http\Controllers\Admin\PendingOrderController::class, 'o_sts_update']);
